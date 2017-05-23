@@ -25,6 +25,7 @@ public class LogInActivity extends AppCompatActivity {
 
 
 
+
     EditText txtNick,txtPass;
     Button btnAccess;
     TextView lblRegistrar;
