@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/imgReceta"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+    <TextView
+        android:id="@+id/lblNombreReceta"
+        android:text="nombre"
+        android:layout_toRightOf="@+id/imgReceta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/lblDescripcionReceta"
+        android:layout_toRightOf="@+id/imgReceta"
+        android:layout_below="@+id/lblNombreReceta"
+        android:text="descripcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageButton
+        android:id="@+id/btnFav"
+        android:src="@drawable/ic_fav_black"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@+id/imgReceta"
+        android:layout_below="@+id/lblDescripcionReceta"/>
+    <ImageButton
+        android:id="@+id/btnComments"
+        android:src="@drawable/ic_comment"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@+id/btnFav"
+        android:layout_below="@+id/lblDescripcionReceta"/>
+    <RatingBar
+        android:id="@+id/rating"
+        android:numStars="4"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/lblDescripcionReceta"
+        android:layout_toRightOf="@+id/btnComments" />
+</RelativeLayout>
