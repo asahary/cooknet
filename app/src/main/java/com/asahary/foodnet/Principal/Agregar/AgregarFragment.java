@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -42,6 +43,8 @@ public class AgregarFragment extends Fragment {
     AgregarAdapter adaptador;
     ImageButton btnAgregar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
+    EditText txtNombre,txtDescripcion,txtPreparacion;
+    Spinner spCategoria;
 
 
     public AgregarFragment(){
@@ -49,6 +52,10 @@ public class AgregarFragment extends Fragment {
 
     public void initVistas(View vista){
 
+        spCategoria= (Spinner) vista.findViewById(R.id.spCategoria);
+        txtNombre= (EditText) vista.findViewById(R.id.txtNombre);
+        txtDescripcion= (EditText) vista.findViewById(R.id.txtDescripcion);
+        txtPreparacion= (EditText) vista.findViewById(R.id.txtPreparacion);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
         btnAgregar= (ImageButton) vista.findViewById(R.id.btnAgregar);
         adaptador=new AgregarAdapter(ingredientes);
@@ -63,11 +70,65 @@ public class AgregarFragment extends Fragment {
         });
     }
 
+
+    //Añade un nuevo Ingrediente a la la lista
     private void iniciarLista() {
         ingredientes.add(new Ingrediente());
         adaptador.notifyDataSetChanged();
     }
 
+    //Hace la llamada post que sube la receta
+    private void subirReceta(){
+
+        String nombre=txtNombre.getText().toString();
+        String descripcion=txtNombre.getText().toString();
+        String preparacion=txtPreparacion.getText().toString();
+
+        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+
+        CookNetService servicio=retrofit.create(CookNetService.class);
+
+        Call<String> llamada = servicio.aregarReceta(MainActivity.idUsuario,nombre,descripcion,preparacion,formatearIngredientes(),spCategoria.getSelectedItemPosition(),"");
+
+        llamada.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String respuesta=response.body();
+                if(respuesta!=null){
+                    Toast.makeText(getContext(),respuesta,Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(),"cuerpo nulo",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getContext(),"Respuesta fallida",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    //Crea una cadena a base de todos los ingredientes de la lista
+    private String formatearIngredientes(){
+        String format="";
+
+        String nombre="";
+        int medida=0;
+        Double cantidad=0.0;
+        for(int i=0;i<ingredientes.size();i++){
+            Ingrediente ingrediente =ingredientes.get(i);
+            nombre=ingrediente.nombre;
+            medida=ingrediente.medida;
+            cantidad=ingrediente.cantidad;
+
+            String miniFormat="$"+nombre+"$"+String.valueOf(medida)+"$"+String.valueOf(cantidad);
+            format+=miniFormat+"|";
+        }
+        return format;
+    }
 
 
     @Nullable
@@ -75,6 +136,8 @@ public class AgregarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setRetainInstance(true);
+
+        //Le decimos que tiene una toolbar
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.agregar_fragment, container, false);
     }
@@ -88,6 +151,8 @@ public class AgregarFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        //Quitamos los botones que heredea y añadimos los nuestros
         menu.clear();
         inflater.inflate(R.menu.agregar_menu,menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -97,7 +162,7 @@ public class AgregarFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_done:
-                Toast.makeText(getContext(),"Done",Toast.LENGTH_SHORT).show();
+                subirReceta();
                 break;
         }
         return super.onOptionsItemSelected(item);

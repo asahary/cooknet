@@ -216,4 +216,5 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
             }
         }
     }
+
 }

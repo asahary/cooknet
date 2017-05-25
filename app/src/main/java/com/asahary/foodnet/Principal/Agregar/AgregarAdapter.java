@@ -2,6 +2,8 @@ package com.asahary.foodnet.Principal.Agregar;
 
 import android.icu.text.LocaleDisplayNames;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,13 +117,20 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
 
             //Cada vez que uno de los campos pierde el foco hacemos que guarde lo que tenia en el campo
             //Porque si se actualiza la pantalla se pierde la informacion
-            txtCant.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            txtCant.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onFocusChange(View view, boolean b) {
-                    if(!b){
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                        ingredientes.get(position).cantidad=Double.parseDouble(((TextView)view).getText().toString());
-                    }
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    ingredientes.get(position).cantidad=Double.parseDouble(txtCant.getText().toString());
                 }
             });
 
@@ -137,12 +146,20 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
                 }
             });
 
-            txtNombre.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            txtNombre.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onFocusChange(View view, boolean b) {
-                    if(!b){
-                        ingredientes.get(position).nombre=((TextView)view).getText().toString();
-                    }
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    ingredientes.get(position).nombre=txtNombre.getText().toString();
                 }
             });
 

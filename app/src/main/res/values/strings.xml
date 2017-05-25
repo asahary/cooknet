@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FoodNet</string>
+    <string name="app_name">CookNet</string>
     <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -14,5 +14,12 @@
         <item>libras</item>
         <item>Cucharadas</item>
         <item>Cucharaditas</item>
+    </string-array>
+    <string-array name="categorias">
+        <item >carne</item>
+        <item >pescado</item>
+        <item >cocktail</item>
+        <item>salsa</item>
+        <item>postre</item>
     </string-array>
 </resources>

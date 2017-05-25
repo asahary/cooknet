@@ -48,8 +48,10 @@ public interface CookNetService {
     Call<Boolean> comprobarEmail(@Field("email")String email);
 
     @FormUrlEncoded
-    @POST("recetas/index")
-    Call<Boolean> aregarReceta(@Field("email")String email);
+    @POST("receta/index")
+    Call<String> aregarReceta(@Field("idUsuario")int idUsuario,@Field("nombre")String nombre,
+        @Field("descripcion")String descripcion,@Field("preparacion")String preparacion,
+        @Field("ingredientes")String ingredientes,@Field("categoria")int categoria,@Field("imagen")String imagen);
 
 
 

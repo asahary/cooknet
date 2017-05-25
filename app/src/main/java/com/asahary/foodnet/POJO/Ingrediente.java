@@ -19,6 +19,6 @@ public class Ingrediente {
     public Ingrediente(){
         this.cantidad=0;
         this.medida=0;
-        this.nombre="nombre";
+        this.nombre="";
     }
 }
