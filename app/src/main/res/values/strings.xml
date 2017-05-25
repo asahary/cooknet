@@ -8,17 +8,17 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="medidas">
-        <item >gr.</item>
-        <item >ml.</item>
-        <item >onzas</item>
+        <item>gr.</item>
+        <item>ml.</item>
+        <item>onzas</item>
         <item>libras</item>
         <item>Cucharadas</item>
         <item>Cucharaditas</item>
     </string-array>
     <string-array name="categorias">
-        <item >carne</item>
-        <item >pescado</item>
-        <item >cocktail</item>
+        <item>carne</item>
+        <item>pescado</item>
+        <item>cocktail</item>
         <item>salsa</item>
         <item>postre</item>
     </string-array>

@@ -130,7 +130,11 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    ingredientes.get(position).cantidad=Double.parseDouble(txtCant.getText().toString());
+                    if(txtCant.getText().toString().isEmpty()){
+                        ingredientes.get(position).cantidad=0.0;
+                    }else{
+                        ingredientes.get(position).cantidad=Double.parseDouble(txtCant.getText().toString());
+                    }
                 }
             });
 

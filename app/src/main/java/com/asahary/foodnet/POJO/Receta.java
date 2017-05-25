@@ -1,13 +1,19 @@
 package com.asahary.foodnet.POJO;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.asahary.foodnet.R;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.lang.reflect.Array;
 
 /**
  * Created by Saha on 22/05/2017.
  */
 
-public class Receta {
+public class Receta implements Parcelable{
 
     @SerializedName("idReceta")
     @Expose
@@ -42,6 +48,19 @@ public class Receta {
     @SerializedName("categoria")
     @Expose
     private String categoria;
+
+    public Receta(Parcel in) {
+        idUsuario=in.readString();
+        idReceta=in.readString();
+        nombre=in.readString();
+        descripcion=in.readString();
+        ingredientes=in.readString();
+        preparacion=in.readString();
+        imagen=in.readString();
+        fechaAlta=in.readString();
+        bajaUsuario=in.readString();
+        bajaReceta=in.readString();
+    }
 
     public String getIdReceta() {
         return idReceta;
@@ -131,4 +150,34 @@ public class Receta {
         this.categoria = categoria;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(idUsuario);
+        parcel.writeString(idReceta);
+        parcel.writeString(nombre);
+        parcel.writeString(descripcion);
+        parcel.writeString(ingredientes);
+        parcel.writeString(preparacion);
+        parcel.writeString(imagen);
+        parcel.writeString(fechaAlta);
+        parcel.writeString(bajaUsuario);
+        parcel.writeString(bajaReceta);
+    }
+
+    public static final Creator<Receta> CREATOR = new Creator<Receta>() {
+        @Override
+        public Receta createFromParcel(Parcel in) {
+            return new Receta(in);
+        }
+
+        @Override
+        public Receta[] newArray(int size) {
+            return new Receta[size];
+        }
+    };
 }

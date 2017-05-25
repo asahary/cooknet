@@ -11,7 +11,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -74,26 +76,20 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Cont
 
         TextView lblNombreReceta,lblDescripcionReceta;
         ImageView imgReceta;
-        RatingBar rating;
-        ImageButton btnFav,btnComments;
+
 
         public Contenedor(View itemView) {
             super(itemView);
             lblNombreReceta= (TextView) itemView.findViewById(R.id.lblNombreReceta);
             lblDescripcionReceta= (TextView) itemView.findViewById(R.id.lblDescripcionReceta);
             imgReceta= (ImageView) itemView.findViewById(R.id.imgReceta);
-            btnFav= (ImageButton) itemView.findViewById(R.id.btnFav);
-            btnComments= (ImageButton) itemView.findViewById(R.id.btnComments);
-            rating= (RatingBar) itemView.findViewById(R.id.rating);
-
         }
 
         public void onBin(Receta receta){
             //Rellenamos los datos
             lblNombreReceta.setText(receta.getNombre());
             lblDescripcionReceta.setText(receta.getDescripcion());
-
-            //--FALTA LAS FUNCIONALIDADES DE LOS BOTONES Y LLAMAR A RETROFIT PARA INSERTAR LA IMAGEN
+            Picasso.with(imgReceta.getContext()).load("http://steamykitchen.com/wp-content/uploads/2012/07/pork-belly-buns-recipe-8380.jpg").fit().into(imgReceta);
         }
 
 

@@ -124,8 +124,11 @@ public class AgregarFragment extends Fragment {
             medida=ingrediente.medida;
             cantidad=ingrediente.cantidad;
 
-            String miniFormat="$"+nombre+"$"+String.valueOf(medida)+"$"+String.valueOf(cantidad);
-            format+=miniFormat+"|";
+            String miniFormat=cantidad+":"+String.valueOf(medida)+":"+nombre;
+            format+=miniFormat;
+            if(i<ingredientes.size()-1){
+               format+="%";
+            }
         }
         return format;
     }
@@ -152,7 +155,7 @@ public class AgregarFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        //Quitamos los botones que heredea y añadimos los nuestros
+        //Quitamos los
         menu.clear();
         inflater.inflate(R.menu.agregar_menu,menu);
         super.onCreateOptionsMenu(menu, inflater);

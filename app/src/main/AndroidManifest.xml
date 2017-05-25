@@ -32,7 +32,8 @@
             android:name=".Principal.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity android:name=".Principal.RecetaActivity"></activity>
     </application>
 
 </manifest>

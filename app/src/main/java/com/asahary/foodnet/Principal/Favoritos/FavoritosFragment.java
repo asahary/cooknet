@@ -1,9 +1,8 @@
 package com.asahary.foodnet.Principal.Favoritos;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +14,9 @@ import android.widget.Toast;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.MainActivity;
+import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class FavoritosFragment extends Fragment implements FavoritosAdapter.OnRe
                 if(recetas!=null){
                     adaptador=new FavoritosAdapter(new ArrayList<Receta>(recetas),FavoritosFragment.this);
                     lista.setAdapter(adaptador);
-                    lista.setLayoutManager(new LinearLayoutManager(FavoritosFragment.this.getContext(), LinearLayoutManager.VERTICAL, false));
+                    lista.setLayoutManager(new LinearLayoutManager(FavoritosFragment.this.getContext(),LinearLayoutManager.VERTICAL,false));
 
                 }else{
                     Toast.makeText(FavoritosFragment.this.getContext(),"No hay recetas",Toast.LENGTH_SHORT).show();
@@ -76,6 +75,9 @@ public class FavoritosFragment extends Fragment implements FavoritosAdapter.OnRe
 
     @Override
     public void itemClic(Receta receta) {
+        Intent intent=new Intent(FavoritosFragment.this.getActivity(), RecetaActivity.class);
+        intent.putExtra(RecetaActivity.EXTRA_RECETA,receta);
+        startActivity(intent);
 
     }
 
