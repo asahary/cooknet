@@ -33,7 +33,8 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity android:name=".Principal.RecetaActivity"></activity>
+        <activity android:name=".Principal.RecetaActivity" />
+        <activity android:name=".Principal.Busqueda.BusquedaActivity"></activity>
     </application>
 
 </manifest>

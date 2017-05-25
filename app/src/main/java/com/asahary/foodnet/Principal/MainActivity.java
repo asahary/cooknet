@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.asahary.foodnet.Actividades.LogInActivity;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
+import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.R;
 
@@ -119,7 +120,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+            Intent intent = new Intent(MainActivity.this, BusquedaActivity.class);
+            startActivity(intent);
             return true;
         }
 
