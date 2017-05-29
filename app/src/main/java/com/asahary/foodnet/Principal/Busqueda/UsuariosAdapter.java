@@ -90,7 +90,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Conten
 
         }
 
-        public void onBin(final Usuario usuario){
+        public void onBin(Usuario usuario){
 
 
             txtNick.setText(usuario.getNick());

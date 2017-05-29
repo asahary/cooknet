@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Principal.Busqueda;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -18,8 +18,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asahary.foodnet.CookNetService;
-import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
+import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.Favoritos.FavoritosAdapter;
+import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
@@ -32,16 +33,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Saha on 25/05/2017.
+ * Created by Saha on 26/05/2017.
  */
 
-public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReciclerItemClickListener{
-
-    UsuariosAdapter adaptador;
+public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReciclerItemClickListener{
+    FavoritosAdapter adaptador;
     RecyclerView lista;
     EditText txtTexto;
     Spinner spCategorias;
-    ArrayList<Usuario> usuarios=new ArrayList<>();
+    ArrayList<Receta> recetas=new ArrayList<>();
 
     @Nullable
     @Override
@@ -68,7 +68,7 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
 
 
-        adaptador=new UsuariosAdapter(usuarios,this);
+        adaptador=new FavoritosAdapter(recetas,this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
 
@@ -90,27 +90,26 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
 
                 String texto=txtTexto.getText().toString();
-                ArrayList<Usuario> nuevosUsuarios= new ArrayList<Usuario>();
+                ArrayList<Receta> nuevasRecetas= new ArrayList<>();
 
                 //Si el campo de texto no esta vacio creamos una nueva lista con todos los usuarios que coincidan con el texto
                 if(!texto.isEmpty()){
 
 
-                    for (int i=0;i<usuarios.size();i++){
-                        Usuario usuario=usuarios.get(i);
-                        String nick=usuario.getNick();
-                        String nombre=usuario.getNombre();
-                        String apellidos=usuario.getApellidos();
+                    for (int i=0;i<recetas.size();i++){
+                        Receta receta=recetas.get(i);
+                        String nombre=receta.getNombre();
+                        String descripcion=receta.getDescripcion();
 
-                        if(nick.contains(texto)||nombre.contains(texto)||apellidos.contains(texto)){
-                            nuevosUsuarios.add(usuario);
+                        if(nombre.contains(texto)||descripcion.contains(texto)){
+                            nuevasRecetas.add(receta);
                         }
                     }
 
-                    adaptador.swapDatos(nuevosUsuarios);
+                    adaptador.swapDatos(nuevasRecetas);
 
                 }else{//Si el texto esta vacio mostramos a todos los usuarios
-                    adaptador.swapDatos(usuarios);
+                    adaptador.swapDatos(recetas);
                 }
             }
         });
@@ -120,42 +119,45 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
     private void iniciarLista(){
         Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
         CookNetService servicio = retrofit.create(CookNetService.class);
-        Call<List<Usuario>> call=servicio.listUsers();
+        Call<List<Receta>> call=servicio.listRecetas();
 
-        call.enqueue(new Callback<List<Usuario>>() {
+        call.enqueue(new Callback<List<Receta>>() {
             @Override
-            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
-                List<Usuario> respuesta=response.body();
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                List<Receta> respuesta=response.body();
 
                 if(respuesta!=null){
-                    usuarios=new ArrayList<Usuario>(respuesta);
-                    adaptador.swapDatos(usuarios);
+                    recetas=new ArrayList<Receta>(respuesta);
+                    adaptador.swapDatos(recetas);
                 }else{
                     Toast.makeText(getContext(),"cuerpo nullo",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
                 Toast.makeText(getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
             }
         });
+
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         //Quitamos los botones innecesarios
-        menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
 
-    public static UsuariosFragment newInstance(){
-        return new UsuariosFragment();
+    public static RecetasFragment newInstance(){
+        return new RecetasFragment();
     }
 
+
     @Override
-    public void itemClic(Usuario usuario) {
-        //Abre el usuario cuando se clica
+    public void itemClic(Receta receta) {
+        Intent intent =new Intent(getActivity(), RecetaActivity.class);
+        intent.putExtra(RecetaActivity.EXTRA_RECETA,receta);
+        startActivity(intent);
     }
 }

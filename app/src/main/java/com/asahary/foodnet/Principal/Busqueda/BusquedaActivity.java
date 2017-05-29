@@ -26,7 +26,7 @@ public class BusquedaActivity extends AppCompatActivity {
         gestor=getSupportFragmentManager();
         navigationView= (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
-
+        setTitle("jajaja");
         //Configuracion del bottom_menu_view
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -38,7 +38,7 @@ public class BusquedaActivity extends AppCompatActivity {
                         break;
                     //Busqueda de usuarios
                     case R.id.mnuRecetas:
-                        //cargarFragmento(R.id.fragment, RecetasFragment.newInstance());
+                        cargarFragmento(R.id.fragment, RecetasFragment.newInstance());
                         break;
                 }
                 return true;

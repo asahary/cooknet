@@ -34,7 +34,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity android:name=".Principal.RecetaActivity" />
-        <activity android:name=".Principal.Busqueda.BusquedaActivity"></activity>
+        <activity android:name=".Principal.Busqueda.BusquedaActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Principal.MainActivity" />
+
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
