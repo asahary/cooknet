@@ -1,31 +1,137 @@
 package com.asahary.foodnet.Principal;
 
-import android.media.Image;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecetaActivity extends AppCompatActivity {
 
     EditText txtNombre,txtDescripcion,txtIngredientes,txtPreparacion;
     ImageView imgReceta;
     Receta receta;
+    Menu menu;
+    boolean favorito=false;
+
     public static final String EXTRA_RECETA ="extraAlimno";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receta);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         initVistas();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.receta_menu,menu);
+        this.menu=menu;
+
+        favorito=comprobarFav();
+
+        if(MainActivity.idUsuario!=Integer.valueOf(receta.getIdUsuario())){
+            menu.getItem(2).setVisible(false);
+        }
+        if(!comprobarFav()){
+            menu.getItem(0).setIcon(R.drawable.ic_favorite);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_fav:
+                actulizarFavorito();
+                break;
+            case R.id.action_comment:
+                new ComentariosDialog().show(getSupportFragmentManager(),"Comentarios");
+                break;
+        }
+        return true;
+    }
+
+    private void actulizarFavorito(){
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+        CookNetService service = retrofit.create(CookNetService.class);
+
+
+        //Por algun motivo si pasamos un bool retrofit no hace bien la conversion
+        //por eso le pasamos un int
+        Call<String> call = service.actulizarFavorito(favorito?1:0,Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()),MainActivity.idUsuario);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String mensaje=response.body();
+
+                if(mensaje!=null){
+                    if(favorito){
+                        favorito=false;
+                        menu.getItem(0).setIcon(R.drawable.ic_favorite);
+                    }else{
+                        favorito=true;
+                        menu.getItem(0).setIcon(R.drawable.ic_fav_black);
+                    }
+                    Toast.makeText(RecetaActivity.this,mensaje+String.valueOf(favorito),Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(RecetaActivity.this,"Cuerpo nullo",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(RecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private boolean comprobarFav(){
+        boolean fav=false;
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+        CookNetService service = retrofit.create(CookNetService.class);
+
+        Call<Boolean> call = service.comprobarFavorito(Integer.parseInt(receta.getIdReceta()),MainActivity.idUsuario);
+
+        try {
+            Response<Boolean> response = call.execute();
+
+            if(response.isSuccessful()){
+                if(response.body()!=null){
+                    fav=response.body();
+                }else{
+                    Toast.makeText(this,"Cuerpo nullo",Toast.LENGTH_SHORT).show();;
+                }
+            }else {
+                Toast.makeText(this,"Respuesta fallida",Toast.LENGTH_SHORT).show();;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fav;
+    }
     private void initVistas() {
         txtNombre= (EditText) findViewById(R.id.txtNombre);
         txtDescripcion= (EditText) findViewById(R.id.txtDescripcion);

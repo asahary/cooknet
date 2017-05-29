@@ -53,6 +53,16 @@ public interface CookNetService {
         @Field("descripcion")String descripcion,@Field("preparacion")String preparacion,
         @Field("ingredientes")String ingredientes,@Field("categoria")int categoria,@Field("imagen")String imagen);
 
+    @FormUrlEncoded
+    @POST("comprobaciones/favorito")
+    Call<Boolean> comprobarFavorito(@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
 
+    @FormUrlEncoded
+    @POST("favoritos/actualizar")
+    Call<String> actulizarFavorito(@Field("fav") int fav,@Field("idCreador") int idCreador,@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
+
+    @FormUrlEncoded
+    @POST("comentarios/subir")
+    Call<String>subirComentario(@Field("comentario") String fav,@Field("idCreador") int idCreador,@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
 
 }
