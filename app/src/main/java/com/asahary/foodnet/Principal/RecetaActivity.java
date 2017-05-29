@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
@@ -31,7 +32,7 @@ public class RecetaActivity extends AppCompatActivity {
     Menu menu;
     boolean favorito=false;
 
-    public static final String EXTRA_RECETA ="extraAlimno";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,11 @@ public class RecetaActivity extends AppCompatActivity {
                 actulizarFavorito();
                 break;
             case R.id.action_comment:
-                new ComentariosDialog().show(getSupportFragmentManager(),"Comentarios");
+                ComentariosDialog dialog=new ComentariosDialog();
+                Bundle extra = new Bundle();
+                extra.putParcelable(Constantes.EXTRA_RECETA,receta);
+                dialog.setArguments(extra);
+                dialog.show(getSupportFragmentManager(),"Comentarios");
                 break;
         }
         return true;
@@ -138,7 +143,7 @@ public class RecetaActivity extends AppCompatActivity {
         txtIngredientes= (EditText) findViewById(R.id.Ingredientes);
         txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
         imgReceta= (ImageView) findViewById(R.id.imgReceta);
-        receta=getIntent().getParcelableExtra(EXTRA_RECETA);
+        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
 
         rellenarCampos();
 

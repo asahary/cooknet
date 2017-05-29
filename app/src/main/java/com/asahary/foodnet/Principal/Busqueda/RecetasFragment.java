@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosAdapter;
@@ -157,7 +158,7 @@ public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReci
     @Override
     public void itemClic(Receta receta) {
         Intent intent =new Intent(getActivity(), RecetaActivity.class);
-        intent.putExtra(RecetaActivity.EXTRA_RECETA,receta);
+        intent.putExtra(Constantes.EXTRA_RECETA,receta);
         startActivity(intent);
     }
 }

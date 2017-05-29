@@ -1,5 +1,6 @@
 package com.asahary.foodnet;
 
+import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 
@@ -30,6 +31,9 @@ public interface CookNetService {
 
     @GET("usuarios/{id}/favoritos")
     Call<List<Receta>> favoritosUser(@Path("id") int id);
+
+    @GET("recetas/{id}/comentarios")
+    Call<List<Comentario>> comentariosReceta(@Path("id") int id);
 
     @FormUrlEncoded
     @POST("usuarios/login")
