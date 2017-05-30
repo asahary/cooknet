@@ -74,6 +74,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/Ingredientes"
                     android:enabled="false" />
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_below="@+id/txtPreparacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>

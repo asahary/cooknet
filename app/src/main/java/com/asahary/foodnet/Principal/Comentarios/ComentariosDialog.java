@@ -3,7 +3,6 @@ package com.asahary.foodnet.Principal.Comentarios;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,13 +55,18 @@ public void iniciarLista(){
         @Override
         public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
             List<Comentario> respuesta=response.body();
-            comentarios=new ArrayList<Comentario>(respuesta);
-            adaptador.swapDatos(comentarios);
+
+            if(respuesta!=null){
+                comentarios=new ArrayList<>(respuesta);
+                adaptador.swapDatos(comentarios);
+            }else{
+                Toast.makeText(getContext(), "Cuerpo nullo", Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
         public void onFailure(Call<List<Comentario>> call, Throwable t) {
-
+            Toast.makeText(getContext(), "Respuesta fallida", Toast.LENGTH_SHORT).show();
         }
     });
 }
@@ -72,16 +76,20 @@ public void iniciarLista(){
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setTitle("Comentarios");
+
+        vista= LayoutInflater.from(getContext()).inflate(R.layout.comentarios_dialog_layout,null);
+        receta=getArguments().getParcelable(Constantes.EXTRA_RECETA);
+
         adaptador=new ComentariosAdapter(comentarios);
+
+        txtComentario= (EditText) vista.findViewById(R.id.txtComentario);
+        btnOk= (ImageButton) vista.findViewById(R.id.btnAceptar);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         lista.setAdapter(adaptador);
+
         iniciarLista();
 
-        receta=getArguments().getParcelable(Constantes.EXTRA_RECETA);
-        vista= LayoutInflater.from(getContext()).inflate(R.layout.comentarios_dialog_layout,null);
-        txtComentario= (EditText) vista.findViewById(R.id.txtComentario);
-        btnOk= (ImageButton) vista.findViewById(R.id.btnAceptar);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +101,11 @@ public void iniciarLista(){
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Toast.makeText(getContext(),"Response", Toast.LENGTH_SHORT).show();
+
+                        if(response.body()==null)
+                            Toast.makeText(getContext(),"nullo", Toast.LENGTH_SHORT).show();
+                        else
+                            iniciarLista();
                     }
 
                     @Override

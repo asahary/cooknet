@@ -86,7 +86,8 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         public Contenedor(View itemView) {
             super(itemView);
             txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
-            txtComentario = (TextView) itemView.findViewById(R.id.txtCant);
+            txtComentario = (TextView) itemView.findViewById(R.id.txtComentario);
+            txtFecha= (TextView) itemView.findViewById(R.id.txtFecha);
 
 
         }

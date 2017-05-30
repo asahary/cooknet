@@ -5,14 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
+import com.asahary.foodnet.Principal.Rating.RatingDialog;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -24,12 +28,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RecetaActivity extends AppCompatActivity {
+public class RecetaActivity extends AppCompatActivity implements RatingDialog.OnDismissListener{
 
     EditText txtNombre,txtDescripcion,txtIngredientes,txtPreparacion;
     ImageView imgReceta;
     Receta receta;
     Menu menu;
+    RatingBar ratingBar;
     boolean favorito=false;
 
 
@@ -144,6 +149,23 @@ public class RecetaActivity extends AppCompatActivity {
         txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
         imgReceta= (ImageView) findViewById(R.id.imgReceta);
         receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
+        ratingBar= (RatingBar) findViewById(R.id.rating);
+
+
+        //No se hace onclick porque onTouch lo sobrescribe
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    RatingDialog dialog=new RatingDialog();
+                    Bundle extras=new Bundle();
+                    extras.putParcelable(Constantes.EXTRA_RECETA,receta);
+                    dialog.setArguments(extras);
+                    dialog.show(getSupportFragmentManager(),"Rating");
+                }
+                return true;
+            }
+        });
 
         rellenarCampos();
 
@@ -155,8 +177,33 @@ public class RecetaActivity extends AppCompatActivity {
         txtIngredientes.setText(leerIngredientes());
         txtPreparacion.setText(receta.getPreparacion());
 
+
+
         Picasso.with(this).load("http://steamykitchen.com/wp-content/uploads/2012/07/pork-belly-buns-recipe-8380.jpg").fit().into(imgReceta);
+
+        rellanarPuntuacion();
     }
+
+    public void rellanarPuntuacion() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+        CookNetService servicio=retrofit.create(CookNetService.class);
+        Call<Float> call=servicio.obtenerPuntuacion(Integer.parseInt(receta.getIdReceta()));
+
+        call.enqueue(new Callback<Float>() {
+            @Override
+            public void onResponse(Call<Float> call, Response<Float> response) {
+                Float respuesta=response.body();
+
+                ratingBar.setRating(respuesta);
+            }
+
+            @Override
+            public void onFailure(Call<Float> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     //Separa la cadena de ingredientes para darle formato
     private String leerIngredientes(){
@@ -186,5 +233,10 @@ public class RecetaActivity extends AppCompatActivity {
             formato+=miniFormato+"\n";
         }
         return  formato;
+    }
+
+    @Override
+    public void onDismiss() {
+        rellanarPuntuacion();
     }
 }
