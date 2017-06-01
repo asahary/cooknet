@@ -23,7 +23,7 @@
     <ImageButton
         android:id="@+id/btnQuitarr"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_add"
+        android:src="@drawable/ic_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

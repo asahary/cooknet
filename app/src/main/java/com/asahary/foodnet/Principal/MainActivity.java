@@ -19,11 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Actividades.LogInActivity;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
+import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.R;
@@ -53,7 +55,8 @@ public class MainActivity extends AppCompatActivity
                     case R.id.mnuHome:
                         break;
                     case R.id.mnuAgregar:
-                        cargarFragmento(R.id.fragment, AgregarFragment.newInstance());
+                        Intent intent=new Intent(MainActivity.this, AgregarRecetaActivity.class);
+                        startActivity(intent);
                         break;
                 }
                 return true;
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
+        //Para que no se habra el teclado por la cara al entrar
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -144,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_log_out) {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

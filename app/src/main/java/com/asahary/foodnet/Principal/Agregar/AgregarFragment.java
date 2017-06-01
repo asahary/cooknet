@@ -18,14 +18,10 @@ import android.widget.Toast;
 
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
-import com.asahary.foodnet.POJO.Receta;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosAdapter;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AgregarFragment extends Fragment {
 
     RecyclerView lista;
-    AgregarAdapter adaptador;
+    IngredienteAdapter adaptador;
     ImageButton btnAgregar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
     EditText txtNombre,txtDescripcion,txtPreparacion;
@@ -58,7 +54,7 @@ public class AgregarFragment extends Fragment {
         txtPreparacion= (EditText) vista.findViewById(R.id.txtPreparacion);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
         btnAgregar= (ImageButton) vista.findViewById(R.id.btnAgregar);
-        adaptador=new AgregarAdapter(ingredientes);
+        adaptador=new IngredienteAdapter(ingredientes);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(AgregarFragment.this.getContext(), LinearLayoutManager.VERTICAL, false));
 

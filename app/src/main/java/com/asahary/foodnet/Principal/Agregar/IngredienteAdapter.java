@@ -1,38 +1,26 @@
 package com.asahary.foodnet.Principal.Agregar;
 
-import android.icu.text.LocaleDisplayNames;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.asahary.foodnet.POJO.Ingrediente;
-import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
-
-import static com.asahary.foodnet.R.id.btnAccess;
-import static com.asahary.foodnet.R.id.lblDescripcionReceta;
-import static com.asahary.foodnet.R.id.lblNombreReceta;
-import static com.asahary.foodnet.R.id.nav_log_out;
 
 /**
  * Created by Saha on 23/05/2017.
  */
 
-public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contenedor> implements View.OnClickListener{
+public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.Contenedor> implements View.OnClickListener{
     ArrayList<Ingrediente> ingredientes =new ArrayList<>();
 
     @Override
@@ -45,15 +33,15 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
     }
 
 
-    AgregarAdapter.OnReciclerItemClickListener listener;
+    IngredienteAdapter.OnReciclerItemClickListener listener;
 
-    public AgregarAdapter(ArrayList<Ingrediente> ingredientes, AgregarAdapter.OnReciclerItemClickListener listener){
+    public IngredienteAdapter(ArrayList<Ingrediente> ingredientes, IngredienteAdapter.OnReciclerItemClickListener listener){
         super();
         this.listener=listener;
         this.ingredientes =ingredientes;
 
     }
-    public AgregarAdapter(ArrayList<Ingrediente> ingredientes){
+    public IngredienteAdapter(ArrayList<Ingrediente> ingredientes){
         super();
         this.ingredientes =ingredientes;
 
@@ -65,10 +53,10 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
     }
 
     @Override
-    public AgregarAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IngredienteAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ingrediente,parent,false);
 
-        final AgregarAdapter.Contenedor tvh = new AgregarAdapter.Contenedor(itemView);
+        final IngredienteAdapter.Contenedor tvh = new IngredienteAdapter.Contenedor(itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +68,7 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
     }
 
     @Override
-    public void onBindViewHolder(AgregarAdapter.Contenedor holder, final int position) {
+    public void onBindViewHolder(IngredienteAdapter.Contenedor holder, final int position) {
         holder.onBin(ingredientes.get(position));
     }
 
@@ -107,7 +95,7 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
 
         public void onBin(final Ingrediente ingrediente){
             //Obtenemos la posicion del ingrediente en el array
-            final int position=AgregarAdapter.this.ingredientes.indexOf(ingrediente);
+            final int position=IngredienteAdapter.this.ingredientes.indexOf(ingrediente);
 
 
             txtNombre.setText(ingrediente.nombre);
@@ -170,9 +158,9 @@ public class AgregarAdapter extends RecyclerView.Adapter<AgregarAdapter.Contened
             btnEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position=AgregarAdapter.this.ingredientes.indexOf(ingrediente);
+                    int position=IngredienteAdapter.this.ingredientes.indexOf(ingrediente);
                     ingredientes.remove(position);
-                    AgregarAdapter.this.notifyDataSetChanged();
+                    IngredienteAdapter.this.notifyDataSetChanged();
                 }
             });
         }

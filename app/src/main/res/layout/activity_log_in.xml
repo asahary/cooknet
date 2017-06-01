@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nick or email"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 
@@ -19,7 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtNick"
+        android:inputType="textPassword"
         android:hint="Pass"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
     <Button

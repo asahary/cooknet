@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Principal;
 
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,6 +77,11 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                 extra.putParcelable(Constantes.EXTRA_RECETA,receta);
                 dialog.setArguments(extra);
                 dialog.show(getSupportFragmentManager(),"Comentarios");
+                break;
+            case R.id.action_edit:
+                Intent intent=new Intent(RecetaActivity.this,EditarRecetaActivity.class);
+                intent.putExtra(Constantes.EXTRA_RECETA,receta);
+                startActivity(intent);
                 break;
         }
         return true;

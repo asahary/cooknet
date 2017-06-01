@@ -104,8 +104,10 @@ public void iniciarLista(){
 
                         if(response.body()==null)
                             Toast.makeText(getContext(),"nullo", Toast.LENGTH_SHORT).show();
-                        else
-                            iniciarLista();
+                        else{
+                            Toast.makeText(getContext(),response.body(), Toast.LENGTH_SHORT).show();
+                        }
+                            dismiss();
                     }
 
                     @Override

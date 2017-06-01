@@ -1,9 +1,12 @@
 package com.asahary.foodnet.Actividades;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,6 +46,13 @@ public class LogInActivity extends AppCompatActivity {
         txtPass = (EditText) findViewById(R.id.txtPass);
         btnAccess = (Button) findViewById(R.id.btnAccess);
         lblRegistrar= (TextView) findViewById(R.id.lblRegistro);
+        txtPass.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                btnAccess.performClick();
+                return true;
+            }
+        });
 
         //Link al formulario de registro
         lblRegistrar.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +91,7 @@ public class LogInActivity extends AppCompatActivity {
                             Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
                             intent.putExtra(Constantes.ID_USUARIO,Integer.parseInt(response.body().getId()));
                             startActivity(intent);
+                            finish();
                         }else{
                             //Login fallido
                             Toast.makeText(LogInActivity.this, "Cuerpo nullo", Toast.LENGTH_SHORT).show();
@@ -93,8 +104,16 @@ public class LogInActivity extends AppCompatActivity {
                         Toast.makeText(LogInActivity.this, "Respuesta fallida", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                ocultarTecladoVirtual(txtPass);
+
             }
         });
+    }
+    public void ocultarTecladoVirtual(View view){
+        InputMethodManager imm =
+                (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }
