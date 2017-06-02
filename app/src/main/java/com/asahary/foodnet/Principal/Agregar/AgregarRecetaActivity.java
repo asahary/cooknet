@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -43,6 +44,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,7 +91,11 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_done:
-                subirReceta();
+
+                //subirReceta();
+
+                if(file!=null)
+                subirFoto();
                 break;
         }
         return true;
@@ -203,11 +211,11 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     break;
                 case RQ_CAMARA:
                     if(hasPermission(AgregarRecetaActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                        Bundle extras = data.getExtras();
-                        Bitmap miniatura = (Bitmap) extras.get("data");
-                        // Se muestra en el ImageView.
-                        img.setImageBitmap(miniatura);
-                        agregarFotoAGaleria();
+
+                       String path= file.getAbsoluteFile().getAbsolutePath();
+                        Picasso.with(AgregarRecetaActivity.this).load(file).fit().into(img);
+
+
                     }
                     else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -242,7 +250,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         }
     }
 
-    //Metodos para asignar la imagen
+    //METDODOS DE GESTION DE IMAGENES
     private String getRealPath(Uri uriGaleria) {
 
         Cursor cursor = null;
@@ -265,6 +273,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         File f = null;
         if (!TextUtils.isEmpty(sOriginal)) {
             f = new File(sOriginal);
+            file=f;
         }
         Picasso.with(AgregarRecetaActivity.this).load(f).fit().error(R.drawable.ic_check).into(img);
     }
@@ -313,7 +322,9 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     nombre);
             Log.d(getString(R.string.app_name), archivo.getAbsolutePath());
         }
+        Toast.makeText(AgregarRecetaActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
         this.file=archivo;
+
         // Se retorna el archivo creado.
         return archivo;
     }
@@ -336,7 +347,11 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                 // Se obtiene la Uri correspondiente al archivo creado a través del FileProvider,
                 // cuyo autorithies debe coincidir con lo especificado para el FileProvider en el
                 // manifiesto (necesario para API >= 25).
+
+                Uri fotoURI = FileProvider.getUriForFile(this,
+                        "com.asahary.cooknet.fileprovider", fotoFile);
                 // Se añade como extra del intent la uri donde debe guardarse.
+                i.putExtra(MediaStore.EXTRA_OUTPUT, fotoURI);
                 startActivityForResult(i, RQ_CAMARA);
             }
         }
@@ -347,7 +362,9 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         // escaneo de un fichero multimedia.
         Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
-        Uri uri = Uri.fromFile(file);
+        File f = new File(sOriginal);
+        Uri uri = Uri.fromFile(f);
+
         // Se establece la uri con datos del intent.
         i.setData(uri);
         // Se envía un broadcast con el intent.
@@ -371,6 +388,40 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     @Override
     public ImageView getImage() {
         return img;
+    }
+
+    public void subirFoto(){
+
+
+
+
+        RequestBody filePart = RequestBody.create(MediaType.parse("*/*"),file);
+
+        MultipartBody.Part archivo = MultipartBody.Part.createFormData("file",file.getName(),filePart);
+
+        RequestBody descripcion =RequestBody.create(MultipartBody.FORM,file.getName());
+
+        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+
+        CookNetService service = retrofit.create(CookNetService.class);
+
+        Call<RequestBody> call =service.subirFotoReceta(descripcion,archivo,2,2);
+
+        call.enqueue(new Callback<RequestBody>() {
+            @Override
+            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+
+                if(response.body()!=null)
+                Toast.makeText(AgregarRecetaActivity.this,"respones",Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(AgregarRecetaActivity.this,"null",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<RequestBody> call, Throwable t) {
+                Toast.makeText(AgregarRecetaActivity.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
 

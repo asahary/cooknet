@@ -38,10 +38,12 @@ public class GestorImagenes {
     String sOriginal;
     Intent intent;
     File file;
-
+    ImageView img;
 
     public GestorImagenes(Activity actividad){
         this.actividad=actividad;
+        img=((ImageRequester)actividad).getImage();
+
     }
     public interface ImageRequester{
         ImageView getImage();
@@ -64,7 +66,7 @@ public class GestorImagenes {
         }
     }
 
-    private void mostrarFoto(ImageView img) {
+    private void mostrarFoto() {
         File f = null;
         if (!TextUtils.isEmpty(sOriginal)) {
             f = new File(sOriginal);
