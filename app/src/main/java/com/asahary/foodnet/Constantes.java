@@ -7,4 +7,5 @@ package com.asahary.foodnet;
 public class Constantes {
     public final static String ID_USUARIO="idUsuario";
     public static final String EXTRA_RECETA ="extraAlimno";
+    public static final String EXTRA_PREPARACION ="extraPreparacion";
 }

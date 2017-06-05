@@ -11,7 +11,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="210dp"
+            android:layout_height="300dp"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -47,36 +47,72 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <TextView
+                    android:id="@+id/lblNombre"
+                    android:text="Nombre"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
                     android:id="@+id/txtNombre"
+                    android:layout_below="@+id/lblNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:hint="Nombre" />
 
-                <EditText
+                <TextView
+                    android:id="@+id/lblDescripcion"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/txtNombre"
+                    android:text="Descripción"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
                     android:id="@+id/txtDescripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txtNombre"
-                    android:enabled="false" />
+                    android:hint="Descripcion"
+                    android:layout_below="@id/lblDescripcion" />
 
-                <EditText
+                <TextView
+                    android:id="@+id/lblPreparacion"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/txtDescripcion"
+                    android:text="Preparación"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/txtPreparacion"
+                    android:hint="Preparacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblPreparacion" />
+
+                <TextView
+                    android:id="@+id/lblIngredientes"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/txtPreparacion"
+                    android:text="Ingredientes"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
                     android:id="@+id/Ingredientes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txtDescripcion"
-                    android:enabled="false" />
+                    android:hint="Ingredientes"
+                    android:layout_below="@+id/lblIngredientes" />
 
-                <EditText
-                    android:id="@+id/txtPreparacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/Ingredientes"
-                    android:enabled="false" />
+
+
+
                 <RatingBar
                     android:id="@+id/rating"
-                    android:layout_below="@+id/txtPreparacion"
+                    android:layout_below="@+id/Ingredientes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

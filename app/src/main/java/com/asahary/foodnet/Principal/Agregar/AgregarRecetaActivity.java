@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -30,9 +28,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
-import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.GestorImagenes;
@@ -53,7 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,GestorImagenes.ImageRequester{
+public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,GestorImagenes.ImageRequester,PreparacionDialog.OnPrepDone {
     RecyclerView lista;
     IngredienteAdapter adaptador;
     ImageButton btnAgregar;
@@ -62,7 +60,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     Spinner spCategoria;
     FloatingActionButton fab;
     Intent intent;
-    Receta receta;
     String sOriginal="";
     ImageView img;
     String nombreArchivo="";
@@ -91,11 +88,14 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_done:
-
-                //subirReceta();
-
-                if(file!=null)
-                subirFoto();
+                if(!comprobarCampos()){
+                    subirReceta();
+                    if(file!=null){
+                        subirFoto();
+                    }
+                }else{
+                    Toast.makeText(AgregarRecetaActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return true;
@@ -128,6 +128,21 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                 new ImagenOptionDialog().show(getSupportFragmentManager(),"Imagen");
             }
         });
+        txtPreparacion.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b)
+                    new PreparacionDialog().show(getSupportFragmentManager(),"Preparacion");
+            }
+        });
+        txtPreparacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreparacionDialog dialog =new PreparacionDialog();
+
+                dialog.show(getSupportFragmentManager(),txtPreparacion.getText()==null?"":txtPreparacion.getText().toString());
+            }
+        });
     }
 
 
@@ -143,12 +158,19 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         String nombre=txtNombre.getText().toString();
         String descripcion=txtNombre.getText().toString();
         String preparacion=txtPreparacion.getText().toString();
+        String rutaImagen="";
+
+        if(file==null){
+            rutaImagen=CookNetService.URL_BASE+"users/foodGeneric.png";
+        }else{
+            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
+        }
 
         Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
 
         CookNetService servicio=retrofit.create(CookNetService.class);
 
-        Call<String> llamada = servicio.aregarReceta(MainActivity.idUsuario,nombre,descripcion,preparacion,formatearIngredientes(),spCategoria.getSelectedItemPosition(),"");
+        Call<String> llamada = servicio.aregarReceta(MainActivity.idUsuario,nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
 
         llamada.enqueue(new Callback<String>() {
             @Override
@@ -156,6 +178,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                 String respuesta=response.body();
                 if(respuesta!=null){
                     Toast.makeText(AgregarRecetaActivity.this,respuesta,Toast.LENGTH_SHORT).show();
+                    finish();
                 }else{
                     Toast.makeText(AgregarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
                 }
@@ -169,6 +192,15 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         });
 
 
+    }
+
+    private boolean comprobarCampos(){
+        String nombre=txtNombre.getText().toString();
+        String descripcion=txtNombre.getText().toString();
+        String preparacion=txtPreparacion.getText().toString();
+
+
+        return (nombre.isEmpty() || descripcion.isEmpty() || preparacion.isEmpty() || ingredientes.isEmpty());
     }
 
     //Crea una cadena a base de todos los ingredientes de la lista
@@ -392,9 +424,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
     public void subirFoto(){
 
-
-
-
         RequestBody filePart = RequestBody.create(MediaType.parse("*/*"),file);
 
         MultipartBody.Part archivo = MultipartBody.Part.createFormData("file",file.getName(),filePart);
@@ -405,23 +434,32 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<RequestBody> call =service.subirFotoReceta(descripcion,archivo,2,2);
+        Call<Boolean> call =service.subirFotoReceta(descripcion,archivo,MainActivity.idUsuario);
 
-        call.enqueue(new Callback<RequestBody>() {
+        call.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
-                if(response.body()!=null)
-                Toast.makeText(AgregarRecetaActivity.this,"respones",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(AgregarRecetaActivity.this,"null",Toast.LENGTH_SHORT).show();
+                if(response.body()!=null){
+
+                }
+
+                else{
+                    // Toast.makeText(AgregarRecetaActivity.this,"null",Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
-            public void onFailure(Call<RequestBody> call, Throwable t) {
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 Toast.makeText(AgregarRecetaActivity.this,t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(String preparacion) {
+        txtPreparacion.setText(preparacion);
     }
 }
 

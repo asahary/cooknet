@@ -17,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -84,6 +85,10 @@ public interface CookNetService {
 
     @Multipart
     @POST("recetas/imagenes")
-    Call<RequestBody>subirFotoReceta(@Part("descripcion") RequestBody description, @Part MultipartBody.Part foto,@Part("idCreador") int idCreador,@Part("idReceta") int idReceta);
+    Call<Boolean>subirFotoReceta(@Part("descripcion") RequestBody description, @Part MultipartBody.Part foto,@Part("idCreador") int idCreador);
+
+    @FormUrlEncoded
+    @PUT("recetas")
+    Call<String>actualizarReceta(@Field("idReceta") int idReceta);
 
 }

@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="300dp"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -58,12 +58,19 @@
 
             <EditText
                 android:id="@+id/txtNombre"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombre" />
 
             <EditText
                 android:id="@+id/txtDescripcion"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:minLines="2"
+                android:maxLines="2"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtNombre"
@@ -77,6 +84,7 @@
 
             <ImageButton
                 android:id="@+id/btnAgregar"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/Ingredientes"
@@ -84,6 +92,9 @@
 
             <EditText
                 android:id="@+id/txtPreparacion"
+                android:minLines="5"
+                android:maxLines="5"
+                android:inputType="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtDescripcion"

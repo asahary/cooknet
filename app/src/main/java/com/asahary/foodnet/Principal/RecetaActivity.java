@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Constantes;
@@ -31,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecetaActivity extends AppCompatActivity implements RatingDialog.OnDismissListener{
 
-    EditText txtNombre,txtDescripcion,txtIngredientes,txtPreparacion;
+    TextView txtNombre,txtDescripcion,txtIngredientes,txtPreparacion;
     ImageView imgReceta;
     Receta receta;
     Menu menu;
@@ -149,10 +150,10 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         return fav;
     }
     private void initVistas() {
-        txtNombre= (EditText) findViewById(R.id.txtNombre);
-        txtDescripcion= (EditText) findViewById(R.id.txtDescripcion);
-        txtIngredientes= (EditText) findViewById(R.id.Ingredientes);
-        txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
+        txtNombre= (TextView) findViewById(R.id.txtNombre);
+        txtDescripcion= (TextView) findViewById(R.id.txtDescripcion);
+        txtIngredientes= (TextView) findViewById(R.id.Ingredientes);
+        txtPreparacion= (TextView) findViewById(R.id.txtPreparacion);
         imgReceta= (ImageView) findViewById(R.id.imgReceta);
         receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
         ratingBar= (RatingBar) findViewById(R.id.rating);
@@ -185,7 +186,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
 
 
 
-        Picasso.with(this).load("http://steamykitchen.com/wp-content/uploads/2012/07/pork-belly-buns-recipe-8380.jpg").fit().into(imgReceta);
+        Picasso.with(this).load(receta.getImagen()).fit().into(imgReceta);
 
         rellanarPuntuacion();
     }

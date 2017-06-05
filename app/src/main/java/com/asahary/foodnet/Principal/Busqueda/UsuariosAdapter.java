@@ -87,7 +87,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Conten
             txtNick.setText(usuario.getNick());
             txtNombre.setText(usuario.getNombre());
             txtApellidos.setText(usuario.getApellidos());
-            Picasso.with(imgUsuario.getContext()).load("https://image.flaticon.com/icons/png/512/78/78373.png").fit().into(imgUsuario);
+            Picasso.with(imgUsuario.getContext()).load(usuario.getImagen()).fit().into(imgUsuario);
 
         }
 

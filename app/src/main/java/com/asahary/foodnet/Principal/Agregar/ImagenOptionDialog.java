@@ -59,6 +59,8 @@ public class ImagenOptionDialog extends DialogFragment {
             }
         });
 
+
+
         builder.setView(vista);
         return builder.create();
     }

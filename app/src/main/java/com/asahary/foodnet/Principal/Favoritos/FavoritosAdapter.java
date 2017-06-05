@@ -89,7 +89,7 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Cont
             //Rellenamos los datos
             lblNombreReceta.setText(receta.getNombre());
             lblDescripcionReceta.setText(receta.getDescripcion());
-            Picasso.with(imgReceta.getContext()).load("http://steamykitchen.com/wp-content/uploads/2012/07/pork-belly-buns-recipe-8380.jpg").fit().into(imgReceta);
+            Picasso.with(imgReceta.getContext()).load(receta.getImagen()).fit().into(imgReceta);
         }
 
 
