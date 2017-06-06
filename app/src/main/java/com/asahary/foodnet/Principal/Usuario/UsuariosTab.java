@@ -68,9 +68,6 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
     }
 
     private void initVistas(View vista) {
-        txtTexto = (EditText) vista.findViewById(R.id.txtText);
-        txtTexto.setVisibility(View.INVISIBLE);
-        spCategorias = (Spinner) vista.findViewById(R.id.spCategoria);
         lista = (RecyclerView) vista.findViewById(R.id.lista);
 
 

@@ -37,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saha on 26/05/2017.
  */
 
-public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReciclerItemClickListener{
+public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReciclerItemClickListener,BusquedaActivity.OnTextToolbarTextChange{
     FavoritosAdapter adaptador;
     RecyclerView lista;
     EditText txtTexto;
@@ -62,59 +62,16 @@ public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReci
         initVistas(vista);
     }
 
-    private void initVistas(View vista)  {
-        txtTexto= (EditText) vista.findViewById(R.id.txtText);
-        spCategorias= (Spinner) vista.findViewById(R.id.spCategoria);
-        lista= (RecyclerView) vista.findViewById(R.id.lista);
+    private void initVistas(View vista) {
+        spCategorias = (Spinner) vista.findViewById(R.id.spCategoria);
+        lista = (RecyclerView) vista.findViewById(R.id.lista);
 
 
-
-        adaptador=new FavoritosAdapter(recetas,this);
+        adaptador = new FavoritosAdapter(recetas, this);
         lista.setAdapter(adaptador);
-        lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         iniciarLista();
-
-        txtTexto.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-
-                String texto=txtTexto.getText().toString();
-                ArrayList<Receta> nuevasRecetas= new ArrayList<>();
-
-                //Si el campo de texto no esta vacio creamos una nueva lista con todos los usuarios que coincidan con el texto
-                if(!texto.isEmpty()){
-
-
-                    for (int i=0;i<recetas.size();i++){
-                        Receta receta=recetas.get(i);
-                        String nombre=receta.getNombre();
-                        String descripcion=receta.getDescripcion();
-
-                        if(nombre.contains(texto)||descripcion.contains(texto)){
-                            nuevasRecetas.add(receta);
-                        }
-                    }
-
-                    adaptador.swapDatos(nuevasRecetas);
-
-                }else{//Si el texto esta vacio mostramos a todos los usuarios
-                    adaptador.swapDatos(recetas);
-                }
-            }
-        });
-
     }
 
     private void iniciarLista(){
@@ -160,5 +117,31 @@ public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReci
         Intent intent =new Intent(getActivity(), RecetaActivity.class);
         intent.putExtra(Constantes.EXTRA_RECETA,receta);
         startActivity(intent);
+    }
+
+    @Override
+    public void onTextChanged(String text) {
+        String texto=text;
+        ArrayList<Receta> nuevasRecetas= new ArrayList<>();
+
+        //Si el campo de texto no esta vacio creamos una nueva lista con todos los usuarios que coincidan con el texto
+        if(!texto.isEmpty()){
+
+
+            for (int i=0;i<recetas.size();i++){
+                Receta receta=recetas.get(i);
+                String nombre=receta.getNombre();
+                String descripcion=receta.getDescripcion();
+
+                if(nombre.contains(texto)||descripcion.contains(texto)){
+                    nuevasRecetas.add(receta);
+                }
+            }
+
+            adaptador.swapDatos(nuevasRecetas);
+
+        }else{//Si el texto esta vacio mostramos a todos los usuarios
+            adaptador.swapDatos(recetas);
+        }
     }
 }

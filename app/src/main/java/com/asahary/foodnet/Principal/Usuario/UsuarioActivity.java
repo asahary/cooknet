@@ -1,7 +1,9 @@
 package com.asahary.foodnet.Principal.Usuario;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -12,8 +14,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
@@ -70,12 +74,7 @@ public class UsuarioActivity extends FragmentActivity {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 sigue=response.body();
-
-                if(sigue){
-                    btnSigue.setText("Unfollow");
-                }else{
-                    btnSigue.setText("Follow");
-                }
+                configurarBotonFollow(sigue);
             }
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
@@ -83,6 +82,15 @@ public class UsuarioActivity extends FragmentActivity {
             }
         });
     }
+
+    private void configurarBotonFollow(boolean bandera) {
+        if(bandera){
+            btnSigue.setText("Unfollow");
+        }else{
+            btnSigue.setText("Follow");
+        }
+    }
+
     private void obtenerUsuario(){
         Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
         CookNetService service = retrofit.create(CookNetService.class);
@@ -119,6 +127,30 @@ public class UsuarioActivity extends FragmentActivity {
         lblNombre= (TextView) findViewById(R.id.lblNombre);
         lblEmail= (TextView) findViewById(R.id.lblEmail);
         btnSigue= (Button) findViewById(R.id.btnfollow);
+        btnSigue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+                final CookNetService service= retrofit.create(CookNetService.class);
+                Call<Boolean> call=service.actualizarSigue(MainActivity.idUsuario,idUsuario,sigue);
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if(response.body()!=null){
+                            sigue=response.body();
+                            configurarBotonFollow(sigue);
+                        }else{
+                            Toast.makeText(UsuarioActivity.this,"Cuerpor nullo",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Toast.makeText(UsuarioActivity.this,"Fail",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     private void configViewPager() {

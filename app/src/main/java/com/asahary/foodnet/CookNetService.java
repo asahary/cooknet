@@ -60,6 +60,8 @@ public interface CookNetService {
     @POST("usuarios/login")
     Call<Usuario> login(@Field("user")String user,@Field("pass")String pass);
 
+
+
     @FormUrlEncoded
     @POST("usuarios/index")
     Call<String> registrar(@Field("nick")String nick,@Field("pass")String pass,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos);
@@ -85,6 +87,10 @@ public interface CookNetService {
     @FormUrlEncoded
     @POST("comprobaciones/sigue")
     Call<Boolean> comprobarSigue(@Field("idUser") int idUser,@Field("idSeguido")int idSeguido);
+
+    @FormUrlEncoded
+    @POST("sigue/actualizar")
+    Call<Boolean> actualizarSigue(@Field("idUser") int idUser,@Field("idSeguido")int idSeguido,@Field("bandera")boolean bandera);
 
     @FormUrlEncoded
     @POST("favoritos/actualizar")

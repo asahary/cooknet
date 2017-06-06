@@ -38,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saha on 25/05/2017.
  */
 
-public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReciclerItemClickListener{
+public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReciclerItemClickListener,BusquedaActivity.OnTextToolbarTextChange{
 
     UsuariosAdapter adaptador;
     RecyclerView lista;
@@ -65,58 +65,12 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
     }
 
     private void initVistas(View vista)  {
-        txtTexto= (EditText) vista.findViewById(R.id.txtText);
-        spCategorias= (Spinner) vista.findViewById(R.id.spCategoria);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
-
-
-
         adaptador=new UsuariosAdapter(usuarios,this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
 
         iniciarLista();
-
-        txtTexto.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-
-                String texto=txtTexto.getText().toString();
-                ArrayList<Usuario> nuevosUsuarios= new ArrayList<Usuario>();
-
-                //Si el campo de texto no esta vacio creamos una nueva lista con todos los usuarios que coincidan con el texto
-                if(!texto.isEmpty()){
-
-
-                    for (int i=0;i<usuarios.size();i++){
-                        Usuario usuario=usuarios.get(i);
-                        String nick=usuario.getNick();
-                        String nombre=usuario.getNombre();
-                        String apellidos=usuario.getApellidos();
-
-                        if(nick.contains(texto)||nombre.contains(texto)||apellidos.contains(texto)){
-                            nuevosUsuarios.add(usuario);
-                        }
-                    }
-
-                    adaptador.swapDatos(nuevosUsuarios);
-
-                }else{//Si el texto esta vacio mostramos a todos los usuarios
-                    adaptador.swapDatos(usuarios);
-                }
-            }
-        });
 
     }
 
@@ -163,5 +117,33 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
         intent.putExtra(Constantes.EXTRA_ID_USUARIO,Integer.parseInt(usuario.getId()));
         startActivity(intent);
 
+    }
+
+
+    @Override
+    public void onTextChanged(String text) {
+        String texto=text;
+        ArrayList<Usuario> nuevosUsuarios= new ArrayList<Usuario>();
+
+        //Si el campo de texto no esta vacio creamos una nueva lista con todos los usuarios que coincidan con el texto
+        if(!texto.isEmpty()){
+
+
+            for (int i=0;i<usuarios.size();i++){
+                Usuario usuario=usuarios.get(i);
+                String nick=usuario.getNick();
+                String nombre=usuario.getNombre();
+                String apellidos=usuario.getApellidos();
+
+                if(nick.contains(texto)||nombre.contains(texto)||apellidos.contains(texto)){
+                    nuevosUsuarios.add(usuario);
+                }
+            }
+
+            adaptador.swapDatos(nuevosUsuarios);
+
+        }else{//Si el texto esta vacio mostramos a todos los usuarios
+            adaptador.swapDatos(usuarios);
+        }
     }
 }
