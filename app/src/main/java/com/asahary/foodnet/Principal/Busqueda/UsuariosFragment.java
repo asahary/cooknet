@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Principal.Busqueda;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,9 +18,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
+import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
@@ -156,6 +159,9 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
     @Override
     public void itemClic(Usuario usuario) {
-        //Abre el usuario cuando se clica
+        Intent intent= new Intent(UsuariosFragment.this.getActivity(), UsuarioActivity.class);
+        intent.putExtra(Constantes.EXTRA_ID_USUARIO,Integer.parseInt(usuario.getId()));
+        startActivity(intent);
+
     }
 }

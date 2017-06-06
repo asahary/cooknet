@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.asahary.foodnet.Principal.Usuario.UsuarioActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgUsuario"
+        android:src="@drawable/user_generic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"/>
+    <RelativeLayout
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/datos"
+        android:layout_toRightOf="@+id/imgUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:id="@+id/lblNick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nick"/>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/lblNombre"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/lblNick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre"/>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/lblEmail"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/lblNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"/>
+    </RelativeLayout>
+    <Button
+        style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
+        android:id="@+id/btnfollow"
+        android:text="Follow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/datos"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"/>
+<android.support.v4.view.ViewPager
+    android:id="@+id/pager"
+    android:layout_marginTop="20dp"
+    android:layout_below="@+id/imgUsuario"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+</android.support.v4.view.ViewPager>
+
+</RelativeLayout>

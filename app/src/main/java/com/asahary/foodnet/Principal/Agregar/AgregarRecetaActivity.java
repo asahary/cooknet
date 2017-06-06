@@ -132,7 +132,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
             @Override
             public void onFocusChange(View view, boolean b) {
                 if(b)
-                    new PreparacionDialog().show(getSupportFragmentManager(),"Preparacion");
+                    new PreparacionDialog().show(getSupportFragmentManager(),txtPreparacion.getText()==null?"":txtPreparacion.getText().toString());
             }
         });
         txtPreparacion.setOnClickListener(new View.OnClickListener() {
@@ -156,12 +156,12 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     private void subirReceta(){
 
         String nombre=txtNombre.getText().toString();
-        String descripcion=txtNombre.getText().toString();
+        String descripcion=txtDescripcion.getText().toString();
         String preparacion=txtPreparacion.getText().toString();
         String rutaImagen="";
 
         if(file==null){
-            rutaImagen=CookNetService.URL_BASE+"users/foodGeneric.png";
+            rutaImagen=Constantes.URL_COMIDA;
         }else{
             rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
         }

@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -17,8 +16,11 @@ import android.widget.Toast;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.POJO.Usuario;
+import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.Principal.Rating.RatingDialog;
+import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -32,12 +34,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecetaActivity extends AppCompatActivity implements RatingDialog.OnDismissListener{
 
-    TextView txtNombre,txtDescripcion,txtIngredientes,txtPreparacion;
+    TextView txtNombre,txtDescripcion,txtIngredientes,txtPreparacion, lblNombreUsuario;
     ImageView imgReceta;
     Receta receta;
     Menu menu;
     RatingBar ratingBar;
     boolean favorito=false;
+
+    public static final int MODIFICAR_RECETA=9;
 
 
 
@@ -82,7 +86,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
             case R.id.action_edit:
                 Intent intent=new Intent(RecetaActivity.this,EditarRecetaActivity.class);
                 intent.putExtra(Constantes.EXTRA_RECETA,receta);
-                startActivity(intent);
+                startActivityForResult(intent,MODIFICAR_RECETA);
                 break;
         }
         return true;
@@ -150,6 +154,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         return fav;
     }
     private void initVistas() {
+        lblNombreUsuario = (TextView) findViewById(R.id.lblNombreUsuario);
         txtNombre= (TextView) findViewById(R.id.txtNombre);
         txtDescripcion= (TextView) findViewById(R.id.txtDescripcion);
         txtIngredientes= (TextView) findViewById(R.id.Ingredientes);
@@ -173,22 +178,47 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                 return true;
             }
         });
-
+        lblNombreUsuario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RecetaActivity.this, UsuarioActivity.class);
+                intent.putExtra(Constantes.EXTRA_ID_USUARIO,Integer.parseInt(receta.getIdUsuario()));
+                startActivity(intent);
+            }
+        });
         rellenarCampos();
-
     }
 
     private void rellenarCampos(){
+        int idUsuario=Integer.parseInt(receta.getIdUsuario());
         txtNombre.setText(receta.getNombre());
         txtDescripcion.setText(receta.getDescripcion());
         txtIngredientes.setText(leerIngredientes());
         txtPreparacion.setText(receta.getPreparacion());
-
-
-
         Picasso.with(this).load(receta.getImagen()).fit().into(imgReceta);
-
         rellanarPuntuacion();
+
+        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+        CookNetService service = retrofit.create(CookNetService.class);
+        Call<Usuario> call = service.getUsuario(idUsuario);
+        call.enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                Usuario user=response.body();
+
+                if(user!=null){
+                    lblNombreUsuario.setText(user.getNombre());
+                }else{
+                    Toast.makeText(RecetaActivity.this,"Cuerpo nullo", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+                Toast.makeText(RecetaActivity.this,"Fail", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void rellanarPuntuacion() {
@@ -211,6 +241,19 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Intent responseIntent=data;
+        if(resultCode==RESULT_OK){
+            if(requestCode==MODIFICAR_RECETA){
+                receta=responseIntent.getParcelableExtra(Constantes.EXTRA_RECETA);
+                rellenarCampos();
+            }
+        }
+
+    }
 
     //Separa la cadena de ingredientes para darle formato
     private String leerIngredientes(){

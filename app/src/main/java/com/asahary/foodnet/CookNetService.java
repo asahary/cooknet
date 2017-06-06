@@ -32,11 +32,23 @@ public interface CookNetService {
     @GET("usuarios")
     Call<List<Usuario>> listUsers();
 
+    @GET("usuarios/{id}")
+    Call<Usuario> getUsuario(@Path("id") int id);
+
     @GET("recetas")
     Call<List<Receta>> listRecetas();
 
+    @GET("usuarios/{id}/recetas")
+    Call<List<Receta>> recetasUser(@Path("id") int id);
+
     @GET("usuarios/{id}/favoritos")
     Call<List<Receta>> favoritosUser(@Path("id") int id);
+
+    @GET("usuarios/{id}/seguidos")
+    Call<List<Usuario>> seguidosUser(@Path("id") int id);
+
+    @GET("usuarios/{id}/seguidores")
+    Call<List<Usuario>> seguidoresUser(@Path("id") int id);
 
     @GET("recetas/{id}/puntuacion")
     Call<Float> obtenerPuntuacion(@Path("id") int id);
@@ -71,6 +83,10 @@ public interface CookNetService {
     Call<Boolean> comprobarFavorito(@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
 
     @FormUrlEncoded
+    @POST("comprobaciones/sigue")
+    Call<Boolean> comprobarSigue(@Field("idUser") int idUser,@Field("idSeguido")int idSeguido);
+
+    @FormUrlEncoded
     @POST("favoritos/actualizar")
     Call<String> actulizarFavorito(@Field("fav") int fav,@Field("idCreador") int idCreador,@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
 
@@ -89,6 +105,8 @@ public interface CookNetService {
 
     @FormUrlEncoded
     @PUT("recetas")
-    Call<String>actualizarReceta(@Field("idReceta") int idReceta);
+    Call<String>actualizarReceta(@Field("idReceta") int idReceta,@Field("nombre")String nombre,
+                                 @Field("descripcion")String descripcion,@Field("preparacion")String preparacion,
+                                 @Field("ingredientes")String ingredientes,@Field("categoria")int categoria,@Field("imagen")String imagen,@Field("bajaReceta")int bajaReceta);
 
 }
