@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -75,7 +76,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_editar_usuario);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -102,11 +103,11 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         });
 
 
+
         //Cuando pulse el boton se registrará el nuevo usuario
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(comprobarTodo()){
                     String nick,email, nombre, apellidos, imagen;
 
@@ -116,17 +117,26 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                         imagen = user.getImagen();
                     }
 
+
                     nick = txtNick.getText().toString();
                     email = txtEmail.getText().toString();
                     nombre = txtNombre.getText().toString();
                     apellidos = txtApellidos.getText().toString();
+                    boolean baja=sw.isActivated();
+
+                    user.setNick(nick);
+                    user.setNombre(nombre);
+                    user.setApellidos(apellidos);
+                    user.setEmail(email);
+                    user.setBaja(String.valueOf(baja));
+                    user.setImagen(imagen);
 
                     //Creamos el retrofit y la interfaz de servicio
                     Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                     CookNetService service = retrofit.create(CookNetService.class);
 
                     //Creamos la llamada
-                    Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen);
+                    Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen,baja?1:0);
 
                     llamada.enqueue(new Callback<Boolean>() {
                         @Override
@@ -139,7 +149,10 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                                 if(file!=null){
                                     subirFoto();
                                 }
-
+                                Intent intentResult=new Intent();
+                                intentResult.putExtra(Constantes.EXTRA_USUARIO,user);
+                                setResult(RESULT_OK,intentResult);
+                                finish();
                             } else {
                                 Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
                             }
@@ -162,6 +175,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         Picasso.with(this).load(user.getImagen()).fit().error(R.drawable.user_generic).into(img);
 
         String nombre,nick,apellidos,email;
+        boolean baja= Boolean.parseBoolean(user.getBaja());
 
         nombre=user.getNombre();
         nick=user.getNick();
@@ -172,8 +186,10 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         txtNombre.setText(nombre);
         txtEmail.setText(email);
         txtApellidos.setText(apellidos);
+        sw.setChecked(baja);
 
     }
+
 
     //--COMPROBACIONES DE CAMPOS
     private boolean comprobarTodo(){
@@ -227,7 +243,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         CookNetService service=retrofit.create(CookNetService.class);
 
         //Creamos el objeto llamada
-        Call<Boolean> llamada = service.comprobarEmail(txtEmail.getText().toString());
+        Call<Boolean> llamada = service.comprobarEmail(Integer.parseInt(user.getId()),txtEmail.getText().toString());
 
 
 
@@ -253,7 +269,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         CookNetService service=retrofit.create(CookNetService.class);
 
         //Creamos el objeto llamada
-        Call<Boolean> llamada = service.comprobarNick(txtNick.getText().toString());
+        Call<Boolean> llamada = service.comprobarNick(Integer.parseInt(user.getId()),txtNick.getText().toString());
 
 
 

@@ -69,16 +69,23 @@ public interface CookNetService {
     Call<Integer> registrar(@Field("nick")String nick,@Field("pass")String pass,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen);
 
     @FormUrlEncoded
-    @POST("usuarios/index")
-    Call<Boolean> actualizarUser(@Field("idUser") int idUser,@Field("nick")String nick,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen);
+    @PUT("usuarios/index")
+    Call<Boolean> actualizarUser(@Field("idUser") int idUser,@Field("nick")String nick,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen,@Field("baja")int baja);
 
     @FormUrlEncoded
     @POST("comprobaciones/nick")
     Call<Boolean> comprobarNick(@Field("nick")String nick);
 
     @FormUrlEncoded
+    @POST("comprobaciones/nick")
+    Call<Boolean> comprobarNick(@Field("idUser")int id,@Field("nick")String nick);
+
+    @FormUrlEncoded
     @POST("comprobaciones/email")
     Call<Boolean> comprobarEmail(@Field("email")String email);
+    @FormUrlEncoded
+    @POST("comprobaciones/email")
+    Call<Boolean> comprobarEmail(@Field("isUser") int idUser,@Field("email")String email);
 
     @FormUrlEncoded
     @POST("receta/index")

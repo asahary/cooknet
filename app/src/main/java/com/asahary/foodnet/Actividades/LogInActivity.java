@@ -89,7 +89,7 @@ public class LogInActivity extends AppCompatActivity {
                         if(response.body()!=null){
                             //Accedemos a la aplicacion
                             Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
-                            intent.putExtra(Constantes.ID_USUARIO,Integer.parseInt(response.body().getId()));
+                            intent.putExtra(Constantes.EXTRA_USUARIO,response.body());
                             startActivity(intent);
                             finish();
                         }else{

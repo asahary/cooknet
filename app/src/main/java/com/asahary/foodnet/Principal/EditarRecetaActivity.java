@@ -39,6 +39,7 @@ import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.Principal.Agregar.IngredienteAdapter;
 import com.asahary.foodnet.Principal.Agregar.PreparacionDialog;
 import com.asahary.foodnet.R;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -478,7 +479,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
 
         RequestBody descripcion =RequestBody.create(MultipartBody.FORM,file.getName());
 
-        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create())).baseUrl(CookNetService.URL_BASE).build();
 
         CookNetService service = retrofit.create(CookNetService.class);
 

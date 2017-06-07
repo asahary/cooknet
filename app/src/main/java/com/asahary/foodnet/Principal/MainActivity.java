@@ -2,11 +2,7 @@ package com.asahary.foodnet.Principal;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,13 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.asahary.foodnet.Actividades.LogInActivity;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
 import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
@@ -38,9 +33,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static Usuario user;
     public static Integer idUsuario;
     private BottomNavigationView bottomView;
+    private CircleImageView imgNav;
+    private TextView nav_user,nav_userTitle;
     private FragmentManager gestor;
+    public static final int RQ_EDITAR_USER=7;
 
     private void initVistas(){
 
@@ -83,6 +82,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        user= getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
+        idUsuario=Integer.parseInt(user.getId());
+
 
         //Para que no se habra el teclado por la cara al entrar
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -101,31 +103,49 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         //Sacamos la cabecera del mismo
-        View hView =  navigationView.getHeaderView(0);
+        LinearLayout hView = (LinearLayout) navigationView.getHeaderView(0);
+
+        //De la cabecera sacamos la vista contenedora, sobre esta vista que sacamos no podemos sacar los hijos
+        // vista los debemos sacar el hView
+        LinearLayout a= (LinearLayout) hView.findViewById(R.id.navigation_header_container);
+
 
         //Obtenemos el texto de la cabecera
-        TextView nav_user = (TextView)hView.findViewById(R.id.textView);
+        nav_userTitle= (TextView) hView.findViewById(R.id.textViewTitle);
+        nav_user = (TextView)hView.findViewById(R.id.textView);
 
-        nav_user.setOnClickListener(new View.OnClickListener() {
+        //Obtenemos la imagen
+        imgNav = (CircleImageView) hView.findViewById(R.id.imageView);
+
+        //Rellenamos
+
+        rellenarCabecera();
+
+
+       a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,EditarUsuarioActivity.class);
-                //Hay que meter al usuario
-                startActivityForResult(intent,0);
+                intent.putExtra(Constantes.EXTRA_USUARIO,user);
+                startActivityForResult(intent,RQ_EDITAR_USER);
             }
         });
 
-        //Obtenemos la imagen
-        CircleImageView imgMav= (CircleImageView) hView.findViewById(R.id.imageView);
 
-        Picasso.with(this).load(R.drawable.user_generic).fit().into(imgMav);
-        nav_user.setText("holaaaa");
+
+
+
+
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Obtenemos el intent y obtenemos el id de usuario que tenemos guardado
-        Bundle extras = getIntent().getExtras();
-        idUsuario=extras.getInt(Constantes.ID_USUARIO);
+        //Iniciamos el resto de vistas
         initVistas();
+    }
+
+    private void rellenarCabecera() {
+        nav_userTitle.setText(user.getNick());
+        nav_user.setText(user.getNombre());
+        Picasso.with(this).load(user.getImagen()).fit().into(imgNav);
     }
 
     @Override
@@ -143,6 +163,16 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==RESULT_OK){
+            if(requestCode==RQ_EDITAR_USER){
+                user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
+                rellenarCabecera();
+            }
+        }
     }
 
     @Override
