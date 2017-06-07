@@ -22,6 +22,7 @@ import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
+import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 
@@ -77,7 +78,7 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
     private void iniciarLista(){
         Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
         CookNetService servicio = retrofit.create(CookNetService.class);
-        Call<List<Usuario>> call=servicio.listUsers();
+        Call<List<Usuario>> call=servicio.listUsers(MainActivity.idUsuario);
 
         call.enqueue(new Callback<List<Usuario>>() {
             @Override

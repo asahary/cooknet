@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Actividades;
+package com.asahary.foodnet.Principal;
 
 import android.Manifest;
 import android.content.Context;
@@ -16,20 +16,20 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Actividades.RegisterActivity;
+import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
+import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
-import com.asahary.foodnet.Principal.EditarRecetaActivity;
-import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -38,13 +38,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,14 +50,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RegisterActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick{
+public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick{
 
-    EditText txtNick,txtPass,txtPass2,txtEmail,txtNombre,txtApellidos;
+    Usuario user;
+    EditText txtNick,txtEmail,txtNombre,txtApellidos;
     CircleImageView img;
     FloatingActionButton fab;
     Button btnRegistrar;
-
-    Integer idUser;
+    Switch sw;
 
     Intent intent;
     String sOriginal="";
@@ -82,13 +80,14 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        user=getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
         initVistas();
+        rellenarCampos();
     }
 
     private void initVistas() {
+        sw= (Switch) findViewById(R.id.sw);
         txtNick= (EditText) findViewById(R.id.txtNick);
-        txtPass= (EditText) findViewById(R.id.txtPass);
-        txtPass2= (EditText) findViewById(R.id.txtPass2);
         txtEmail= (EditText) findViewById(R.id.txtEmail);
         txtNombre= (EditText) findViewById(R.id.txtNombre);
         txtApellidos= (EditText) findViewById(R.id.txtApellidos);
@@ -109,105 +108,102 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
             public void onClick(View view) {
 
                 if(comprobarTodo()){
-                String nick, pass, email, nombre, apellidos, imagen;
+                    String nick,email, nombre, apellidos, imagen;
 
-                if (file != null) {
-                    imagen = CookNetService.URL_BASE + "users/" + idUser + "/imgProfile/" + file.getName();
-                } else {
-                    imagen = CookNetService.URL_BASE + "users/userGeneric.png";
-                }
+                    if (file != null) {
+                        imagen = CookNetService.URL_BASE + "users/" + MainActivity.idUsuario + "/imgProfile/" + file.getName();
+                    } else {
+                        imagen = user.getImagen();
+                    }
 
-                nick = txtNick.getText().toString();
-                pass = txtPass.getText().toString();
-                email = txtEmail.getText().toString();
-                nombre = txtNombre.getText().toString();
-                apellidos = txtApellidos.getText().toString();
+                    nick = txtNick.getText().toString();
+                    email = txtEmail.getText().toString();
+                    nombre = txtNombre.getText().toString();
+                    apellidos = txtApellidos.getText().toString();
 
-                //Creamos el retrofit y la interfaz de servicio
-                Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-                CookNetService service = retrofit.create(CookNetService.class);
+                    //Creamos el retrofit y la interfaz de servicio
+                    Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+                    CookNetService service = retrofit.create(CookNetService.class);
 
-                //Creamos la llamada
-                Call<Integer> llamada = service.registrar(nick, pass, email, nombre, apellidos, imagen);
+                    //Creamos la llamada
+                    Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen);
 
-                llamada.enqueue(new Callback<Integer>() {
-                    @Override
-                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                        //Obtenemos el cuerpo y comprobamos que no sea nullo
-                        Integer cuerpo = response.body();
+                    llamada.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            //Obtenemos el cuerpo y comprobamos que no sea nullo
+                            Boolean cuerpo = response.body();
 
-                        if (cuerpo != null) {
-                            //En caso de que no sea nullo mostramos el mensaje de exito
-                            idUser=cuerpo;
-                            if(file!=null){
-                                subirFoto();
+                            if (cuerpo != null) {
+
+                                if(file!=null){
+                                    subirFoto();
+                                }
+
+                            } else {
+                                Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
                             }
 
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
                         }
 
-                    }
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Toast.makeText(EditarUsuarioActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                    @Override
-                    public void onFailure(Call<Integer> call, Throwable t) {
-                        Toast.makeText(RegisterActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                }
             }
-        }
         });
 
     }
 
-    //--COMPROBACIONES DE CAMPOS
-    //Comprueba que las contraseñas sean iguales
-    private boolean comprobarPass(){
-        if(txtPass.getText().toString().equals(txtPass2.getText().toString())){
-            return true;
-        }
-        else{
-            Toast.makeText(RegisterActivity.this,"Las contraseñas no coinciden, reviselas",Toast.LENGTH_SHORT).show();
-            return false;
-        }
+    private void rellenarCampos(){
+        Picasso.with(this).load(user.getImagen()).fit().error(R.drawable.user_generic).into(img);
+
+        String nombre,nick,apellidos,email;
+
+        nombre=user.getNombre();
+        nick=user.getNick();
+        email=user.getEmail();
+        apellidos=user.getApellidos();
+
+        txtNick.setText(nick);
+        txtNombre.setText(nombre);
+        txtEmail.setText(email);
+        txtApellidos.setText(apellidos);
+
     }
 
-
+    //--COMPROBACIONES DE CAMPOS
     private boolean comprobarTodo(){
 
         if(comprobarCampos()){
             if(comprobarSyntaxEmail()){
-                if(comprobarPass()){
                     if(comprobarNick()){
-                        Toast.makeText(RegisterActivity.this,"El nick ya existe",Toast.LENGTH_LONG).show();
+                        Toast.makeText(EditarUsuarioActivity.this,"El nick ya existe",Toast.LENGTH_LONG).show();
                         return false;
                     }else{
                         if(comprobarEmail()){
-                            Toast.makeText(RegisterActivity.this,"El email ya existe",Toast.LENGTH_LONG).show();
+                            Toast.makeText(EditarUsuarioActivity.this,"El email ya existe",Toast.LENGTH_LONG).show();
                             return false;
                         }else{
                             return true;
                         }
                     }
-                }else {
-                    Toast.makeText(RegisterActivity.this,"Los campos cpass no coinciden",Toast.LENGTH_LONG).show();
-                    return  false;
-                }
+
             }else{
-                Toast.makeText(RegisterActivity.this,"El formato del email no es valido",Toast.LENGTH_LONG).show();
+                Toast.makeText(EditarUsuarioActivity.this,"El formato del email no es valido",Toast.LENGTH_LONG).show();
                 return false;
             }
         }else{
-            Toast.makeText(RegisterActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_LONG).show();
+            Toast.makeText(EditarUsuarioActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_LONG).show();
             return false;
         }
     }
     //Comprueba que los campos no esten vacios
     private boolean comprobarCampos(){
         return !txtNick.getText().toString().isEmpty() &&
-                !txtPass.getText().toString().isEmpty() &&
-                !txtPass2.getText().toString().isEmpty() &&
                 !txtEmail.getText().toString().isEmpty() &&
                 !txtNombre.getText().toString().isEmpty() &&
                 !txtApellidos.getText().toString().isEmpty();
@@ -281,7 +277,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
         if(resultCode==RESULT_OK){
             switch (requestCode){
                 case RQ_GALERIA:
-                    if(hasPermission(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    if(hasPermission(EditarUsuarioActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
                         procesarUri();
                     }
                     else {
@@ -291,10 +287,10 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                     }
                     break;
                 case RQ_CAMARA:
-                    if(hasPermission(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    if(hasPermission(EditarUsuarioActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
 
                         String path= file.getAbsoluteFile().getAbsolutePath();
-                        Picasso.with(RegisterActivity.this).load(file).fit().into(img);
+                        Picasso.with(EditarUsuarioActivity.this).load(file).fit().into(img);
 
 
                     }
@@ -354,7 +350,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
             f = new File(sOriginal);
             file=f;
         }
-        Picasso.with(RegisterActivity.this).load(f).fit().error(R.drawable.ic_check).into(img);
+        Picasso.with(EditarUsuarioActivity.this).load(f).fit().error(R.drawable.ic_check).into(img);
     }
 
     private void procesarUri(){
@@ -401,7 +397,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                     nombre);
             Log.d(getString(R.string.app_name), archivo.getAbsolutePath());
         }
-        Toast.makeText(RegisterActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
+        Toast.makeText(EditarUsuarioActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
         this.file=archivo;
 
         // Se retorna el archivo creado.
@@ -449,7 +445,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
 
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call =service.subirFotoUsuario(descripcion,archivo,idUser);
+        Call<Boolean> call =service.subirFotoUsuario(descripcion,archivo,MainActivity.idUsuario);
 
         call.enqueue(new Callback<Boolean>() {
             @Override

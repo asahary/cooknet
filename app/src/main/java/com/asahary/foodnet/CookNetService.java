@@ -29,8 +29,8 @@ public interface CookNetService {
 
     public static String URL_BASE="http://asahary.esy.es/";
 
-    @GET("usuarios")
-    Call<List<Usuario>> listUsers();
+    @GET("usuarios/all/{id}")
+    Call<List<Usuario>> listUsers(@Path("id") int id);
 
     @GET("usuarios/{id}")
     Call<Usuario> getUsuario(@Path("id") int id);
@@ -60,11 +60,17 @@ public interface CookNetService {
     @POST("usuarios/login")
     Call<Usuario> login(@Field("user")String user,@Field("pass")String pass);
 
+    @Multipart
+    @POST("usuarios/imagenes")
+    Call<Boolean>subirFotoUsuario(@Part("descripcion") RequestBody description, @Part MultipartBody.Part foto,@Part("idUser") int idUser);
 
+    @FormUrlEncoded
+    @PUT("usuarios/index")
+    Call<Integer> registrar(@Field("nick")String nick,@Field("pass")String pass,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen);
 
     @FormUrlEncoded
     @POST("usuarios/index")
-    Call<String> registrar(@Field("nick")String nick,@Field("pass")String pass,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos);
+    Call<Boolean> actualizarUser(@Field("idUser") int idUser,@Field("nick")String nick,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen);
 
     @FormUrlEncoded
     @POST("comprobaciones/nick")
@@ -90,7 +96,7 @@ public interface CookNetService {
 
     @FormUrlEncoded
     @POST("sigue/actualizar")
-    Call<Boolean> actualizarSigue(@Field("idUser") int idUser,@Field("idSeguido")int idSeguido,@Field("bandera")boolean bandera);
+    Call<Boolean> actualizarSigue(@Field("idUser") int idUser,@Field("idSeguido")int idSeguido,@Field("bandera")int bandera);
 
     @FormUrlEncoded
     @POST("favoritos/actualizar")

@@ -1,5 +1,8 @@
 package com.asahary.foodnet.POJO;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 
 
 
-public class Usuario {
+public class Usuario implements Parcelable{
 
         @SerializedName("id")
         @Expose
@@ -40,7 +43,19 @@ public class Usuario {
         @Expose
         private String imagen;
 
-        public String getId() {
+    public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
+        @Override
+        public Usuario createFromParcel(Parcel in) {
+            return new Usuario(in);
+        }
+
+        @Override
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
+        }
+    };
+
+    public String getId() {
             return id;
         }
 
@@ -111,5 +126,35 @@ public class Usuario {
         public void setImagen(String imagen) {
             this.imagen = imagen;
         }
+    public Usuario(Parcel in) {
+        id = in.readString();
+        nombre = in.readString();
+        apellidos = in.readString();
+        pass=in.readString();
+        email = in.readString();
+        baja = in.readString();
+        admin=in.readString();
+        nick = in.readString();
+        imagen = in.readString();
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(nombre);
+        parcel.writeString(apellidos);
+        parcel.writeString(pass);
+        parcel.writeString(email);
+        parcel.writeString(baja);
+        parcel.writeString(admin);
+        parcel.writeString(nick);
+        parcel.writeString(imagen);
+    }
 
 }

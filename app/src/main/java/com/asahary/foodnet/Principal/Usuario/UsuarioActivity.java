@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
+import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Busqueda.RecetasFragment;
 import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
@@ -41,10 +42,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UsuarioActivity extends FragmentActivity {
 
-    private static final String ARG_RECETAS = "recetas";
-    private static final String ARG_SEGUIDORES = "seguidores";
-    private static final String ARG_SIGUIENDO = "siguiendo";
-
     ViewPager viewPager;
     CircleImageView img;
     TextView lblNick,lblNombre,lblEmail;
@@ -55,6 +52,13 @@ public class UsuarioActivity extends FragmentActivity {
     private ViewPagerAdapter viewPagerAdapter;
 
 
+    //Las listas por defecto que estan vacias
+    ArrayList<Receta> recetasFavoritos=new ArrayList<>();
+    ArrayList<Receta> recetasPropias=new ArrayList<>();
+    ArrayList<Usuario> seguidores=new ArrayList<>();
+    ArrayList<Usuario> seguidos=new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +67,6 @@ public class UsuarioActivity extends FragmentActivity {
 
         initVistas();
         obtenerUsuario();
-        configViewPager();
     }
 
     private void comprobarSigue(){
@@ -103,6 +106,7 @@ public class UsuarioActivity extends FragmentActivity {
                 if(usuario!=null){
                     rellenarCampos();
                     comprobarSigue();
+                    configViewPager();
                 }
             }
 
@@ -118,7 +122,7 @@ public class UsuarioActivity extends FragmentActivity {
         lblNick.setText(usuario.getNick());
         lblNombre.setText(usuario.getNombre());
         lblEmail.setText(usuario.getEmail());
-        Picasso.with(this).load(usuario.getImagen()).error(R.drawable.user_generic).into(img);
+        Picasso.with(this).load(usuario.getImagen()).fit().into(img);
     }
 
     private void initVistas() {
@@ -132,7 +136,7 @@ public class UsuarioActivity extends FragmentActivity {
             public void onClick(View view) {
                 Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                 final CookNetService service= retrofit.create(CookNetService.class);
-                Call<Boolean> call=service.actualizarSigue(MainActivity.idUsuario,idUsuario,sigue);
+                Call<Boolean> call=service.actualizarSigue(MainActivity.idUsuario,idUsuario,sigue?1:0);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -154,36 +158,91 @@ public class UsuarioActivity extends FragmentActivity {
     }
 
     private void configViewPager() {
+
+        //Para no hacer una llamada a la api cada vez que se cambia de fragmento descargamos todas las listas al inicio
+        //Creamos el view pager y su adaptador
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(RecetaTab.newInstance(idUsuario,RecetaTab.OPCION_FAVORITOS), "Favoritos", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(RecetaTab.newInstance(idUsuario,RecetaTab.OPCION_PROPIAS), "Recetas", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(UsuariosTab.newInstance(idUsuario,UsuariosTab.OPCION_SIGUIENDO), "Siguiendo", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(UsuariosTab.newInstance(idUsuario,UsuariosTab.OPCION_SEGUIDORES), "Seguidores", R.drawable.ic_camera);
-
-
+        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasFavoritos), "Favoritos", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasPropias), "Recetas", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidos), "Siguiendo", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidores), "Seguidores", R.drawable.ic_camera);
 
         viewPager.setAdapter(viewPagerAdapter);
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
 
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        viewPager.setCurrentItem(0);
 
+        //Con este metodo le decimos el numero de paginas que debe mantener de otra manera las destruye
+        //Tambien debemos hacerlo porque por defecto el viewPager tiene un numero de 2 paginas por lo
+        // nos dara nullo al intentar usar alguna mas
+        viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount()-1);
+
+        //Creamos el restrofit y el servicio que hara las llamadas
+        Retrofit retrofit= new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+        CookNetService service= retrofit.create(CookNetService.class);
+
+        Call<List<Receta>> callFavoritos=service.favoritosUser(idUsuario);
+        Call<List<Receta>> callPropias=service.recetasUser(idUsuario);
+        Call<List<Usuario>> callSiguiendo=service.seguidosUser(idUsuario);
+        Call<List<Usuario>> callSeguidores=service.seguidoresUser(idUsuario);
+
+        callFavoritos.enqueue(new Callback<List<Receta>>() {
+            @Override
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                if(response.body()!=null){
+                    recetasFavoritos=new ArrayList<Receta>(response.body());
+                    ((RecetaTab)viewPagerAdapter.getItem(0)).adaptador.swapDatos(recetasFavoritos);
+                }
             }
-
-            public void onPageSelected(int position) {
-
-            }
-
-            public void onPageScrollStateChanged(int state) {
+            @Override
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
 
             }
         });
 
-        viewPager.setCurrentItem(0);
+        callPropias.enqueue(new Callback<List<Receta>>() {
+            @Override
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                if(response.body()!=null){
+                    recetasPropias=new ArrayList<Receta>(response.body());
+                    ((RecetaTab)viewPagerAdapter.getItem(1)).adaptador.swapDatos(recetasPropias);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
 
+            }
+        });
 
+        callSiguiendo.enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                if(response.body()!=null){
+                    seguidos=new ArrayList<Usuario>(response.body());
+                    ((UsuariosTab)viewPagerAdapter.getItem(2)).adaptador.swapDatos(seguidos);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+
+            }
+        });
+
+        callSeguidores.enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                if(response.body()!=null){
+                    seguidores=new ArrayList<Usuario>(response.body());
+                    ((UsuariosTab)viewPagerAdapter.getItem(3)).adaptador.swapDatos(seguidores);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+
+            }
+        });
 
     }
 

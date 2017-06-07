@@ -36,83 +36,21 @@ public class RecetaTab extends Fragment implements FavoritosAdapter.OnReciclerIt
 
     RecyclerView lista;
     FavoritosAdapter adaptador;
-    int opcion;
-    int idUsuario;
+    ArrayList<Receta> listaRecetas=new ArrayList<Receta>();
 
-    public static final int OPCION_FAVORITOS=0;
-    public static final int OPCION_PROPIAS=1;
 
     public void initVistas(View vista){
 
         lista= (RecyclerView) vista.findViewById(R.id.rvFavoritos);
-
-        switch (opcion){
-            case OPCION_FAVORITOS:
-                iniciarListaFavoritos();
-                break;
-            case OPCION_PROPIAS:
-                iniciarListaPropios();
-                break;
-        }
+        iniciarLista();
     }
 
-    private void iniciarListaFavoritos() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-
-        CookNetService servicio =retrofit.create(CookNetService.class);
-
-        Call<List<Receta>> llamada=servicio.favoritosUser(idUsuario);
-
-        llamada.enqueue(new Callback<List<Receta>>() {
-            @Override
-            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
-                List<Receta> recetas = response.body();
-
-                if(recetas!=null){
-                    adaptador=new FavoritosAdapter(new ArrayList<Receta>(recetas), RecetaTab.this);
-                    lista.setAdapter(adaptador);
-                    lista.setLayoutManager(new LinearLayoutManager(RecetaTab.this.getContext(),LinearLayoutManager.VERTICAL,false));
-
-                }else{
-                    Toast.makeText(RecetaTab.this.getContext(),"No hay recetas",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Receta>> call, Throwable t) {
-                Toast.makeText(RecetaTab.this.getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void iniciarLista() {
+        adaptador=new FavoritosAdapter(new ArrayList<Receta>(listaRecetas), RecetaTab.this);
+        lista.setAdapter(adaptador);
+        lista.setLayoutManager(new LinearLayoutManager(RecetaTab.this.getContext(),LinearLayoutManager.VERTICAL,false));
     }
 
-    private void iniciarListaPropios() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-
-        CookNetService servicio =retrofit.create(CookNetService.class);
-
-        Call<List<Receta>> llamada=servicio.recetasUser(idUsuario);
-
-        llamada.enqueue(new Callback<List<Receta>>() {
-            @Override
-            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
-                List<Receta> recetas = response.body();
-
-                if(recetas!=null){
-                    adaptador=new FavoritosAdapter(new ArrayList<Receta>(recetas), RecetaTab.this);
-                    lista.setAdapter(adaptador);
-                    lista.setLayoutManager(new LinearLayoutManager(RecetaTab.this.getContext(),LinearLayoutManager.VERTICAL,false));
-
-                }else{
-                    Toast.makeText(RecetaTab.this.getContext(),"No hay recetas",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Receta>> call, Throwable t) {
-                Toast.makeText(RecetaTab.this.getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     @Override
     public void itemClic(Receta receta) {
@@ -137,10 +75,9 @@ public class RecetaTab extends Fragment implements FavoritosAdapter.OnReciclerIt
         initVistas(vista);
     }
 
-    public static RecetaTab newInstance(int idUsuario,int opcion){
+    public static RecetaTab newInstance(ArrayList<Receta> lista){
         RecetaTab fragment = new RecetaTab();
-        fragment.idUsuario=idUsuario;
-        fragment.opcion=opcion;
+        fragment.listaRecetas=lista;
         return fragment;
     }
 }

@@ -67,10 +67,10 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     EditText txtNombre,txtDescripcion,txtPreparacion;
     ImageButton btnAgregar;
     ImageView imgReceta;
+    ImageView img;
     FloatingActionButton fab;
     Intent intent;
     String sOriginal="";
-    ImageView img;
     String nombreArchivo="";
     File file;
 

@@ -20,15 +20,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Actividades.LogInActivity;
 import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarFragment;
 import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.R;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,7 +96,30 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
+        //Aqui se obtiene el navigation View
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        //Sacamos la cabecera del mismo
+        View hView =  navigationView.getHeaderView(0);
+
+        //Obtenemos el texto de la cabecera
+        TextView nav_user = (TextView)hView.findViewById(R.id.textView);
+
+        nav_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,EditarUsuarioActivity.class);
+                //Hay que meter al usuario
+                startActivityForResult(intent,0);
+            }
+        });
+
+        //Obtenemos la imagen
+        CircleImageView imgMav= (CircleImageView) hView.findViewById(R.id.imageView);
+
+        Picasso.with(this).load(R.drawable.user_generic).fit().into(imgMav);
+        nav_user.setText("holaaaa");
         navigationView.setNavigationItemSelectedListener(this);
 
         //Obtenemos el intent y obtenemos el id de usuario que tenemos guardado
@@ -141,7 +169,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_recetas) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_seguidores) {
 
         } else if (id == R.id.nav_siguiendo) {
@@ -150,10 +178,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
             finish();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
