@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.Principal.MainActivity;

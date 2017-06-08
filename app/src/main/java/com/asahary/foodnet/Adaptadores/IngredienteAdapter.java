@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal.Agregar;
+package com.asahary.foodnet.Adaptadores;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.Contenedor> implements View.OnClickListener{
     ArrayList<Ingrediente> ingredientes =new ArrayList<>();
+
 
     @Override
     public void onClick(View view) {

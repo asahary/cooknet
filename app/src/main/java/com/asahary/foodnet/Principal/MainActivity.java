@@ -82,8 +82,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user= getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
-        idUsuario=Integer.parseInt(user.getId());
+
+        //Al poner esta actividad como padre a la vuelta se ejecuta onCreate again entonces no trae un intent
+        // nuevo asi que tenemos que controlar que no sea nulo
+
+        if(getIntent().hasExtra(Constantes.EXTRA_USUARIO)){
+            user= getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
+            idUsuario=Integer.parseInt(user.getId());
+        }
 
 
         //Para que no se habra el teclado por la cara al entrar

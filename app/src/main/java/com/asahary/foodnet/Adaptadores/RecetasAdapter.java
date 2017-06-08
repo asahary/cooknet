@@ -1,17 +1,14 @@
-package com.asahary.foodnet.Principal.Favoritos;
+package com.asahary.foodnet.Adaptadores;
 
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Receta;
-import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +18,7 @@ import java.util.ArrayList;
  * Created by Saha on 22/05/2017.
  */
 
-public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Contenedor>{
+public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contenedor>{
     ArrayList<Receta> recetas=new ArrayList<>();
 
     public interface OnReciclerItemClickListener{
@@ -31,13 +28,13 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Cont
 
     OnReciclerItemClickListener listener;
 
-    public FavoritosAdapter(ArrayList<Receta> recetas, FavoritosAdapter.OnReciclerItemClickListener listener){
+    public RecetasAdapter(ArrayList<Receta> recetas, RecetasAdapter.OnReciclerItemClickListener listener){
         super();
         this.listener=listener;
         this.recetas=recetas;
 
     }
-    public FavoritosAdapter(ArrayList<Receta> recetas){
+    public RecetasAdapter(ArrayList<Receta> recetas){
         this.recetas=recetas;
     }
 
@@ -47,10 +44,10 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Cont
     }
 
     @Override
-    public FavoritosAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecetasAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_receta,parent,false);
 
-        final FavoritosAdapter.Contenedor tvh = new FavoritosAdapter.Contenedor(itemView);
+        final RecetasAdapter.Contenedor tvh = new RecetasAdapter.Contenedor(itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +59,7 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.Cont
     }
 
     @Override
-    public void onBindViewHolder(FavoritosAdapter.Contenedor holder, final int position) {
+    public void onBindViewHolder(RecetasAdapter.Contenedor holder, final int position) {
         holder.onBin(recetas.get(position));
     }
 

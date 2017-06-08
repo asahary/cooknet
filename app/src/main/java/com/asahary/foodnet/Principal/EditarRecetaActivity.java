@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -34,9 +33,8 @@ import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.POJO.Receta;
-import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
-import com.asahary.foodnet.Principal.Agregar.IngredienteAdapter;
+import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
 import com.asahary.foodnet.Principal.Agregar.PreparacionDialog;
 import com.asahary.foodnet.R;
 import com.google.gson.GsonBuilder;
@@ -490,7 +488,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
                 if(response.body()!=null){
-
+                    Picasso.with(EditarRecetaActivity.this).load(receta.getImagen()).fit().into(imgReceta);
                 }
 
                 else{

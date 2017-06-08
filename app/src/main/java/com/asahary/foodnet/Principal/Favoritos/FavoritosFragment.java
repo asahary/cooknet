@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Adaptadores.RecetasAdapter;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
@@ -31,9 +32,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saha on 22/05/2017.
  */
 
-public class FavoritosFragment extends Fragment implements FavoritosAdapter.OnReciclerItemClickListener{
+public class FavoritosFragment extends Fragment implements RecetasAdapter.OnReciclerItemClickListener{
     RecyclerView lista;
-    FavoritosAdapter adaptador;
+    RecetasAdapter adaptador;
 
 
     public FavoritosFragment(){
@@ -58,7 +59,7 @@ public class FavoritosFragment extends Fragment implements FavoritosAdapter.OnRe
                 List<Receta> recetas = response.body();
 
                 if(recetas!=null){
-                    adaptador=new FavoritosAdapter(new ArrayList<Receta>(recetas),FavoritosFragment.this);
+                    adaptador=new RecetasAdapter(new ArrayList<Receta>(recetas),FavoritosFragment.this);
                     lista.setAdapter(adaptador);
                     lista.setLayoutManager(new LinearLayoutManager(FavoritosFragment.this.getContext(),LinearLayoutManager.VERTICAL,false));
 

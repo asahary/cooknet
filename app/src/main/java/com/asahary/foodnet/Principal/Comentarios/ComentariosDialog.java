@@ -13,10 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Adaptadores.ComentariosAdapter;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Comentario;
-import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;

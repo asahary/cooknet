@@ -1,18 +1,12 @@
-package com.asahary.foodnet.Principal.Comentarios;
+package com.asahary.foodnet.Adaptadores;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Comentario;
-import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;

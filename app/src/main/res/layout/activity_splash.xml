@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.asahary.foodnet.Actividades.SplashActivity">
+    tools:context="com.asahary.foodnet.Actividades.SplashActivity"
+    android:background="@color/colorPrimary">
 
     <ImageView
-        android:src="@drawable/img_cooknet"
+        android:src="@drawable/cook_net_ic"
         android:id="@+id/imgSplash"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
 
 </RelativeLayout>

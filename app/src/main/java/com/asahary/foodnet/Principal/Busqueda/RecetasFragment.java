@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +18,7 @@ import android.widget.Toast;
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosAdapter;
+import com.asahary.foodnet.Adaptadores.RecetasAdapter;
 import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.R;
 
@@ -37,8 +35,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saha on 26/05/2017.
  */
 
-public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReciclerItemClickListener,BusquedaActivity.OnTextToolbarTextChange{
-    FavoritosAdapter adaptador;
+public class RecetasFragment extends Fragment implements RecetasAdapter.OnReciclerItemClickListener,BusquedaActivity.OnTextToolbarTextChange{
+    RecetasAdapter adaptador;
     RecyclerView lista;
     EditText txtTexto;
     Spinner spCategorias;
@@ -67,7 +65,7 @@ public class RecetasFragment extends Fragment implements FavoritosAdapter.OnReci
         lista = (RecyclerView) vista.findViewById(R.id.lista);
 
 
-        adaptador = new FavoritosAdapter(recetas, this);
+        adaptador = new RecetasAdapter(recetas, this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 

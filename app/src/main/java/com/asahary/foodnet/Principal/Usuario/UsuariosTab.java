@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Busqueda.UsuariosAdapter;
+import com.asahary.foodnet.Adaptadores.UsuariosAdapter;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;

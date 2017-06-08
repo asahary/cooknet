@@ -12,9 +12,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/cook_net_icon2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/cook_net_icon2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -27,15 +27,19 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".Actividades.SplashActivity">
+        <activity
+            android:name=".Actividades.SplashActivity"
+            android:theme="@style/fullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Actividades.LogInActivity" />
-        <activity android:name=".Actividades.RegisterActivity">
+        <activity android:name=".Actividades.LogInActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Actividades.RegisterActivity"
+            android:label="Registro">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.LogInActivity" />

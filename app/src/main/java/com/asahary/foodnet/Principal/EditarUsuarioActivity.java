@@ -20,9 +20,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -54,11 +59,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick{
 
     Usuario user;
-    EditText txtNick,txtEmail,txtNombre,txtApellidos;
+    EditText txtNick,txtEmail,txtNombre,txtApellidos,txtOldPass,txtNewPass1,txtNewPass2;
     CircleImageView img;
     FloatingActionButton fab;
-    Button btnRegistrar;
-    Switch sw;
+    Switch sw,swPassForm;
+    RelativeLayout passForm;
 
     Intent intent;
     String sOriginal="";
@@ -86,85 +91,52 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         rellenarCampos();
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.agregar_menu,menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_done:
+                actualizarUser();
+                break;
+        }
+        return true;
+    }
+
     private void initVistas() {
         sw= (Switch) findViewById(R.id.sw);
+        swPassForm= (Switch) findViewById(R.id.swPassForm);
+
         txtNick= (EditText) findViewById(R.id.txtNick);
         txtEmail= (EditText) findViewById(R.id.txtEmail);
         txtNombre= (EditText) findViewById(R.id.txtNombre);
         txtApellidos= (EditText) findViewById(R.id.txtApellidos);
-        btnRegistrar= (Button) findViewById(R.id.btnRegister);
         img= (CircleImageView) findViewById(R.id.imgUsuario);
+        txtOldPass= (EditText) findViewById(R.id.txtOldPass);
+        txtNewPass1= (EditText) findViewById(R.id.txtNewPass1);
+        txtNewPass2= (EditText) findViewById(R.id.txtNewPass2);
+        passForm = (RelativeLayout) findViewById(R.id.passForm);
+
         fab= (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ImagenOptionDialog().show(getSupportFragmentManager(),"Alo");
+                new ImagenOptionDialog().show(getSupportFragmentManager(),"ImagenDialog");
             }
         });
 
-
-
-        //Cuando pulse el boton se registrará el nuevo usuario
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
+        swPassForm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if(comprobarTodo()){
-                    String nick,email, nombre, apellidos, imagen;
-
-                    if (file != null) {
-                        imagen = CookNetService.URL_BASE + "users/" + MainActivity.idUsuario + "/imgProfile/" + file.getName();
-                    } else {
-                        imagen = user.getImagen();
-                    }
-
-
-                    nick = txtNick.getText().toString();
-                    email = txtEmail.getText().toString();
-                    nombre = txtNombre.getText().toString();
-                    apellidos = txtApellidos.getText().toString();
-                    boolean baja=sw.isActivated();
-
-                    user.setNick(nick);
-                    user.setNombre(nombre);
-                    user.setApellidos(apellidos);
-                    user.setEmail(email);
-                    user.setBaja(String.valueOf(baja));
-                    user.setImagen(imagen);
-
-                    //Creamos el retrofit y la interfaz de servicio
-                    Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-                    CookNetService service = retrofit.create(CookNetService.class);
-
-                    //Creamos la llamada
-                    Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen,baja?1:0);
-
-                    llamada.enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            //Obtenemos el cuerpo y comprobamos que no sea nullo
-                            Boolean cuerpo = response.body();
-
-                            if (cuerpo != null) {
-
-                                if(file!=null){
-                                    subirFoto();
-                                }
-                                Intent intentResult=new Intent();
-                                intentResult.putExtra(Constantes.EXTRA_USUARIO,user);
-                                setResult(RESULT_OK,intentResult);
-                                finish();
-                            } else {
-                                Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
-                            Toast.makeText(EditarUsuarioActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    passForm.setVisibility(View.VISIBLE);
+                }else{
+                    passForm.setVisibility(View.GONE);
                 }
             }
         });
@@ -190,11 +162,101 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
 
     }
 
+    private void actualizarUser(){
+        if(comprobarTodo()){
+            String nick,email, nombre, apellidos, imagen;
+
+            if (file != null) {
+                imagen = CookNetService.URL_BASE + "users/" + MainActivity.idUsuario + "/imgProfile/" + file.getName();
+            } else {
+                imagen = user.getImagen();
+            }
+
+
+            nick = txtNick.getText().toString();
+            email = txtEmail.getText().toString();
+            nombre = txtNombre.getText().toString();
+            apellidos = txtApellidos.getText().toString();
+            boolean baja=sw.isActivated();
+
+            user.setNick(nick);
+            user.setNombre(nombre);
+            user.setApellidos(apellidos);
+            user.setEmail(email);
+            user.setBaja(String.valueOf(baja));
+            user.setImagen(imagen);
+
+            //Creamos el retrofit y la interfaz de servicio
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+            CookNetService service = retrofit.create(CookNetService.class);
+
+            //Creamos la llamada
+            Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen,baja?1:0);
+
+            llamada.enqueue(new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    //Obtenemos el cuerpo y comprobamos que no sea nullo
+                    Boolean cuerpo = response.body();
+
+                    if (cuerpo != null) {
+
+                        if(file!=null){
+                            subirFoto();
+                        }
+                        Intent intentResult=new Intent();
+                        intentResult.putExtra(Constantes.EXTRA_USUARIO,user);
+                        setResult(RESULT_OK,intentResult);
+                        finish();
+                    } else {
+                        Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    Toast.makeText(EditarUsuarioActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            //Si se quiere actualizar la contraseña
+            if(swPassForm.isChecked()&&comprobarContraseña()){
+                Call<Boolean> call=service.actualizarUserPass(Integer.parseInt(user.getId()),txtOldPass.getText().toString(),txtNewPass1.getText().toString());
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        Boolean respuesta=response.body();
+
+                        if(respuesta!=null){
+                            if(respuesta){
+                                Toast.makeText(EditarUsuarioActivity.this,"La contraseña se ha actualizado correctamente",Toast.LENGTH_SHORT).show();;
+                            }else{
+                                Toast.makeText(EditarUsuarioActivity.this,"La antigua contraseña no coincida",Toast.LENGTH_SHORT).show();;
+                            }
+                        }else{
+                            Toast.makeText(EditarUsuarioActivity.this,"Cuerpo nulo",Toast.LENGTH_SHORT).show();;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        Toast.makeText(EditarUsuarioActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();;
+                    }
+                });
+            }
+
+        }
+    }
+
+
+
 
     //--COMPROBACIONES DE CAMPOS
     private boolean comprobarTodo(){
 
-        if(comprobarCampos()){
+        if(comprobarCampos()&&comprobarContraseña()){
             if(comprobarSyntaxEmail()){
                     if(comprobarNick()){
                         Toast.makeText(EditarUsuarioActivity.this,"El nick ya existe",Toast.LENGTH_LONG).show();
@@ -224,6 +286,28 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                 !txtNombre.getText().toString().isEmpty() &&
                 !txtApellidos.getText().toString().isEmpty();
 
+    }
+
+    private boolean comprobarContraseña(){
+        String oldPass=txtOldPass.getText().toString();
+        String newPass1=txtNewPass1.getText().toString();
+        String newPass2=txtNewPass2.getText().toString();
+
+        if(swPassForm.isChecked()){
+            if(!oldPass.isEmpty()&&!newPass1.isEmpty()&&!newPass2.isEmpty()){
+                if(newPass1.equals(newPass2)){
+                    return true;
+                }else{
+                    Toast.makeText(this,"Las nuevas contraseñas deben coincidir",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }else{
+                Toast.makeText(this,"Alguno de los campos del formulario de contraseña esta vacio",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }else{
+            return true;
+        }
     }
 
     //Comprueba que el formato del email sea correcto

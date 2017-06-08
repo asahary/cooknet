@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal.Busqueda;
+package com.asahary.foodnet.Adaptadores;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

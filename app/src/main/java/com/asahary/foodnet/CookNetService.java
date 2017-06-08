@@ -65,12 +65,16 @@ public interface CookNetService {
     Call<Boolean>subirFotoUsuario(@Part("descripcion") RequestBody description, @Part MultipartBody.Part foto,@Part("idUser") int idUser);
 
     @FormUrlEncoded
-    @PUT("usuarios/index")
+    @POST("usuarios/index")
     Call<Integer> registrar(@Field("nick")String nick,@Field("pass")String pass,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen);
 
     @FormUrlEncoded
     @PUT("usuarios/index")
     Call<Boolean> actualizarUser(@Field("idUser") int idUser,@Field("nick")String nick,@Field("email")String email,@Field("nombre")String nombre,@Field("apellidos")String apellidos,@Field("imagen")String imagen,@Field("baja")int baja);
+
+    @FormUrlEncoded
+    @PUT("usuarios/actualizar")
+    Call<Boolean> actualizarUserPass(@Field("idUser") int idUser,@Field("oldPass")String oldPass,@Field("newPass")String newPass);
 
     @FormUrlEncoded
     @POST("comprobaciones/nick")
