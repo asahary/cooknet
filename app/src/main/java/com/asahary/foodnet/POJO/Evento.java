@@ -14,16 +14,19 @@ public class Evento {
     private String tipo;
     @SerializedName("idUser")
     @Expose
-    private String idUser;
+    private int idUser;
     @SerializedName("nick")
     @Expose
     private String nick;
+    @SerializedName("imagenUser")
+    @Expose
+    private String imagenUser;
     @SerializedName("idReceta")
     @Expose
-    private Object idReceta;
+    private int idReceta;
     @SerializedName("nombreReceta")
     @Expose
-    private Object nombreReceta;
+    private String nombreReceta;
     @SerializedName("fecha")
     @Expose
     private String fecha;
@@ -36,11 +39,11 @@ public class Evento {
         this.tipo = tipo;
     }
 
-    public String getIdUser() {
+    public int getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(String idUser) {
+    public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
 
@@ -52,19 +55,27 @@ public class Evento {
         this.nick = nick;
     }
 
-    public Object getIdReceta() {
+    public String getImagenUser() {
+        return imagenUser;
+    }
+
+    public void setImagenUser(String imagenUser) {
+        this.imagenUser = imagenUser;
+    }
+
+    public int getIdReceta() {
         return idReceta;
     }
 
-    public void setIdReceta(Object idReceta) {
+    public void setIdReceta(int idReceta) {
         this.idReceta = idReceta;
     }
 
-    public Object getNombreReceta() {
+    public String getNombreReceta() {
         return nombreReceta;
     }
 
-    public void setNombreReceta(Object nombreReceta) {
+    public void setNombreReceta(String nombreReceta) {
         this.nombreReceta = nombreReceta;
     }
 

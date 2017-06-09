@@ -17,13 +17,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -55,7 +55,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,GestorImagenes.ImageRequester,PreparacionDialog.OnPrepDone {
     RecyclerView lista;
     IngredienteAdapter adaptador;
-    ImageButton btnAgregar;
+    ImageView btnAgregar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
     EditText txtNombre,txtDescripcion,txtPreparacion;
     Spinner spCategoria;
@@ -98,6 +98,10 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     Toast.makeText(AgregarRecetaActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_SHORT).show();
                 }
                 break;
+            //Si no es ninguno de los botones que nosostros implementamos utiliza los de por
+            // defecto para que pueda volver a la actividad principal
+            default:
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -111,7 +115,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         txtDescripcion= (EditText)findViewById(R.id.txtDescripcion);
         txtPreparacion= (EditText)findViewById(R.id.txtPreparacion);
         lista= (RecyclerView)findViewById(R.id.Ingredientes);
-        btnAgregar= (ImageButton)findViewById(R.id.btnAgregar);
+        btnAgregar= (ImageView) findViewById(R.id.btnAgregar);
         adaptador=new IngredienteAdapter(ingredientes);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(AgregarRecetaActivity.this, LinearLayoutManager.VERTICAL, false));
@@ -150,7 +154,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     //Añade un nuevo Ingrediente a la la lista
     private void anhadirIngrediente() {
         ingredientes.add(new Ingrediente());
-        adaptador.notifyDataSetChanged();
+        adaptador.swapDatos(ingredientes);
     }
 
     //Hace la llamada post que sube la receta

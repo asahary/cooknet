@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Saha on 23/05/2017.
@@ -55,7 +58,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //listener.itemClic(ingr edientes.get(tvh.getAdapterPosition()));
+                listener.itemClic(lista.get(tvh.getAdapterPosition()));
             }
         });
 
@@ -74,7 +77,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
 
 
     public class Contenedor extends RecyclerView.ViewHolder{
-
+CircleImageView imgUser;
         TextView txtNombre, txtComentario,txtFecha;
 
         public Contenedor(View itemView) {
@@ -82,7 +85,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
             txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
             txtComentario = (TextView) itemView.findViewById(R.id.txtComentario);
             txtFecha= (TextView) itemView.findViewById(R.id.txtFecha);
-
+            imgUser= (CircleImageView) itemView.findViewById(R.id.imgUser);
 
         }
 
@@ -94,9 +97,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
             txtNombre.setText(comentario.getNombre());
             txtComentario.setText(comentario.getComentario());
             txtFecha.setText(comentario.getFecha());
-
-
-
+            Picasso.with(imgUser.getContext()).load(comentario.getImagen()).fit().error(R.drawable.user_generic).placeholder(R.drawable.user_generic).into(imgUser);
         }
 
 

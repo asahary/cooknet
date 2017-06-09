@@ -13,11 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Adaptadores.UsuariosAdapter;
+import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Saha on 06/06/2017.
@@ -77,8 +85,26 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
 
     @Override
     public void itemClic(Usuario usuario) {
-        Intent intent = new Intent(UsuariosTab.this.getActivity(), UsuarioActivity.class);
-        intent.putExtra(Constantes.EXTRA_ID_USUARIO, Integer.parseInt(usuario.getId()));
-        startActivity(intent);
+        Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+        CookNetService service = retrofit.create(CookNetService.class);
+
+        Call<Usuario> call3 = service.getUsuario(Integer.parseInt(usuario.getId()));
+        call3.enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                Usuario usuario=response.body();
+
+                if(usuario!=null){
+                    Intent intentUser=new Intent(UsuariosTab.this.getContext(),UsuarioActivity.class);
+                    intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+                    startActivity(intentUser);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+
+            }
+        });
     }
 }

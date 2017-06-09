@@ -12,6 +12,9 @@ public class Comentario {
     @SerializedName("nombre")
     @Expose
     private String nombre;
+    @SerializedName("imagen")
+    @Expose
+    private String imagen;
     @SerializedName("idUsuario")
     @Expose
     private String idUsuario;
@@ -34,6 +37,14 @@ public class Comentario {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public String getIdUsuario() {

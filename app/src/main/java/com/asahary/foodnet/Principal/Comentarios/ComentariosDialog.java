@@ -1,6 +1,7 @@
 package com.asahary.foodnet.Principal.Comentarios;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -18,7 +19,11 @@ import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.POJO.Usuario;
+import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.Principal.MainActivity;
+import com.asahary.foodnet.Principal.Timeline.EventoFragment;
+import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
@@ -34,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saha on 29/05/2017.
  */
 
-public class ComentariosDialog extends DialogFragment {
+public class ComentariosDialog extends DialogFragment implements ComentariosAdapter.OnReciclerItemClickListener {
 
     View vista;
     RecyclerView lista;
@@ -80,7 +85,7 @@ public void iniciarLista(){
         vista= LayoutInflater.from(getContext()).inflate(R.layout.comentarios_dialog_layout,null);
         receta=getArguments().getParcelable(Constantes.EXTRA_RECETA);
 
-        adaptador=new ComentariosAdapter(comentarios);
+        adaptador=new ComentariosAdapter(comentarios,this);
 
         txtComentario= (EditText) vista.findViewById(R.id.txtComentario);
         btnOk= (ImageButton) vista.findViewById(R.id.btnAceptar);
@@ -123,5 +128,31 @@ public void iniciarLista(){
         return builder.create();
     }
 
+
+
+        @Override
+        public void itemClic(Comentario comentario) {
+            Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+            CookNetService service = retrofit.create(CookNetService.class);
+
+            Call<Usuario> call3 = service.getUsuario(Integer.parseInt(comentario.getIdUsuario()));
+            call3.enqueue(new Callback<Usuario>() {
+                @Override
+                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                    Usuario usuario=response.body();
+
+                    if(usuario!=null){
+                        Intent intentUser=new Intent(ComentariosDialog.this.getContext(),UsuarioActivity.class);
+                        intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+                        startActivity(intentUser);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Usuario> call, Throwable t) {
+
+                }
+            });
+        }
 
 }

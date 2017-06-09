@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.asahary.foodnet.Actividades.LogInActivity;
@@ -25,6 +26,7 @@ import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
+import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity
 
 
         bottomView= (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
         gestor=getSupportFragmentManager();
 
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
                        cargarFragmento(R.id.fragment, FavoritosFragment.newInstance());
                         break;
                     case R.id.mnuHome:
+                        cargarFragmento(R.id.fragment, EventoFragment.newInstance());
                         break;
                     case R.id.mnuAgregar:
                         Intent intent=new Intent(MainActivity.this, AgregarRecetaActivity.class);
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });
+
+        cargarFragmento(R.id.fragment,EventoFragment.newInstance());
     }
 
     public void cargarFragmento(int id, Fragment frag) {
@@ -109,11 +113,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         //Sacamos la cabecera del mismo
-        LinearLayout hView = (LinearLayout) navigationView.getHeaderView(0);
+        RelativeLayout hView = (RelativeLayout) navigationView.getHeaderView(0);
 
         //De la cabecera sacamos la vista contenedora, sobre esta vista que sacamos no podemos sacar los hijos
         // vista los debemos sacar el hView
-        LinearLayout a= (LinearLayout) hView.findViewById(R.id.navigation_header_container);
+        RelativeLayout a= (RelativeLayout) hView.findViewById(R.id.navigation_header_container);
 
 
         //Obtenemos el texto de la cabecera

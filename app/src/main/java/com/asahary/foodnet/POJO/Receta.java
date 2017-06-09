@@ -49,19 +49,6 @@ public class Receta implements Parcelable{
     @Expose
     private String categoria;
 
-    public Receta(Parcel in) {
-        idUsuario=in.readString();
-        idReceta=in.readString();
-        nombre=in.readString();
-        descripcion=in.readString();
-        ingredientes=in.readString();
-        preparacion=in.readString();
-        imagen=in.readString();
-        fechaAlta=in.readString();
-        bajaUsuario=in.readString();
-        bajaReceta=in.readString();
-    }
-
     public String getIdReceta() {
         return idReceta;
     }
@@ -149,6 +136,20 @@ public class Receta implements Parcelable{
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
+
+    public Receta(Parcel in) {
+        idUsuario=in.readString();
+        idReceta=in.readString();
+        nombre=in.readString();
+        descripcion=in.readString();
+        ingredientes=in.readString();
+        preparacion=in.readString();
+        imagen=in.readString();
+        fechaAlta=in.readString();
+        bajaUsuario=in.readString();
+        bajaReceta=in.readString();
+    }
+
 
     @Override
     public int describeContents() {

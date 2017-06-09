@@ -92,7 +92,7 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
 
             @Override
             public void onFailure(Call<List<Receta>> call, Throwable t) {
-                Toast.makeText(getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -63,10 +63,13 @@ public class UsuarioActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuario);
-        idUsuario= (int) getIntent().getExtras().get(Constantes.EXTRA_ID_USUARIO);
+        usuario= (Usuario) getIntent().getExtras().get(Constantes.EXTRA_USUARIO);
+        idUsuario= Integer.parseInt(usuario.getId());
 
         initVistas();
-        obtenerUsuario();
+        rellenarCampos();
+        comprobarSigue();
+        configViewPager();
     }
 
     private void comprobarSigue(){
@@ -92,30 +95,6 @@ public class UsuarioActivity extends FragmentActivity {
         }else{
             btnSigue.setText("Follow");
         }
-    }
-
-    private void obtenerUsuario(){
-        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-        CookNetService service = retrofit.create(CookNetService.class);
-        Call<Usuario> call = service.getUsuario(idUsuario);
-        call.enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                usuario=response.body();
-
-                if(usuario!=null){
-                    rellenarCampos();
-                    comprobarSigue();
-                    configViewPager();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-
-            }
-        });
-
     }
 
     private void rellenarCampos() {

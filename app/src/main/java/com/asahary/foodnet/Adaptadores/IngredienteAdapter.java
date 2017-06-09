@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.Contenedor> implements View.OnClickListener{
     ArrayList<Ingrediente> ingredientes =new ArrayList<>();
-
+    ArrayList<Integer> posiciones=new ArrayList<>();
 
     @Override
     public void onClick(View view) {
@@ -50,6 +51,10 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
     public void swapDatos(ArrayList<Ingrediente> recetas){
         this.ingredientes =recetas;
+        posiciones.clear();
+        for(int i=0;i<ingredientes.size();i++){
+            posiciones.add(i);
+        }
         this.notifyDataSetChanged();
     }
 
@@ -83,20 +88,20 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
         TextView txtNombre,txtCant;
         Spinner sp;
-        ImageButton btnEliminar;
+        ImageView btnEliminar;
 
         public Contenedor(View itemView) {
             super(itemView);
             txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
             txtCant= (TextView) itemView.findViewById(R.id.txtCant);
             sp= (Spinner) itemView.findViewById(R.id.medidas);
-            btnEliminar= (ImageButton) itemView.findViewById(R.id.btnQuitarr);
+            btnEliminar= (ImageView) itemView.findViewById(R.id.btnQuitarr);
 
         }
 
         public void onBin(final Ingrediente ingrediente){
             //Obtenemos la posicion del ingrediente en el array
-            final int position=IngredienteAdapter.this.ingredientes.indexOf(ingrediente);
+
 
 
             txtNombre.setText(ingrediente.nombre);
@@ -119,6 +124,7 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
                 @Override
                 public void afterTextChanged(Editable editable) {
+                    int position=getAdapterPosition();
                     if(txtCant.getText().toString().isEmpty()){
                         ingredientes.get(position).cantidad=0.0;
                     }else{
@@ -130,6 +136,7 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
             sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    int position=getAdapterPosition();
                     ingredientes.get(position).medida=sp.getSelectedItemPosition();
                 }
 
@@ -152,6 +159,7 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
                 @Override
                 public void afterTextChanged(Editable editable) {
+                    int position=getAdapterPosition();
                     ingredientes.get(position).nombre=txtNombre.getText().toString();
                 }
             });
@@ -159,9 +167,10 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
             btnEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position=IngredienteAdapter.this.ingredientes.indexOf(ingrediente);
+                    int position=getAdapterPosition();
                     ingredientes.remove(position);
-                    IngredienteAdapter.this.notifyDataSetChanged();
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position,ingredientes.size());
                 }
             });
         }

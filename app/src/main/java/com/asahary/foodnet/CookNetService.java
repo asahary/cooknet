@@ -1,6 +1,7 @@
 package com.asahary.foodnet;
 
 import com.asahary.foodnet.POJO.Comentario;
+import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 
@@ -50,8 +51,14 @@ public interface CookNetService {
     @GET("usuarios/{id}/seguidores")
     Call<List<Usuario>> seguidoresUser(@Path("id") int id);
 
+    @GET("recetas/{id}")
+    Call<Receta> getReceta(@Path("id") int id);
+
     @GET("recetas/{id}/puntuacion")
     Call<Float> obtenerPuntuacion(@Path("id") int id);
+
+    @GET("usuarios/{id}/eventos")
+    Call<List<Evento>> eventosUser(@Path("id") int id);
 
     @GET("recetas/{idReceta}/comentarios")
     Call<List<Comentario>> comentariosReceta(@Path("idReceta") int id);

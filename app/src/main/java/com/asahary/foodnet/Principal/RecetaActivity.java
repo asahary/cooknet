@@ -22,6 +22,7 @@ import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.Principal.Rating.RatingDialog;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -160,9 +161,10 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         txtIngredientes= (TextView) findViewById(R.id.Ingredientes);
         txtPreparacion= (TextView) findViewById(R.id.txtPreparacion);
         imgReceta= (ImageView) findViewById(R.id.imgReceta);
-        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
         ratingBar= (RatingBar) findViewById(R.id.rating);
 
+
+        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
 
         //No se hace onclick porque onTouch lo sobrescribe
         ratingBar.setOnTouchListener(new View.OnTouchListener() {
@@ -195,7 +197,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         txtDescripcion.setText(receta.getDescripcion());
         txtIngredientes.setText(leerIngredientes());
         txtPreparacion.setText(receta.getPreparacion());
-        Picasso.with(this).load(receta.getImagen()).fit().into(imgReceta);
+        Glide.with(this).load(receta.getImagen()).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().error(R.drawable.food_generic).into(imgReceta);
         rellanarPuntuacion();
 
         Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();

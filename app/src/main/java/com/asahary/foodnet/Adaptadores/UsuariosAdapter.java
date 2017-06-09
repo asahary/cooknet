@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Usuario;
@@ -12,6 +11,7 @@ import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Saha on 25/05/2017.
@@ -70,11 +70,11 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Conten
     public class Contenedor extends RecyclerView.ViewHolder{
 
         TextView txtNick,txtNombre,txtApellidos;
-        ImageView imgUsuario;
+        CircleImageView imgUsuario;
 
         public Contenedor(View itemView) {
             super(itemView);
-            imgUsuario= (ImageView) itemView.findViewById(R.id.imgUsuario);
+            imgUsuario= (CircleImageView) itemView.findViewById(R.id.imgUsuario);
             txtNick = (TextView) itemView.findViewById(R.id.lblNickUsuario);
             txtNombre= (TextView) itemView.findViewById(R.id.lblNombreUsuario);
             txtApellidos= (TextView) itemView.findViewById(R.id.lblApellidosUsuario);
@@ -82,12 +82,10 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Conten
         }
 
         public void onBin(Usuario usuario){
-
-
             txtNick.setText(usuario.getNick());
             txtNombre.setText(usuario.getNombre());
             txtApellidos.setText(usuario.getApellidos());
-            Picasso.with(imgUsuario.getContext()).load(usuario.getImagen()).fit().into(imgUsuario);
+            Picasso.with(imgUsuario.getContext()).load(usuario.getImagen()).error(R.drawable.user_generic).placeholder(R.drawable.user_generic).fit().into(imgUsuario);
 
         }
 

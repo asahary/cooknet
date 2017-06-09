@@ -14,6 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Saha on 22/05/2017.
  */
@@ -72,21 +74,21 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contened
     public static class Contenedor extends RecyclerView.ViewHolder{
 
         TextView lblNombreReceta,lblDescripcionReceta;
-        ImageView imgReceta;
+        CircleImageView imgReceta;
 
 
         public Contenedor(View itemView) {
             super(itemView);
             lblNombreReceta= (TextView) itemView.findViewById(R.id.lblNombreReceta);
             lblDescripcionReceta= (TextView) itemView.findViewById(R.id.lblDescripcionReceta);
-            imgReceta= (ImageView) itemView.findViewById(R.id.imgReceta);
+            imgReceta= (CircleImageView) itemView.findViewById(R.id.imgReceta);
         }
 
         public void onBin(Receta receta){
             //Rellenamos los datos
             lblNombreReceta.setText(receta.getNombre());
             lblDescripcionReceta.setText(receta.getDescripcion());
-            Picasso.with(imgReceta.getContext()).load(receta.getImagen()).fit().into(imgReceta);
+            Picasso.with(imgReceta.getContext()).load(receta.getImagen()).error(R.drawable.food_generic).placeholder(R.drawable.user_generic).fit().into(imgReceta);
         }
 
 
