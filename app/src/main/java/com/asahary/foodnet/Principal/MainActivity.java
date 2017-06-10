@@ -2,6 +2,7 @@ package com.asahary.foodnet.Principal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,49 +17,57 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.asahary.foodnet.Actividades.LogInActivity;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.CookNetService;
+import com.asahary.foodnet.POJO.Evento;
+import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.Usuario.RecetaTab;
+import com.asahary.foodnet.Utilidades.Cache;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static Usuario user;
     public static Integer idUsuario;
-    private BottomNavigationView bottomView;
+    public BottomNavigationView bottomView;
     private CircleImageView imgNav;
     private TextView nav_user,nav_userTitle;
-    private FragmentManager gestor;
+    public FragmentManager gestor;
     public static final int RQ_EDITAR_USER=7;
 
+
     private void initVistas(){
-
-
         bottomView= (BottomNavigationView) findViewById(R.id.bottom_navigation);
         gestor=getSupportFragmentManager();
-
 
        bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.mnuFavoritos:
-                       cargarFragmento(R.id.fragment, FavoritosFragment.newInstance());
+                       cargarFragmentoMisFavoritos();
                         break;
                     case R.id.mnuHome:
-                        cargarFragmento(R.id.fragment, EventoFragment.newInstance());
+                        cargarFragmentoMisEventos();
                         break;
                     case R.id.mnuAgregar:
                         Intent intent=new Intent(MainActivity.this, AgregarRecetaActivity.class);
@@ -69,9 +78,107 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        cargarFragmento(R.id.fragment,EventoFragment.newInstance());
+
+        //Los llamamos aqui en lugar de iniciar listas
+        bottomView.setSelectedItemId(R.id.mnuHome);
+        cargarFragmentoMisEventos();
     }
 
+    @Override
+    protected void onResume() {
+        if(bottomView.getSelectedItemId()==R.id.mnuFavoritos){
+            cargarFragmentoMisFavoritos();
+        }
+        super.onResume();
+    }
+
+    //Obtencion de listas por defecto
+    public void obtenerListas(){
+        CookNetService service= Libreria.obtenerServicioApi();
+
+        Call<List<Usuario>> callSeguidores=service.seguidoresUser(idUsuario);
+        Call<List<Usuario>> callSeguidos=service.seguidosUser(idUsuario);
+        Call<List<Receta>> callFavoritos=service.favoritosUser(idUsuario);
+        Call<List<Receta>> callRecetas=service.recetasUser(idUsuario);
+        Call<List<Evento>> callEventos=service.eventosUser(idUsuario);
+
+        callSeguidores.enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                List<Usuario> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misSeguidores=new ArrayList<Usuario>(lista);
+                }else{
+                   // Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+            }
+        });
+
+        callSeguidos.enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                List<Usuario> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misSiguiendo=new ArrayList<Usuario>(lista);
+                }else{
+                    //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+            }
+        });
+
+        callFavoritos.enqueue(new Callback<List<Receta>>() {
+            @Override
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                List<Receta> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misFavoritos=new ArrayList<Receta>(lista);
+                }else{
+                    //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
+                //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+            }
+        });
+
+        callRecetas.enqueue(new Callback<List<Receta>>() {
+            @Override
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                List<Receta> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misRecetas=new ArrayList<Receta>(lista);
+                }else{
+                   //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
+                //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+            }
+        });
+
+    }
+
+
+
+    //Carga de fragmentos
     public void cargarFragmento(int id, Fragment frag) {
         if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
             getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
@@ -81,6 +188,56 @@ public class MainActivity extends AppCompatActivity
         transaccion.commit();
 
     }
+
+    public void cargarFragmentoMisFavoritos(){
+        Libreria.obtenerServicioApi().favoritosUser(idUsuario).enqueue(new Callback<List<Receta>>() {
+            @Override
+            public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
+                List<Receta> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misFavoritos=new ArrayList<Receta>(lista);
+                }else{
+                    Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                    Cache.misFavoritos=new ArrayList<Receta>();
+                }
+
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(Cache.misFavoritos));
+            }
+
+            @Override
+            public void onFailure(Call<List<Receta>> call, Throwable t) {
+                Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(Cache.misFavoritos));
+            }
+        });
+    }
+
+    public void cargarFragmentoMisEventos(){
+        Libreria.obtenerServicioApi().eventosUser(idUsuario).enqueue(new Callback<List<Evento>>() {
+            @Override
+            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                List<Evento> lista=response.body();
+
+                if(lista!=null){
+                    Cache.misEventos=new ArrayList<Evento>(lista);
+                }else{
+                    Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
+                    Cache.misEventos=new ArrayList<Evento>();
+                }
+
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(Cache.misEventos));
+            }
+
+            @Override
+            public void onFailure(Call<List<Evento>> call, Throwable t) {
+                Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(Cache.misEventos));
+            }
+        });
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +307,9 @@ public class MainActivity extends AppCompatActivity
 
         //Iniciamos el resto de vistas
         initVistas();
+
+        //Obtenemos las listas por defecto
+        obtenerListas();
     }
 
     private void rellenarCabecera() {
@@ -206,14 +366,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+        Intent intentNavigation=new Intent(MainActivity.this,NavigatorActivity.class);
+
+
         int id = item.getItemId();
 
         if (id == R.id.nav_recetas) {
-
+            intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_MIS_RECETA);
+            startActivity(intentNavigation);
         } else if (id == R.id.nav_seguidores) {
-
+            intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_MIS_SEGUIDORES);
+            startActivity(intentNavigation);
         } else if (id == R.id.nav_siguiendo) {
-
+            intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_MIS_SEGUIDOS);
+            startActivity(intentNavigation);
         } else if (id == R.id.nav_log_out) {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);

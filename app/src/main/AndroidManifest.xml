@@ -36,9 +36,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Actividades.LogInActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Actividades.RegisterActivity"
+        <activity
+            android:name=".Actividades.LogInActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividades.RegisterActivity"
             android:label="Registro">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -75,8 +77,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Principal.Agregar.AgregarRecetaActivity">
+        <activity android:name=".Principal.Agregar.AgregarRecetaActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Principal.MainActivity" />
@@ -85,10 +86,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
         <activity android:name=".Principal.Usuario.UsuarioActivity" />
-        <activity android:name=".Principal.EditarUsuarioActivity"></activity>
+        <activity android:name=".Principal.EditarUsuarioActivity" />
+        <activity android:name=".Principal.NavigatorActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Principal.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

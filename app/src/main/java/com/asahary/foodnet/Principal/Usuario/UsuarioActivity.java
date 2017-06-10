@@ -1,31 +1,21 @@
 package com.asahary.foodnet.Principal.Usuario;
 
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Busqueda.RecetasFragment;
-import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;

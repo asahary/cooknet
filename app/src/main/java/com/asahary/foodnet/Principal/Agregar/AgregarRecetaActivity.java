@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -29,7 +28,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.Principal.MainActivity;

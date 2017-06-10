@@ -2,6 +2,7 @@ package com.asahary.foodnet.Principal;
 
 import android.content.Intent;
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,17 +14,17 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Cache;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.Principal.Rating.RatingDialog;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -110,14 +111,16 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                 if(mensaje!=null){
                     if(favorito){
                         favorito=false;
+                        Cache.misFavoritos.remove(receta);
                         menu.getItem(0).setIcon(R.drawable.ic_favorite);
                     }else{
                         favorito=true;
+                        Cache.misFavoritos.add(receta);
                         menu.getItem(0).setIcon(R.drawable.ic_fav_black);
                     }
-                    Toast.makeText(RecetaActivity.this,mensaje+String.valueOf(favorito),Toast.LENGTH_SHORT).show();
+                    Libreria.mostrarMensjeCorto(RecetaActivity.this,mensaje);
                 }else{
-                    Toast.makeText(RecetaActivity.this,"Cuerpo nullo",Toast.LENGTH_SHORT).show();
+                    Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
                 }
 
             }

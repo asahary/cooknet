@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Adaptadores.RecetasAdapter;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.MainActivity;

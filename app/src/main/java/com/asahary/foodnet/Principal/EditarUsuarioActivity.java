@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.BoolRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -24,15 +23,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Actividades.RegisterActivity;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
@@ -177,7 +174,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             email = txtEmail.getText().toString();
             nombre = txtNombre.getText().toString();
             apellidos = txtApellidos.getText().toString();
-            boolean baja=sw.isActivated();
+            boolean baja=sw.isChecked();
 
             user.setNick(nick);
             user.setNombre(nombre);

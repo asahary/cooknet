@@ -15,14 +15,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Adaptadores.ComentariosAdapter;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.Principal.MainActivity;
-import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 

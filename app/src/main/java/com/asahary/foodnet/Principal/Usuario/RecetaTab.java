@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Adaptadores.RecetasAdapter;
 import com.asahary.foodnet.Principal.RecetaActivity;

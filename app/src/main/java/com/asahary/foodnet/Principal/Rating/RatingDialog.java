@@ -11,13 +11,11 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.MainActivity;
-import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.R;
 
 import retrofit2.Call;

@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.asahary.foodnet.Constantes;
-import com.asahary.foodnet.POJO.Comentario;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.R;
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

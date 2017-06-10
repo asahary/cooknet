@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import com.asahary.foodnet.Constantes;
 import com.asahary.foodnet.R;
 
 /**

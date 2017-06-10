@@ -16,11 +16,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Adaptadores.UsuariosAdapter;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.MainActivity;
-import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 

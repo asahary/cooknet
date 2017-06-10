@@ -4,30 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.asahary.foodnet.Adaptadores.ComentariosAdapter;
 import com.asahary.foodnet.Adaptadores.EventoAdapter;
-import com.asahary.foodnet.Adaptadores.RecetasAdapter;
-import com.asahary.foodnet.Constantes;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
-import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
-import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,37 +51,8 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         adaptador=new EventoAdapter(eventos,this);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         lista.setAdapter(adaptador);
-        iniciarLista();
     }
 
-    private void iniciarLista() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-
-        CookNetService servicio =retrofit.create(CookNetService.class);
-
-        Call<List<Evento>> call=servicio.eventosUser(MainActivity.idUsuario);
-
-        call.enqueue(new Callback<List<Evento>>() {
-            @Override
-            public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
-                List<Evento> cuerpo=response.body();
-
-                if(cuerpo!=null){
-                   eventos=new ArrayList<Evento>(cuerpo);
-
-                    if(eventos.size()>0){
-                        adaptador.swapDatos(eventos);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Evento>> call, Throwable t) {
-
-            }
-        });
-
-    }
 
     @Override
     public void itemClic(Evento evento) {
@@ -176,8 +141,10 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         setRetainInstance(true);
         return inflater.inflate(R.layout.timeline_fragment_layout, container, false);
     }
-    public static EventoFragment newInstance(){
-        return new EventoFragment();
+    public static EventoFragment newInstance(ArrayList<Evento> lista){
+        EventoFragment fragment=new EventoFragment();
+        fragment.eventos=lista;
+        return fragment;
     }
 
 
