@@ -25,6 +25,7 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
     ArrayList<Ingrediente> ingredientes =new ArrayList<>();
     ArrayList<Integer> posiciones=new ArrayList<>();
 
+
     @Override
     public void onClick(View view) {
 
@@ -61,6 +62,7 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
     @Override
     public IngredienteAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ingrediente,parent,false);
+
 
         final IngredienteAdapter.Contenedor tvh = new IngredienteAdapter.Contenedor(itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +172,12 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
                     int position=getAdapterPosition();
                     ingredientes.remove(position);
                     notifyItemRemoved(position);
-                    notifyItemRangeChanged(position,ingredientes.size());
+                    if (position != 0) {
+                        notifyItemRangeChanged(position,ingredientes.size());
+                    }
+                    else {
+                        notifyDataSetChanged();
+                    }
                 }
             });
         }

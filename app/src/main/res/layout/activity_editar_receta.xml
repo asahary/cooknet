@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/corReceta"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.FloatingActionButton
@@ -20,72 +20,120 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/lblNombreReceta"
+                android:text="Nombre"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <EditText
                 android:id="@+id/txtNombre"
+                android:layout_below="@+id/lblNombreReceta"
                 android:singleLine="true"
+                android:layout_marginLeft="10dp"
                 android:imeOptions="actionNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombre" />
-
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/lblDescripcionReceta"
+                android:text="Descripcion"
+                android:layout_below="@+id/txtNombre"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <EditText
                 android:id="@+id/txtDescripcion"
                 android:singleLine="true"
                 android:imeOptions="actionNext"
                 android:minLines="2"
                 android:maxLines="2"
-
+                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtNombre"
+                android:layout_below="@+id/lblDescripcionReceta"
                 android:hint="Descripcion" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/Ingredientes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtPreparacion"></android.support.v7.widget.RecyclerView>
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/contenedorlbIngredientes"></android.support.v7.widget.RecyclerView>
 
-            <ImageButton
-                android:id="@+id/btnAgregar"
-
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/lblPreparacionReceta"
+                android:layout_below="@+id/txtDescripcion"
+                android:text="Preparación"
+                style="@style/Base.TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ingredientes"
-                android:src="@drawable/ic_add" />
-
+                android:layout_height="wrap_content" />
             <EditText
+                android:layout_marginLeft="10dp"
                 android:id="@+id/txtPreparacion"
                 android:minLines="5"
                 android:maxLines="5"
                 android:inputType="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtDescripcion"
+                android:layout_below="@+id/lblPreparacionReceta"
                 android:hint="Preparacion" />
-
-            <TextView
-                style="@style/TextAppearance.AppCompat.Large"
-                android:layout_below="@+id/btnAgregar"
-                android:id="@+id/lblMostrar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mostrar receta"/>
-            <Switch
-                android:id="@+id/sw"
+            <RelativeLayout
+                android:id="@+id/contenedorlbIngredientes"
+                android:layout_below="@+id/txtPreparacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/btnAgregar"
+                    android:layout_width="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_add" />
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/lblIngredientesReceta"
+                    android:text="Ingredientes"
+                    android:layout_alignParentLeft="true"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/btnAgregar"
+                android:layout_below="@id/Ingredientes"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/lblMostrar"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:text="Mostrar receta: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Switch
+                    android:id="@+id/sw"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toRightOf="@+id/lblMostrar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
 
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.AppBarLayout

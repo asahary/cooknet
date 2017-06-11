@@ -186,9 +186,23 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         lblNombreUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RecetaActivity.this, UsuarioActivity.class);
-                intent.putExtra(Constantes.EXTRA_ID_USUARIO,Integer.parseInt(receta.getIdUsuario()));
-                startActivity(intent);
+                Libreria.obtenerServicioApi().getUsuario(Integer.parseInt(receta.getIdUsuario())).enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        Usuario cuerpo=response.body();
+
+                        if(cuerpo!=null){
+                            Intent intentUser=new Intent(RecetaActivity.this,UsuarioActivity.class);
+                            intentUser.putExtra(Constantes.EXTRA_USUARIO,cuerpo);
+                            startActivity(intentUser);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_FALLIDA);
+                    }
+                });
             }
         });
         rellenarCampos();

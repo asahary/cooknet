@@ -247,10 +247,9 @@ public class MainActivity extends AppCompatActivity
         //Al poner esta actividad como padre a la vuelta se ejecuta onCreate again entonces no trae un intent
         // nuevo asi que tenemos que controlar que no sea nulo
 
-        if(getIntent().hasExtra(Constantes.EXTRA_USUARIO)){
-            user= getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
-            idUsuario=Integer.parseInt(user.getId());
-        }
+        user=Cache.user;
+        idUsuario=Integer.parseInt(user.getId());
+
 
 
         //Para que no se habra el teclado por la cara al entrar
@@ -339,8 +338,18 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode==RESULT_OK){
             if(requestCode==RQ_EDITAR_USER){
-                user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
-                rellenarCabecera();
+                Cache.user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
+                user=Cache.user;
+
+
+                //Si le ha dado de baja al usuario le hacemos salir
+                if(Integer.parseInt(user.getBaja())==1){
+                    Intent salir=new Intent(MainActivity.this,LogInActivity.class);
+                    startActivity(salir);
+                    finish();
+                }else{
+                    rellenarCabecera();
+                }
             }
         }
     }

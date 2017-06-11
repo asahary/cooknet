@@ -1,7 +1,9 @@
 package com.asahary.foodnet.Actividades;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -12,11 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Utilidades.Cache;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,14 +88,45 @@ public class LogInActivity extends AppCompatActivity {
                 //Hacemos una llamada asincrona
                 call.enqueue(new Callback<Usuario>() {
                     @Override
-                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                    public void onResponse(Call<Usuario> call, final Response<Usuario> response) {
+final Usuario user=response.body();
+                        if(user!=null){
+                            if(Integer.parseInt(user.getBaja())==1){
+                                //Si esta dado de baja mostrar un dialogo que le diga que debe darse de alta para acceder
+                                new AlertDialog.Builder(LogInActivity.this)
+                                        .setTitle("Activar usuario")
+                                        .setMessage("Este usuario esta desactivado. ¿Quieres reactivarlo?")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton("Si ", new DialogInterface.OnClickListener() {
 
-                        if(response.body()!=null){
-                            //Accedemos a la aplicacion
-                            Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
-                            intent.putExtra(Constantes.EXTRA_USUARIO,response.body());
-                            startActivity(intent);
-                            finish();
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                Libreria.obtenerServicioApi().activarUser(Integer.parseInt(user.getId())).enqueue(new Callback<Boolean>() {
+                                                    @Override
+                                                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                                        Boolean cuerpo=response.body();
+                                                        if(cuerpo!=null){
+                                                            user.setBaja("0");
+                                                            Cache.user=user;
+                                                            Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Boolean> call, Throwable t) {
+
+                                                    }
+                                                });
+                                            }})
+                                        .setNegativeButton("No",null).show();
+                            }else{
+                                //Accedemos a la aplicacion
+                                Cache.user=response.body();
+                                Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                         }else{
                             //Login fallido
                             Toast.makeText(LogInActivity.this, "Cuerpo nullo", Toast.LENGTH_SHORT).show();

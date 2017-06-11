@@ -64,7 +64,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     TextView lblMostrar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
     EditText txtNombre,txtDescripcion,txtPreparacion;
-    ImageButton btnAgregar;
+    ImageView btnAgregar;
     ImageView imgReceta;
     ImageView img;
     FloatingActionButton fab;
@@ -101,7 +101,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
         txtNombre= (EditText) findViewById(R.id.txtNombre);
         txtDescripcion= (EditText) findViewById(R.id.txtDescripcion);
         txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
-        btnAgregar= (ImageButton) findViewById(R.id.btnAgregar);
+        btnAgregar= (ImageView) findViewById(R.id.btnAgregar);
         imgReceta=(ImageView) findViewById(R.id.imgReceta);
         lista= (RecyclerView) findViewById(R.id.Ingredientes);
         fab= (FloatingActionButton) findViewById(R.id.fab);

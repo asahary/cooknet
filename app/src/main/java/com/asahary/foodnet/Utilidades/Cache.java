@@ -18,4 +18,6 @@ public class Cache {
     public static ArrayList<Usuario> misSiguiendo=new ArrayList<>();
 
     public static ArrayList<Evento> misEventos=new ArrayList<>();
+
+    public static Usuario user;
 }

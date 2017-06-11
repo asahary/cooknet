@@ -180,7 +180,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             user.setNombre(nombre);
             user.setApellidos(apellidos);
             user.setEmail(email);
-            user.setBaja(String.valueOf(baja));
+            user.setBaja(baja?"1":"0");
             user.setImagen(imagen);
 
             //Creamos el retrofit y la interfaz de servicio

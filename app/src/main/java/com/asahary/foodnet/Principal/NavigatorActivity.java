@@ -68,7 +68,7 @@ public class NavigatorActivity extends AppCompatActivity {
     }
 
     public void cargarFragmentoMisRecetas(){
-        Libreria.obtenerServicioApi().recetasUser(MainActivity.idUsuario).enqueue(new Callback<List<Receta>>() {
+        Libreria.obtenerServicioApi().recetasPropiasUser(MainActivity.idUsuario).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
                 List<Receta> lista=response.body();

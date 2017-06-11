@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Utilidades.Cache;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
@@ -53,8 +54,12 @@ public class UsuarioActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuario);
-        usuario= (Usuario) getIntent().getExtras().get(Constantes.EXTRA_USUARIO);
+        usuario=  getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
         idUsuario= Integer.parseInt(usuario.getId());
+
+        if(idUsuario==MainActivity.idUsuario){
+            //CargarPropio Perfil(el cual hay que crear aun) and safi baraca
+        }
 
         initVistas();
         rellenarCampos();
@@ -112,6 +117,19 @@ public class UsuarioActivity extends FragmentActivity {
                         if(response.body()!=null){
                             sigue=response.body();
                             configurarBotonFollow(sigue);
+
+                            if(sigue){
+                                seguidores.add(Cache.user);
+                            }else{
+                                for(int i=0;i<seguidores.size();i++){
+                                    int id=Integer.parseInt(seguidores.get(i).getId());
+                                    if(id==MainActivity.idUsuario){
+                                        seguidores.remove(seguidores.get(i));
+                                        break;
+                                    }
+                                }
+                            }
+                            ((UsuariosTab)viewPagerAdapter.getItem(3)).adaptador.swapDatos(seguidores);
                         }else{
                             Toast.makeText(UsuarioActivity.this,"Cuerpor nullo",Toast.LENGTH_SHORT).show();
                         }
