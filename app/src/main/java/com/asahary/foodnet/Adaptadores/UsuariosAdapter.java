@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Usuario;
+import com.asahary.foodnet.Principal.Busqueda.RecetasFragment;
+import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
+import com.asahary.foodnet.Principal.Usuario.RecetaTab;
+import com.asahary.foodnet.Principal.Usuario.UsuariosTab;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -32,12 +36,16 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Conten
         super();
         this.listener=listener;
         this.usuarios =usuarios;
-
     }
 
 
     public void swapDatos(ArrayList<Usuario> usuarios){
         this.usuarios =usuarios;
+        if(listener instanceof UsuariosTab){
+            ((UsuariosTab)listener).checkVacio();
+        }else if(listener instanceof UsuariosFragment){
+            ((UsuariosFragment)listener).checkVacio();
+        }
         this.notifyDataSetChanged();
     }
 

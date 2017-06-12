@@ -34,6 +34,7 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
 
     UsuariosAdapter adaptador;
     RecyclerView lista;
+    View emptyView;
     ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
 
@@ -57,6 +58,7 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
 
     private void initVistas(View vista) {
         lista = (RecyclerView) vista.findViewById(R.id.lista);
+        emptyView=vista.findViewById(R.id.emptyView);
         iniciarLista();
     }
 
@@ -65,6 +67,7 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
         adaptador = new UsuariosAdapter(listaUsuarios, this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        checkVacio();
     }
 
     @Override
@@ -84,26 +87,18 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
 
     @Override
     public void itemClic(Usuario usuario) {
-        Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-        CookNetService service = retrofit.create(CookNetService.class);
+        Intent intentUser=new Intent(UsuariosTab.this.getContext(),UsuarioActivity.class);
+        intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+        startActivity(intentUser);
+    }
 
-        Call<Usuario> call3 = service.getUsuario(Integer.parseInt(usuario.getId()));
-        call3.enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                Usuario usuario=response.body();
-
-                if(usuario!=null){
-                    Intent intentUser=new Intent(UsuariosTab.this.getContext(),UsuarioActivity.class);
-                    intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
-                    startActivity(intentUser);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-
-            }
-        });
+    public void checkVacio(){
+        if (adaptador.getItemCount()==0){
+            lista.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }else{
+            lista.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 }

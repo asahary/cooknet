@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.Busqueda.RecetasFragment;
+import com.asahary.foodnet.Principal.Usuario.RecetaTab;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contenedor>{
     ArrayList<Receta> recetas=new ArrayList<>();
+    private View emptyView;
 
     public interface OnReciclerItemClickListener{
         void itemClic(Receta receta);
@@ -34,7 +37,6 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contened
         super();
         this.listener=listener;
         this.recetas=recetas;
-
     }
     public RecetasAdapter(ArrayList<Receta> recetas){
         this.recetas=recetas;
@@ -42,6 +44,11 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contened
 
     public void swapDatos(ArrayList<Receta> recetas){
         this.recetas=recetas;
+        if(listener instanceof RecetaTab){
+            ((RecetaTab)listener).checkVacio();
+        }else if(listener instanceof RecetasFragment){
+            ((RecetasFragment)listener).checkVacio();
+        }
         this.notifyDataSetChanged();
     }
 
@@ -93,4 +100,6 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contened
 
 
     }
+
+
 }

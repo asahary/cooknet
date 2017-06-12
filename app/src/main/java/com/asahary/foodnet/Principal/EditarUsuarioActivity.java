@@ -34,6 +34,7 @@ import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -220,7 +221,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
 
             //Si se quiere actualizar la contraseña
             if(swPassForm.isChecked()&&comprobarContraseña()){
-                Call<Boolean> call=service.actualizarUserPass(Integer.parseInt(user.getId()),txtOldPass.getText().toString(),txtNewPass1.getText().toString());
+                Call<Boolean> call=service.actualizarUserPass(Integer.parseInt(user.getId()),Libreria.crearPass(txtOldPass.getText().toString()), Libreria.crearPass(txtNewPass1.getText().toString()));
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {

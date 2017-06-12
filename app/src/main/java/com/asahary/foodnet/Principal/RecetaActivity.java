@@ -72,7 +72,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_fav:
                 actulizarFavorito();

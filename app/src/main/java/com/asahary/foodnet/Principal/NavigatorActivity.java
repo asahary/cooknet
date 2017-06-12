@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
@@ -14,6 +16,7 @@ import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.Utilidades.Libreria;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ import retrofit2.Response;
 public class NavigatorActivity extends AppCompatActivity {
 
     FragmentManager gestor;
+    ImageView imgCarga;
     String opcion;
 
     @Override
@@ -41,6 +45,7 @@ public class NavigatorActivity extends AppCompatActivity {
 
     private void initVistas(){
         gestor=getSupportFragmentManager();
+        imgCarga= (ImageView) findViewById(R.id.imgCarga);
 
         switch (opcion){
             case Constantes.EXTRA_LISTA_MIS_RECETA:
@@ -55,7 +60,18 @@ public class NavigatorActivity extends AppCompatActivity {
         }
     }
 
+    private void mostrarCarga(){
+        findViewById(R.id.fragment).setVisibility(View.GONE);
+        imgCarga.setVisibility(View.VISIBLE);
+        Glide.with(this).load(R.drawable.loading).fitCenter().fitCenter().into(imgCarga);
+    }
+    private void ocultarCarga(){
+        findViewById(R.id.fragment).setVisibility(View.VISIBLE);
+        imgCarga.setVisibility(View.GONE);
+    }
 
+
+    //Carga de fragmentos
     public void cargarFragmento(int id, Fragment frag) {
         if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
             getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
@@ -67,6 +83,7 @@ public class NavigatorActivity extends AppCompatActivity {
     }
 
     public void cargarFragmentoMisRecetas(){
+        mostrarCarga();
         Libreria.obtenerServicioApi().recetasPropiasUser(MainActivity.idUsuario).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
@@ -80,17 +97,20 @@ public class NavigatorActivity extends AppCompatActivity {
                 }
 
                 cargarFragmento(R.id.fragment,RecetaTab.newInstance(CacheApp.misRecetas));
+                ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Receta>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_FALLIDA);
                 cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misRecetas));
+                ocultarCarga();
             }
         });
     }
 
     public void cargarFragmentoMisSeguidores(){
+        mostrarCarga();
         Libreria.obtenerServicioApi().seguidoresUser(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
@@ -104,17 +124,20 @@ public class NavigatorActivity extends AppCompatActivity {
                 }
 
                 cargarFragmento(R.id.fragment, UsuariosTab.newInstance(CacheApp.misSeguidores));
+                ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_FALLIDA);
                 cargarFragmento(R.id.fragment, UsuariosTab.newInstance(CacheApp.misSeguidores));
+                ocultarCarga();
             }
         });
     }
 
     public void cargarFragmentoMisSeguidos(){
+        mostrarCarga();
         Libreria.obtenerServicioApi().seguidosUser(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
@@ -128,12 +151,14 @@ public class NavigatorActivity extends AppCompatActivity {
                 }
 
                 cargarFragmento(R.id.fragment, UsuariosTab.newInstance(CacheApp.misSiguiendo));
+                ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_FALLIDA);
                 cargarFragmento(R.id.fragment, UsuariosTab.newInstance(CacheApp.misSiguiendo));
+                ocultarCarga();
             }
         });
     }

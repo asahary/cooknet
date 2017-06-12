@@ -42,6 +42,7 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
     UsuariosAdapter adaptador;
     RecyclerView lista;
     ArrayList<Usuario> usuarios=new ArrayList<>();
+    View emptyView;
 
     @Nullable
     @Override
@@ -66,17 +67,13 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
         adaptador=new UsuariosAdapter(usuarios,this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-
+        emptyView=vista.findViewById(R.id.emptyView);
         iniciarLista();
 
     }
 
     private void iniciarLista(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-        CookNetService servicio = retrofit.create(CookNetService.class);
-        Call<List<Usuario>> call=servicio.listUsers(MainActivity.idUsuario);
-
-        call.enqueue(new Callback<List<Usuario>>() {
+        Libreria.obtenerServicioApi().listUsers(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
                 List<Usuario> respuesta=response.body();
@@ -140,6 +137,16 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
         }else{//Si el texto esta vacio mostramos a todos los usuarios
             adaptador.swapDatos(usuarios);
+        }
+    }
+
+    public void checkVacio(){
+        if (adaptador.getItemCount()==0){
+            lista.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }else{
+            lista.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
         }
     }
 }

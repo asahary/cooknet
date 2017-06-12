@@ -151,4 +151,5 @@ public class BusquedaActivity extends AppCompatActivity {
     interface OnTextToolbarTextChange{
         void onTextChanged(String Text);
     }
+
 }

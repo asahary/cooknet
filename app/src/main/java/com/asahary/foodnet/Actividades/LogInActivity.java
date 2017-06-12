@@ -93,7 +93,7 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 mostrarCarga();
-                Libreria.obtenerServicioApi().login(txtNick.getText().toString(),txtPass.getText().toString()).enqueue(new Callback<Usuario>() {
+                Libreria.obtenerServicioApi().login(txtNick.getText().toString(),Libreria.crearPass(txtPass.getText().toString())).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, final Response<Usuario> response) {
                         final Usuario user=response.body();

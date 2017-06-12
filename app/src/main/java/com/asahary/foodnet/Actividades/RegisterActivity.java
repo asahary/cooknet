@@ -31,6 +31,8 @@ import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.Principal.EditarRecetaActivity;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Constantes;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -124,13 +126,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                 apellidos = txtApellidos.getText().toString();
 
                 //Creamos el retrofit y la interfaz de servicio
-                Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-                CookNetService service = retrofit.create(CookNetService.class);
-
-                //Creamos la llamada
-                Call<Integer> llamada = service.registrar(nick, pass, email, nombre, apellidos, imagen);
-
-                llamada.enqueue(new Callback<Integer>() {
+                Libreria.obtenerServicioApi().registrar(nick, Libreria.crearPass(pass), email, nombre, apellidos, imagen).enqueue(new Callback<Integer>() {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         //Obtenemos el cuerpo y comprobamos que no sea nullo
@@ -144,14 +140,14 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                             }
 
                         } else {
-                            Toast.makeText(RegisterActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
+                            Libreria.mostrarMensjeCorto(RegisterActivity.this, Constantes.RESPUESTA_NULA);
                         }
 
                     }
 
                     @Override
                     public void onFailure(Call<Integer> call, Throwable t) {
-                        Toast.makeText(RegisterActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
+                        Libreria.mostrarMensjeCorto(RegisterActivity.this, Constantes.RESPUESTA_FALLIDA);
                     }
                 });
 

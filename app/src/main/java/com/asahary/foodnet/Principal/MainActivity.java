@@ -323,12 +323,13 @@ public class MainActivity extends AppCompatActivity
         nav_user.setText("Toca para ver tu perfil");
         Picasso.with(this).load(user.getImagen()).fit().into(imgNav);
     }
+
+    //Muestra o no una imagen de carga
     private void mostrarCarga(){
         findViewById(R.id.fragment).setVisibility(View.GONE);
         imgCarga.setVisibility(View.VISIBLE);
         Glide.with(this).load(R.drawable.loading).fitCenter().fitCenter().into(imgCarga);
     }
-
     private void ocultarCarga(){
         findViewById(R.id.fragment).setVisibility(View.VISIBLE);
         imgCarga.setVisibility(View.GONE);

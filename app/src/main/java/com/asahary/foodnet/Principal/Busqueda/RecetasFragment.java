@@ -40,6 +40,7 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
     RecetasAdapter adaptador;
     RecyclerView lista;
     ArrayList<Receta> recetas=new ArrayList<>();
+    View emptyView;
 
     @Nullable
     @Override
@@ -49,7 +50,7 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
 
         //Le decimos que tiene una toolbar
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.usuarios_fragment, container, false);
+        return inflater.inflate(R.layout.favoritos_fragment, container, false);
     }
 
     @Override
@@ -60,11 +61,11 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
     }
 
     private void initVistas(View vista) {
-        lista = (RecyclerView) vista.findViewById(R.id.lista);
+        lista = (RecyclerView) vista.findViewById(R.id.rvFavoritos);
         adaptador = new RecetasAdapter(recetas, this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
+        emptyView=vista.findViewById(R.id.emptyView);
         iniciarLista();
     }
 
@@ -133,6 +134,16 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
 
         }else{//Si el texto esta vacio mostramos a todos los usuarios
             adaptador.swapDatos(recetas);
+        }
+    }
+
+    public void checkVacio(){
+        if (adaptador.getItemCount()==0){
+            lista.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }else{
+            lista.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
         }
     }
 }
