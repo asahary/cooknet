@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by Saha on 10/06/2017.
  */
 
-public class Cache {
+public class CacheApp {
     public static ArrayList<Receta> misRecetas=new ArrayList<>();
     public static ArrayList<Receta> misFavoritos=new ArrayList<>();
 
@@ -19,5 +19,5 @@ public class Cache {
 
     public static ArrayList<Evento> misEventos=new ArrayList<>();
 
-    public static Usuario user;
+    public static Usuario user=null;
 }

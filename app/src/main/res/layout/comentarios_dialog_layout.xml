@@ -12,9 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:hint="Tu comentario"
+        android:layout_toLeftOf="@+id/btnAceptar"
         android:gravity="bottom"/>
-    <ImageButton
+    <ImageView
     android:id="@+id/btnAceptar"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_add"

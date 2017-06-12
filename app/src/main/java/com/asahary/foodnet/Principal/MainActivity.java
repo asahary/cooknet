@@ -2,7 +2,6 @@ package com.asahary.foodnet.Principal;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,7 +25,7 @@ import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Principal.Usuario.RecetaTab;
-import com.asahary.foodnet.Utilidades.Cache;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
@@ -33,6 +33,7 @@ import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -53,13 +54,15 @@ public class MainActivity extends AppCompatActivity
     private TextView nav_user,nav_userTitle;
     public FragmentManager gestor;
     public static final int RQ_EDITAR_USER=7;
+    ImageView imgCarga;
 
 
     private void initVistas(){
         bottomView= (BottomNavigationView) findViewById(R.id.bottom_navigation);
         gestor=getSupportFragmentManager();
+        imgCarga= (ImageView) findViewById(R.id.imgCarga);
 
-       bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()){
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity
                 List<Usuario> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misSeguidores=new ArrayList<Usuario>(lista);
+                    CacheApp.misSeguidores=new ArrayList<Usuario>(lista);
                 }else{
                    // Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                 }
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity
                 List<Usuario> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misSiguiendo=new ArrayList<Usuario>(lista);
+                    CacheApp.misSiguiendo=new ArrayList<Usuario>(lista);
                 }else{
                     //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                 }
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 List<Receta> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misFavoritos=new ArrayList<Receta>(lista);
+                    CacheApp.misFavoritos=new ArrayList<Receta>(lista);
                 }else{
                     //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                 }
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                 List<Receta> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misRecetas=new ArrayList<Receta>(lista);
+                    CacheApp.misRecetas=new ArrayList<Receta>(lista);
                 }else{
                    //Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                 }
@@ -190,49 +193,53 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void cargarFragmentoMisFavoritos(){
+        mostrarCarga();
         Libreria.obtenerServicioApi().favoritosUser(idUsuario).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
                 List<Receta> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misFavoritos=new ArrayList<Receta>(lista);
+                    CacheApp.misFavoritos=new ArrayList<Receta>(lista);
                 }else{
                     Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
-                    Cache.misFavoritos=new ArrayList<Receta>();
+                    CacheApp.misFavoritos=new ArrayList<Receta>();
                 }
-
-                cargarFragmento(R.id.fragment, RecetaTab.newInstance(Cache.misFavoritos));
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos));
+                ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Receta>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
-                cargarFragmento(R.id.fragment, RecetaTab.newInstance(Cache.misFavoritos));
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos));
+                ocultarCarga();
             }
         });
     }
 
     public void cargarFragmentoMisEventos(){
+        mostrarCarga();
         Libreria.obtenerServicioApi().eventosUser(idUsuario).enqueue(new Callback<List<Evento>>() {
             @Override
             public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
                 List<Evento> lista=response.body();
 
                 if(lista!=null){
-                    Cache.misEventos=new ArrayList<Evento>(lista);
+                    CacheApp.misEventos=new ArrayList<Evento>(lista);
                 }else{
                     Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
-                    Cache.misEventos=new ArrayList<Evento>();
+                    CacheApp.misEventos=new ArrayList<Evento>();
                 }
-
-                cargarFragmento(R.id.fragment, EventoFragment.newInstance(Cache.misEventos));
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos));
+                ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Evento>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
-                cargarFragmento(R.id.fragment, EventoFragment.newInstance(Cache.misEventos));
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos));
+                ocultarCarga();
             }
         });
     }
@@ -247,7 +254,7 @@ public class MainActivity extends AppCompatActivity
         //Al poner esta actividad como padre a la vuelta se ejecuta onCreate again entonces no trae un intent
         // nuevo asi que tenemos que controlar que no sea nulo
 
-        user=Cache.user;
+        user= CacheApp.user;
         idUsuario=Integer.parseInt(user.getId());
 
 
@@ -313,8 +320,18 @@ public class MainActivity extends AppCompatActivity
 
     private void rellenarCabecera() {
         nav_userTitle.setText(user.getNick());
-        nav_user.setText(user.getNombre());
+        nav_user.setText("Toca para ver tu perfil");
         Picasso.with(this).load(user.getImagen()).fit().into(imgNav);
+    }
+    private void mostrarCarga(){
+        findViewById(R.id.fragment).setVisibility(View.GONE);
+        imgCarga.setVisibility(View.VISIBLE);
+        Glide.with(this).load(R.drawable.loading).fitCenter().fitCenter().into(imgCarga);
+    }
+
+    private void ocultarCarga(){
+        findViewById(R.id.fragment).setVisibility(View.VISIBLE);
+        imgCarga.setVisibility(View.GONE);
     }
 
     @Override
@@ -338,8 +355,8 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode==RESULT_OK){
             if(requestCode==RQ_EDITAR_USER){
-                Cache.user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
-                user=Cache.user;
+                CacheApp.user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
+                user= CacheApp.user;
 
 
                 //Si le ha dado de baja al usuario le hacemos salir

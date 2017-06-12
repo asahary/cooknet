@@ -106,10 +106,18 @@
                     android:layout_height="wrap_content"
                     android:hint="Ingredientes"
                     android:layout_below="@+id/lblIngredientes" />
-
+<TextView
+    android:id="@+id/lblRating"
+    android:text="Valoracion"
+    android:layout_below="@+id/Ingredientes"
+    style="@style/Base.TextAppearance.AppCompat.Title"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="10dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
                 <RatingBar
                     android:id="@+id/rating"
-                    android:layout_below="@+id/Ingredientes"
+                    android:layout_below="@+id/lblRating"
                     android:layout_width="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content" />
@@ -129,6 +137,7 @@
                         android:layout_toRightOf="@+id/lblCreador"
                         android:id="@+id/lblNombreUsuario"
                         android:hint="jojo"
+                        style="@style/TextAppearance.AppCompat.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </RelativeLayout>

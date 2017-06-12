@@ -2,7 +2,6 @@ package com.asahary.foodnet.Principal;
 
 import android.content.Intent;
 import android.os.StrictMode;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,7 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Utilidades.Cache;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
@@ -111,11 +110,11 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                 if(mensaje!=null){
                     if(favorito){
                         favorito=false;
-                        Cache.misFavoritos.remove(receta);
+                        CacheApp.misFavoritos.remove(receta);
                         menu.getItem(0).setIcon(R.drawable.ic_favorite);
                     }else{
                         favorito=true;
-                        Cache.misFavoritos.add(receta);
+                        CacheApp.misFavoritos.add(receta);
                         menu.getItem(0).setIcon(R.drawable.ic_fav_black);
                     }
                     Libreria.mostrarMensjeCorto(RecetaActivity.this,mensaje);
@@ -195,6 +194,8 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                             Intent intentUser=new Intent(RecetaActivity.this,UsuarioActivity.class);
                             intentUser.putExtra(Constantes.EXTRA_USUARIO,cuerpo);
                             startActivity(intentUser);
+                        }else{
+                            Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
                         }
                     }
 
@@ -241,21 +242,21 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     }
 
     public void rellanarPuntuacion() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-        CookNetService servicio=retrofit.create(CookNetService.class);
-        Call<Float> call=servicio.obtenerPuntuacion(Integer.parseInt(receta.getIdReceta()));
-
-        call.enqueue(new Callback<Float>() {
+        Libreria.obtenerServicioApi().obtenerPuntuacion(Integer.parseInt(receta.getIdReceta())).enqueue(new Callback<Float>() {
             @Override
             public void onResponse(Call<Float> call, Response<Float> response) {
                 Float respuesta=response.body();
 
-                ratingBar.setRating(respuesta);
+                if(response!=null){
+                    ratingBar.setRating(respuesta);
+                }else{
+                    Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
+                }
             }
 
             @Override
             public void onFailure(Call<Float> call, Throwable t) {
-
+                Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_FALLIDA);
             }
         });
     }

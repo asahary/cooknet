@@ -71,15 +71,6 @@ public class BusquedaActivity extends AppCompatActivity {
         });
     }
 
-    public void cargarFragmento(int id, Fragment frag) {
-        if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
-            getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
-        }
-        FragmentTransaction transaccion = gestor.beginTransaction();
-        transaccion.replace(id, frag);
-        transaccion.commit();
-
-    }
     private void configViewPager() {
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

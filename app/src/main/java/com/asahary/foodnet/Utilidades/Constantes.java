@@ -13,6 +13,7 @@ import com.asahary.foodnet.CookNetService;
     public static final String EXTRA_PREPARACION ="extraPreparacion";
     public static final String EXTRA_ID_USUARIO ="extraIdUsuario";
     public static final String EXTRA_ID_RECETA ="extraIdReceta";
+    public static String EXTRA_COMENTARIO="extraComentario";
 
     public static final String EXTRA_OPCION_LISTA="tipoDeLista";
    public static final String EXTRA_LISTA_MIS_RECETA="listaMisRecetas";
@@ -30,4 +31,5 @@ import com.asahary.foodnet.CookNetService;
 
     public static final String RESPUESTA_NULA="La lista esta vacia";
     public static final String RESPUESTA_FALLIDA="No se pudo obtener los datos";
+
 }

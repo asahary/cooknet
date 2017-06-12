@@ -11,16 +11,18 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Utilidades.Cache;
-import com.asahary.foodnet.Utilidades.Constantes;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.Utilidades.Libreria;
+import com.bumptech.glide.Glide;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +38,7 @@ public class LogInActivity extends AppCompatActivity {
     EditText txtNick,txtPass;
     Button btnAccess;
     TextView lblRegistrar;
+    ImageView imgCarga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,23 @@ public class LogInActivity extends AppCompatActivity {
         initVistas();
     }
 
+    private void mostrarCarga(){
+        txtPass.setEnabled(false);
+        txtNick.setEnabled(false);
+        imgCarga.setVisibility(View.VISIBLE);
+        btnAccess.setVisibility(View.GONE);
+        lblRegistrar.setVisibility(View.GONE);
+        Glide.with(LogInActivity.this).load(R.drawable.loading).asGif().fitCenter().into(imgCarga);
+    }
+    private void ocultarCarga(){
+        txtPass.setEnabled(true);
+        txtNick.setEnabled(true);
+        imgCarga.setVisibility(View.GONE);
+        btnAccess.setVisibility(View.VISIBLE);
+        lblRegistrar.setVisibility(View.VISIBLE);
+    }
     public void initVistas(){
+        imgCarga= (ImageView) findViewById(R.id.imgCarga);
         txtNick= (EditText) findViewById(R.id.txtNick);
         txtPass = (EditText) findViewById(R.id.txtPass);
         btnAccess = (Button) findViewById(R.id.btnAccess);
@@ -73,30 +92,18 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //Creamos el retrofit poniendole la url base y el convertidor de Gson
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CookNetService.URL_BASE)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                //Creamos la interfaz que contiene los metodos que llaman a la api
-                CookNetService apiLogin= retrofit.create(CookNetService.class);
-
-                //Ejecutamos el metodo que hace log in de la interfaz
-                Call<Usuario> call = apiLogin.login(txtNick.getText().toString(),txtPass.getText().toString());
-
-                //Hacemos una llamada asincrona
-                call.enqueue(new Callback<Usuario>() {
+                mostrarCarga();
+                Libreria.obtenerServicioApi().login(txtNick.getText().toString(),txtPass.getText().toString()).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, final Response<Usuario> response) {
-final Usuario user=response.body();
+                        final Usuario user=response.body();
+                        ocultarCarga();
                         if(user!=null){
                             if(Integer.parseInt(user.getBaja())==1){
                                 //Si esta dado de baja mostrar un dialogo que le diga que debe darse de alta para acceder
                                 new AlertDialog.Builder(LogInActivity.this)
                                         .setTitle("Activar usuario")
                                         .setMessage("Este usuario esta desactivado. ¿Quieres reactivarlo?")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
                                         .setPositiveButton("Si ", new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -106,37 +113,39 @@ final Usuario user=response.body();
                                                         Boolean cuerpo=response.body();
                                                         if(cuerpo!=null){
                                                             user.setBaja("0");
-                                                            Cache.user=user;
+                                                            CacheApp.user=user;
                                                             Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
                                                             startActivity(intent);
                                                             finish();
+                                                        }else{
+                                                            Libreria.mostrarMensjeCorto(LogInActivity.this,Constantes.RESPUESTA_NULA);
                                                         }
                                                     }
 
                                                     @Override
                                                     public void onFailure(Call<Boolean> call, Throwable t) {
-
+                                                        Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
                                                     }
                                                 });
                                             }})
                                         .setNegativeButton("No",null).show();
                             }else{
                                 //Accedemos a la aplicacion
-                                Cache.user=response.body();
+                                CacheApp.user=response.body();
                                 Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
                         }else{
                             //Login fallido
-                            Toast.makeText(LogInActivity.this, "Cuerpo nullo", Toast.LENGTH_SHORT).show();
+                            Libreria.mostrarMensjeCorto(LogInActivity.this,"Alguno de los datos estan mal");
                         }
 
                     }
 
                     @Override
                     public void onFailure(Call<Usuario> call, Throwable t) {
-                        Toast.makeText(LogInActivity.this, "Respuesta fallida", Toast.LENGTH_SHORT).show();
+                        Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
                     }
                 });
 

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.Cache;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.asahary.foodnet.Adaptadores.ComentariosAdapter;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Comentario;
@@ -23,6 +26,7 @@ import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,19 +46,14 @@ public class ComentariosDialog extends DialogFragment implements ComentariosAdap
     View vista;
     RecyclerView lista;
     EditText txtComentario;
-    ImageButton btnOk;
+    ImageView btnOk;
     Receta receta;
     ComentariosAdapter adaptador;
     ArrayList<Comentario> comentarios=new ArrayList<>();
 
 
 public void iniciarLista(){
-    Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-    CookNetService service=retrofit.create(CookNetService.class);
-
-    Call<List<Comentario>> call=service.comentariosReceta(Integer.parseInt(receta.getIdReceta()));
-
-    call.enqueue(new Callback<List<Comentario>>() {
+    Libreria.obtenerServicioApi().comentariosReceta(Integer.parseInt(receta.getIdReceta())).enqueue(new Callback<List<Comentario>>() {
         @Override
         public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
             List<Comentario> respuesta=response.body();
@@ -63,13 +62,13 @@ public void iniciarLista(){
                 comentarios=new ArrayList<>(respuesta);
                 adaptador.swapDatos(comentarios);
             }else{
-                Toast.makeText(getContext(), "Cuerpo nullo", Toast.LENGTH_SHORT).show();
+                Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_NULA);
             }
         }
 
         @Override
         public void onFailure(Call<List<Comentario>> call, Throwable t) {
-            Toast.makeText(getContext(), "Respuesta fallida", Toast.LENGTH_SHORT).show();
+            Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_FALLIDA);
         }
     });
 }
@@ -86,7 +85,7 @@ public void iniciarLista(){
         adaptador=new ComentariosAdapter(comentarios,this);
 
         txtComentario= (EditText) vista.findViewById(R.id.txtComentario);
-        btnOk= (ImageButton) vista.findViewById(R.id.btnAceptar);
+        btnOk= (ImageView) vista.findViewById(R.id.btnAceptar);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         lista.setAdapter(adaptador);
@@ -97,11 +96,9 @@ public void iniciarLista(){
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-                CookNetService service =retrofit.create(CookNetService.class);
-                Call<String>call=service.subirComentario(txtComentario.getText().toString(),Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()), MainActivity.idUsuario);
-
-                call.enqueue(new Callback<String>() {
+                 Libreria.obtenerServicioApi().
+                         subirComentario(txtComentario.getText().toString(),Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()), Integer.parseInt(CacheApp.user.getId()))
+                         .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
 
@@ -130,11 +127,7 @@ public void iniciarLista(){
 
         @Override
         public void itemClic(Comentario comentario) {
-            Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-            CookNetService service = retrofit.create(CookNetService.class);
-
-            Call<Usuario> call3 = service.getUsuario(Integer.parseInt(comentario.getIdUsuario()));
-            call3.enqueue(new Callback<Usuario>() {
+            Libreria.obtenerServicioApi().getUsuario(Integer.parseInt(comentario.getIdUsuario())).enqueue(new Callback<Usuario>() {
                 @Override
                 public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                     Usuario usuario=response.body();
@@ -143,12 +136,14 @@ public void iniciarLista(){
                         Intent intentUser=new Intent(ComentariosDialog.this.getContext(),UsuarioActivity.class);
                         intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
                         startActivity(intentUser);
+                    }else{
+                        Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_NULA);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Usuario> call, Throwable t) {
-
+                    Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_FALLIDA);
                 }
             });
         }

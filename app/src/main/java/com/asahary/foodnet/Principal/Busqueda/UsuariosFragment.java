@@ -22,6 +22,7 @@ import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +41,6 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
     UsuariosAdapter adaptador;
     RecyclerView lista;
-    EditText txtTexto;
-    Spinner spCategorias;
     ArrayList<Usuario> usuarios=new ArrayList<>();
 
     @Nullable
@@ -111,29 +110,9 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
 
     @Override
     public void itemClic(Usuario usuario) {
-
-        Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-        CookNetService service = retrofit.create(CookNetService.class);
-
-        Call<Usuario> call3 = service.getUsuario(Integer.parseInt(usuario.getId()));
-        call3.enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                Usuario usuario=response.body();
-
-                if(usuario!=null){
-                    Intent intentUser=new Intent(UsuariosFragment.this.getContext(),UsuarioActivity.class);
-                    intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
-                    startActivity(intentUser);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-
-            }
-        });
-
+        Intent intentUser=new Intent(UsuariosFragment.this.getContext(),UsuarioActivity.class);
+        intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+        startActivity(intentUser);
     }
 
 

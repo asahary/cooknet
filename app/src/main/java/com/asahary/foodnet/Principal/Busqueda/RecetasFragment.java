@@ -21,6 +21,7 @@ import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Adaptadores.RecetasAdapter;
 import com.asahary.foodnet.Principal.RecetaActivity;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecetasFragment extends Fragment implements RecetasAdapter.OnReciclerItemClickListener,BusquedaActivity.OnTextToolbarTextChange{
     RecetasAdapter adaptador;
     RecyclerView lista;
-    EditText txtTexto;
-    Spinner spCategorias;
     ArrayList<Receta> recetas=new ArrayList<>();
 
     @Nullable
@@ -61,10 +60,7 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
     }
 
     private void initVistas(View vista) {
-        spCategorias = (Spinner) vista.findViewById(R.id.spCategoria);
         lista = (RecyclerView) vista.findViewById(R.id.lista);
-
-
         adaptador = new RecetasAdapter(recetas, this);
         lista.setAdapter(adaptador);
         lista.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -73,11 +69,8 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
     }
 
     private void iniciarLista(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-        CookNetService servicio = retrofit.create(CookNetService.class);
-        Call<List<Receta>> call=servicio.listRecetas();
 
-        call.enqueue(new Callback<List<Receta>>() {
+        Libreria.obtenerServicioApi().listRecetas().enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
                 List<Receta> respuesta=response.body();

@@ -1,5 +1,8 @@
 package com.asahary.foodnet.POJO;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Saha on 29/05/2017.
  */
 
-public class Comentario {
+public class Comentario implements Parcelable{
 
     @SerializedName("nombre")
     @Expose
@@ -30,6 +33,8 @@ public class Comentario {
     @SerializedName("comentario")
     @Expose
     private String comentario;
+
+
 
     public String getNombre() {
         return nombre;
@@ -87,4 +92,41 @@ public class Comentario {
         this.comentario = comentario;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(nombre);
+        parcel.writeString(imagen);
+        parcel.writeString(idUsuario);
+        parcel.writeString(idCreador);
+        parcel.writeString(idReceta);
+        parcel.writeString(fecha);
+        parcel.writeString(comentario);
+    }
+
+    protected Comentario(Parcel in) {
+        nombre = in.readString();
+        imagen = in.readString();
+        idUsuario = in.readString();
+        idCreador = in.readString();
+        idReceta = in.readString();
+        fecha = in.readString();
+        comentario = in.readString();
+    }
+
+    public static final Creator<Comentario> CREATOR = new Creator<Comentario>() {
+        @Override
+        public Comentario createFromParcel(Parcel in) {
+            return new Comentario(in);
+        }
+
+        @Override
+        public Comentario[] newArray(int size) {
+            return new Comentario[size];
+        }
+    };
 }

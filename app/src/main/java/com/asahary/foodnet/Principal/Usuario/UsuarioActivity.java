@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Utilidades.Cache;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
@@ -119,7 +119,7 @@ public class UsuarioActivity extends FragmentActivity {
                             configurarBotonFollow(sigue);
 
                             if(sigue){
-                                seguidores.add(Cache.user);
+                                seguidores.add(CacheApp.user);
                             }else{
                                 for(int i=0;i<seguidores.size();i++){
                                     int id=Integer.parseInt(seguidores.get(i).getId());

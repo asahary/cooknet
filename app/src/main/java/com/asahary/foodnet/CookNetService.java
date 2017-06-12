@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -130,6 +131,15 @@ public interface CookNetService {
     @FormUrlEncoded
     @POST("recetas/comentarios")
     Call<String>subirComentario(@Field("comentario") String fav,@Field("idCreador") int idCreador,@Field("idReceta") int idReceta,@Field("idUsuario")int idUsuario);
+
+    @FormUrlEncoded
+    @PUT("recetas/comentarios/eliminar")
+    Call<Boolean>eliminarComentario(@Field("idUser") int idUser,@Field("idReceta") int idReceta);
+
+
+    @FormUrlEncoded
+    @PUT("recetas/comentarios")
+    Call<Boolean>editarComentario(@Field("idUser") int idUser,@Field("idReceta") int idReceta,@Field("comentario")String nuevoComentario);
 
     @FormUrlEncoded
     @POST("recetas/valorar")
