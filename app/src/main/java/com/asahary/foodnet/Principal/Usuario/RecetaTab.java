@@ -14,9 +14,8 @@ import android.widget.ImageView;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Adaptadores.RecetasAdapter;
-import com.asahary.foodnet.Principal.RecetaActivity;
+import com.asahary.foodnet.Actividades.RecetaActivity;
 import com.asahary.foodnet.R;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 public class RecetaTab extends Fragment implements RecetasAdapter.OnReciclerItemClickListener{
 
     RecyclerView lista;
-    RecetasAdapter adaptador;
+    public RecetasAdapter adaptador;
     ArrayList<Receta> listaRecetas=new ArrayList<Receta>();
     View emptyView;
     private ImageView imgCarga;

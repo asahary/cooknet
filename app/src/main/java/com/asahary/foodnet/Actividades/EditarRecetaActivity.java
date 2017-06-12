@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal.Agregar;
+package com.asahary.foodnet.Actividades;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,17 +24,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
-import com.asahary.foodnet.Principal.MainActivity;
+import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
+import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
+import com.asahary.foodnet.Principal.Agregar.PreparacionDialog;
 import com.asahary.foodnet.R;
-import com.asahary.foodnet.Utilidades.GestorImagenes;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -52,19 +54,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,GestorImagenes.ImageRequester,PreparacionDialog.OnPrepDone {
+public class EditarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,PreparacionDialog.OnPrepDone{
+
+    Receta receta;
+    Switch sw;
     RecyclerView lista;
     IngredienteAdapter adaptador;
-    ImageView btnAgregar;
+    TextView lblMostrar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
     EditText txtNombre,txtDescripcion,txtPreparacion;
-    Spinner spCategoria;
+    ImageView btnAgregar;
+    ImageView imgReceta;
+    ImageView img;
     FloatingActionButton fab;
     Intent intent;
     String sOriginal="";
-    ImageView img;
     String nombreArchivo="";
     File file;
+
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
@@ -72,10 +79,13 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     private static final int RQ_GALERIA =2;
     private static final int RQ_CAMARA=3;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_receta);
+        setTitle(Constantes.TITULO_EDITAR_RECETA);
+        setContentView(R.layout.activity_editar_receta);
+
         initVistas();
     }
 
@@ -85,54 +95,38 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_done:
-                if(!comprobarCampos()){
-                    subirReceta();
-                    if(file!=null){
-                        subirFoto();
-                    }
-                }else{
-                    Toast.makeText(AgregarRecetaActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            //Si no es ninguno de los botones que nosostros implementamos utiliza los de por
-            // defecto para que pueda volver a la actividad principal
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
-
-    public void initVistas(){
-
-        img= (ImageView) findViewById(R.id.imgReceta);
-        fab= (FloatingActionButton) findViewById(R.id.fab);
-        spCategoria= (Spinner)findViewById(R.id.spCategoria);
+    private void initVistas() {
+        sw= (Switch) findViewById(R.id.sw);
+        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
         txtNombre= (EditText) findViewById(R.id.txtNombre);
-        txtDescripcion= (EditText)findViewById(R.id.txtDescripcion);
-        txtPreparacion= (EditText)findViewById(R.id.txtPreparacion);
-        lista= (RecyclerView)findViewById(R.id.Ingredientes);
+        txtDescripcion= (EditText) findViewById(R.id.txtDescripcion);
+        txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
         btnAgregar= (ImageView) findViewById(R.id.btnAgregar);
+        imgReceta=(ImageView) findViewById(R.id.imgReceta);
+        lista= (RecyclerView) findViewById(R.id.Ingredientes);
+        fab= (FloatingActionButton) findViewById(R.id.fab);
+        ingredientes=leerIngredientes();
         adaptador=new IngredienteAdapter(ingredientes);
         lista.setAdapter(adaptador);
-        lista.setLayoutManager(new LinearLayoutManager(AgregarRecetaActivity.this, LinearLayoutManager.VERTICAL, false));
+        lista.setLayoutManager(new LinearLayoutManager(EditarRecetaActivity.this,LinearLayoutManager.VERTICAL,false));
+
+        rellenarCampos();
+
 
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                anhadirIngrediente();
+                ingredientes.add(new Ingrediente());
+                adaptador.notifyDataSetChanged();
             }
         });
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ImagenOptionDialog().show(getSupportFragmentManager(),"Imagen");
+                new ImagenOptionDialog().show(getSupportFragmentManager(),"Alo");
             }
         });
+
         txtPreparacion.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -149,54 +143,18 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
             }
         });
     }
+    private void rellenarCampos(){
 
+        txtNombre.setText(receta.getNombre());
+        txtDescripcion.setText(receta.getDescripcion());
+        txtPreparacion.setText(receta.getPreparacion());
+        Picasso.with(this).load(receta.getImagen()).error(R.drawable.food_generic).fit().into(imgReceta);
 
-    //Añade un nuevo Ingrediente a la la lista
-    private void anhadirIngrediente() {
-        ingredientes.add(new Ingrediente());
-        adaptador.swapDatos(ingredientes);
-    }
-
-    //Hace la llamada post que sube la receta
-    private void subirReceta(){
-
-        String nombre=txtNombre.getText().toString();
-        String descripcion=txtDescripcion.getText().toString();
-        String preparacion=txtPreparacion.getText().toString();
-        String rutaImagen="";
-
-        if(file==null){
-            rutaImagen=Constantes.URL_COMIDA;
+        if(Boolean.valueOf(receta.getBajaReceta())){
+            sw.setChecked(false);
         }else{
-            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
+            sw.setChecked(true);
         }
-
-        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-
-        CookNetService servicio=retrofit.create(CookNetService.class);
-
-        Call<String> llamada = servicio.aregarReceta(MainActivity.idUsuario,nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
-
-        llamada.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String respuesta=response.body();
-                if(respuesta!=null){
-                    Toast.makeText(AgregarRecetaActivity.this,respuesta,Toast.LENGTH_SHORT).show();
-                    finish();
-                }else{
-                    Toast.makeText(AgregarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(AgregarRecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
     }
 
     private boolean comprobarCampos(){
@@ -204,8 +162,99 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         String descripcion=txtNombre.getText().toString();
         String preparacion=txtPreparacion.getText().toString();
 
-
         return (nombre.isEmpty() || descripcion.isEmpty() || preparacion.isEmpty() || ingredientes.isEmpty());
+    }
+
+    private void subirReceta(){
+
+        final String nombre=txtNombre.getText().toString();
+        final String descripcion=txtDescripcion.getText().toString();
+        final String preparacion=txtPreparacion.getText().toString();
+        String rutaImagen="";
+
+        if(file==null){
+            rutaImagen=receta.getImagen();
+        }else{
+            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
+            receta.setImagen(rutaImagen);
+        }
+
+        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
+
+        CookNetService servicio=retrofit.create(CookNetService.class);
+
+        Call<String> llamada = servicio.actualizarReceta(Integer.parseInt(receta.getIdReceta()),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen,sw.isChecked()?0:1);
+
+        llamada.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String respuesta=response.body();
+                if(respuesta!=null){
+                    Toast.makeText(EditarRecetaActivity.this,respuesta,Toast.LENGTH_SHORT).show();
+                    receta.setNombre(nombre);
+                    receta.setDescripcion(descripcion);
+                    receta.setIngredientes(formatearIngredientes());
+                    receta.setPreparacion(preparacion);
+                    receta.setBajaReceta(String.valueOf(sw.isChecked()));
+
+                    Intent resultIntent =new  Intent();
+                    resultIntent.putExtra(Constantes.EXTRA_RECETA,receta);
+                    setResult(RESULT_OK,resultIntent);
+                    finish();
+                }else{
+                    Toast.makeText(EditarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(EditarRecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_done:
+                if(!comprobarCampos()){
+                    subirReceta();
+                    if(file!=null){
+                        subirFoto();
+                    }
+                }else{
+                    Toast.makeText(EditarRecetaActivity.this,"Alguno de los campos esta vacio",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default: super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    //Separa la cadena de ingredientes para darle formato
+    private ArrayList<Ingrediente> leerIngredientes(){
+        ArrayList<Ingrediente> nuevaLista=new ArrayList<>();
+
+
+        //Obtenemos es array de medidas
+        String[] medidas=getResources().getStringArray(R.array.medidas);
+
+        String[] ingredientes =receta.getIngredientes().split("%");
+
+        for (int i=0;i<ingredientes.length;i++){
+            String[] componentes= ingredientes[i].split(":");
+
+            double cant=Double.parseDouble(componentes[0]);
+            int medida=Integer.parseInt(componentes[1]);
+            String nombre=componentes[2];
+
+            nuevaLista.add(new Ingrediente(cant,medida,nombre));
+
+        }
+        return  nuevaLista;
     }
 
     //Crea una cadena a base de todos los ingredientes de la lista
@@ -237,7 +286,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         if(resultCode==RESULT_OK){
             switch (requestCode){
                 case RQ_GALERIA:
-                    if(hasPermission(AgregarRecetaActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    if(hasPermission(EditarRecetaActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
                         procesarUri();
                     }
                     else {
@@ -247,10 +296,10 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     }
                     break;
                 case RQ_CAMARA:
-                    if(hasPermission(AgregarRecetaActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    if(hasPermission(EditarRecetaActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
 
-                       String path= file.getAbsoluteFile().getAbsolutePath();
-                        Picasso.with(AgregarRecetaActivity.this).load(file).fit().into(img);
+                        String path= file.getAbsoluteFile().getAbsolutePath();
+                        Picasso.with(EditarRecetaActivity.this).load(file).fit().into(imgReceta);
 
 
                     }
@@ -265,8 +314,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         }
 
     }
-
-
 
     //--OPCIONES DE PERMISOS
     //Comprobar si tiene el permiso
@@ -312,7 +359,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
             f = new File(sOriginal);
             file=f;
         }
-        Picasso.with(AgregarRecetaActivity.this).load(f).fit().error(R.drawable.ic_check).into(img);
+        Picasso.with(EditarRecetaActivity.this).load(f).fit().error(R.drawable.ic_check).into(imgReceta);
     }
 
     private void procesarUri(){
@@ -359,7 +406,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     nombre);
             Log.d(getString(R.string.app_name), archivo.getAbsolutePath());
         }
-        Toast.makeText(AgregarRecetaActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
+        Toast.makeText(EditarRecetaActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
         this.file=archivo;
 
         // Se retorna el archivo creado.
@@ -422,10 +469,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         }
     }
 
-    @Override
-    public ImageView getImage() {
-        return img;
-    }
 
     public void subirFoto(){
 
@@ -435,7 +478,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
         RequestBody descripcion =RequestBody.create(MultipartBody.FORM,file.getName());
 
-        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create())).baseUrl(CookNetService.URL_BASE).build();
 
         CookNetService service = retrofit.create(CookNetService.class);
 
@@ -446,7 +489,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
                 if(response.body()!=null){
-
+                    Picasso.with(EditarRecetaActivity.this).load(receta.getImagen()).fit().into(imgReceta);
                 }
 
                 else{
@@ -457,7 +500,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(AgregarRecetaActivity.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditarRecetaActivity.this,t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -467,4 +510,3 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         txtPreparacion.setText(preparacion);
     }
 }
-

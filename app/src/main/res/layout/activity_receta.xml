@@ -50,11 +50,14 @@
                 <TextView
                     android:id="@+id/lblNombre"
                     android:text="Nombre"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="7dp"
                     style="@style/Base.TextAppearance.AppCompat.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/txtNombre"
+                    android:layout_marginLeft="10dp"
                     android:layout_below="@+id/lblNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,6 +66,7 @@
                 <TextView
                     android:id="@+id/lblDescripcion"
                     android:layout_marginTop="10dp"
+                    android:layout_marginLeft="7dp"
                     android:layout_below="@+id/txtNombre"
                     android:text="Descripción"
                     style="@style/Base.TextAppearance.AppCompat.Title"
@@ -70,6 +74,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:layout_marginLeft="10dp"
                     android:id="@+id/txtDescripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,6 +84,7 @@
                 <TextView
                     android:id="@+id/lblPreparacion"
                     android:layout_marginTop="10dp"
+                    android:layout_marginLeft="7dp"
                     android:layout_below="@+id/txtDescripcion"
                     android:text="Preparación"
                     style="@style/Base.TextAppearance.AppCompat.Title"
@@ -88,6 +94,7 @@
                 <TextView
                     android:id="@+id/txtPreparacion"
                     android:hint="Preparacion"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/lblPreparacion" />
@@ -95,6 +102,7 @@
                 <TextView
                     android:id="@+id/lblIngredientes"
                     android:layout_marginTop="10dp"
+                    android:layout_marginLeft="7dp"
                     android:layout_below="@+id/txtPreparacion"
                     android:text="Ingredientes"
                     style="@style/Base.TextAppearance.AppCompat.Title"
@@ -102,6 +110,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/Ingredientes"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ingredientes"

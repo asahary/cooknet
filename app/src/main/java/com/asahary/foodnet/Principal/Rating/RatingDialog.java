@@ -15,7 +15,7 @@ import android.widget.RatingBar;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
-import com.asahary.foodnet.Principal.MainActivity;
+import com.asahary.foodnet.Actividades.MainActivity;
 import com.asahary.foodnet.R;
 
 import retrofit2.Call;

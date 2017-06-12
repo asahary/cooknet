@@ -1,34 +1,27 @@
-package com.asahary.foodnet.Principal.Busqueda;
+package com.asahary.foodnet.Actividades;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
 
-import com.asahary.foodnet.Principal.Favoritos.FavoritosFragment;
-import com.asahary.foodnet.Principal.Usuario.RecetaTab;
-import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
-import com.asahary.foodnet.Principal.Usuario.UsuariosTab;
+import com.asahary.foodnet.Principal.Busqueda.RecetasFragment;
+import com.asahary.foodnet.Principal.Busqueda.UsuariosFragment;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusquedaActivity extends AppCompatActivity {
+public class  BusquedaActivity extends AppCompatActivity {
     ViewPager viewPager;
     FragmentManager gestor;
     ViewPagerAdapter viewPagerAdapter;
@@ -148,7 +141,7 @@ public class BusquedaActivity extends AppCompatActivity {
 
     }
 
-    interface OnTextToolbarTextChange{
+    public interface OnTextToolbarTextChange{
         void onTextChanged(String Text);
     }
 

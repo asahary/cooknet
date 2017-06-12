@@ -12,19 +12,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.asahary.foodnet.Actividades.UsuarioActivity;
 import com.asahary.foodnet.Utilidades.Constantes;
-import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Adaptadores.UsuariosAdapter;
 import com.asahary.foodnet.R;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Saha on 06/06/2017.
@@ -32,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerItemClickListener {
 
-    UsuariosAdapter adaptador;
+    public UsuariosAdapter adaptador;
     RecyclerView lista;
     View emptyView;
     ArrayList<Usuario> listaUsuarios = new ArrayList<>();

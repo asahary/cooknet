@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.asahary.foodnet.Principal.Usuario.UsuarioActivity">
+    tools:context="com.asahary.foodnet.Actividades.UsuarioActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgUsuario"
@@ -36,6 +36,15 @@
             android:text="Nombre"/>
         <TextView
             style="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/lblApellidos"
+            android:layout_marginLeft="7dp"
+            android:layout_alignBaseline="@+id/lblNombre"
+            android:layout_toRightOf="@+id/lblNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos"/>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
             android:id="@+id/lblEmail"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/lblNombre"
@@ -51,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/datos"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="10dp"/>
 <android.support.v4.view.ViewPager
     android:id="@+id/pager"
     android:layout_marginTop="20dp"

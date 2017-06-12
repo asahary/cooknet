@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal;
+package com.asahary.foodnet.Actividades;
 
 import android.content.Intent;
 import android.os.StrictMode;
@@ -20,7 +20,6 @@ import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.Principal.Rating.RatingDialog;
-import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
 import com.bumptech.glide.Glide;
@@ -50,6 +49,8 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receta);
+        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
+        setTitle(receta.getNombre());
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         initVistas();
@@ -165,8 +166,6 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         imgReceta= (ImageView) findViewById(R.id.imgReceta);
         ratingBar= (RatingBar) findViewById(R.id.rating);
 
-
-        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
 
         //No se hace onclick porque onTouch lo sobrescribe
         ratingBar.setOnTouchListener(new View.OnTouchListener() {

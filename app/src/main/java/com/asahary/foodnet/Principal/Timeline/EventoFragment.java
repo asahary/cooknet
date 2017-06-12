@@ -4,22 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.asahary.foodnet.Actividades.MainActivity;
 import com.asahary.foodnet.Adaptadores.EventoAdapter;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
-import com.asahary.foodnet.Principal.MainActivity;
-import com.asahary.foodnet.Principal.RecetaActivity;
-import com.asahary.foodnet.Principal.Usuario.UsuarioActivity;
+import com.asahary.foodnet.Actividades.RecetaActivity;
+import com.asahary.foodnet.Actividades.UsuarioActivity;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
 
@@ -89,7 +91,7 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
                         Usuario usuario=response.body();
 
                         if(usuario!=null){
-                            Intent intentUser=new Intent(EventoFragment.this.getContext(),UsuarioActivity.class);
+                            Intent intentUser=new Intent(getActivity(),UsuarioActivity.class);
                             intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
                             startActivity(intentUser);
                         }
@@ -131,7 +133,32 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        View vista= getView();
+        final SwipeRefreshLayout vista= (SwipeRefreshLayout) getView();
+        vista.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Libreria.obtenerServicioApi().eventosUser(Integer.parseInt(CacheApp.user.getId())).enqueue(new Callback<List<Evento>>() {
+                    @Override
+                    public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
+                        List<Evento> cuerpo=response.body();
+
+                        vista.setRefreshing(false);
+                        if(cuerpo!=null){
+                            CacheApp.misEventos=new ArrayList<Evento>(cuerpo);
+                            adaptador.swapDatos(CacheApp.misEventos);
+                        }else{
+                            Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_NULA);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Evento>> call, Throwable t) {
+                        vista.setRefreshing(false);
+                        Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_FALLIDA);
+                    }
+                });
+            }
+        });
         initVistas(vista);
     }
     @Nullable

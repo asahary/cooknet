@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal;
+package com.asahary.foodnet.Actividades;
 
 import android.Manifest;
 import android.content.Context;
@@ -29,12 +29,14 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -56,7 +58,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick{
 
-    Usuario user;
     EditText txtNick,txtEmail,txtNombre,txtApellidos,txtOldPass,txtNewPass1,txtNewPass2;
     CircleImageView img;
     FloatingActionButton fab;
@@ -74,17 +75,19 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     private static final int RQ_PERMISOS = 1;
     private static final int RQ_GALERIA =2;
     private static final int RQ_CAMARA=3;
+    private Usuario user;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_usuario);
+        setTitle(Constantes.TITULO_EDITAR_PERFIL);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        user=getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
+        user=CacheApp.user;
         initVistas();
         rellenarCampos();
     }
@@ -102,6 +105,8 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             case R.id.action_done:
                 actualizarUser();
                 break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -142,7 +147,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     }
 
     private void rellenarCampos(){
-        Picasso.with(this).load(user.getImagen()).fit().error(R.drawable.user_generic).into(img);
+        Glide.with(this).load(user.getImagen()).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().error(R.drawable.user_generic).into(img);
 
         String nombre,nick,apellidos,email;
         boolean baja= Boolean.parseBoolean(user.getBaja());

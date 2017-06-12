@@ -13,12 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.asahary.foodnet.Utilidades.CacheApp;
-import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.Utilidades.Libreria;
@@ -27,8 +24,6 @@ import com.bumptech.glide.Glide;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -44,7 +39,6 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-
         initVistas();
     }
 
@@ -97,7 +91,6 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Usuario> call, final Response<Usuario> response) {
                         final Usuario user=response.body();
-                        ocultarCarga();
                         if(user!=null){
                             if(Integer.parseInt(user.getBaja())==1){
                                 //Si esta dado de baja mostrar un dialogo que le diga que debe darse de alta para acceder
@@ -116,15 +109,18 @@ public class LogInActivity extends AppCompatActivity {
                                                             CacheApp.user=user;
                                                             Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
                                                             startActivity(intent);
+                                                            ocultarCarga();
                                                             finish();
                                                         }else{
                                                             Libreria.mostrarMensjeCorto(LogInActivity.this,Constantes.RESPUESTA_NULA);
+                                                            ocultarCarga();
                                                         }
                                                     }
 
                                                     @Override
                                                     public void onFailure(Call<Boolean> call, Throwable t) {
                                                         Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
+                                                        ocultarCarga();
                                                     }
                                                 });
                                             }})
@@ -139,6 +135,7 @@ public class LogInActivity extends AppCompatActivity {
                         }else{
                             //Login fallido
                             Libreria.mostrarMensjeCorto(LogInActivity.this,"Alguno de los datos estan mal");
+                            ocultarCarga();
                         }
 
                     }

@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal;
+package com.asahary.foodnet.Actividades;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.asahary.foodnet.Actividades.LogInActivity;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
@@ -28,14 +27,13 @@ import com.asahary.foodnet.Principal.Usuario.RecetaTab;
 import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
-import com.asahary.foodnet.Principal.Busqueda.BusquedaActivity;
 import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
 import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,6 @@ public class MainActivity extends AppCompatActivity
     private CircleImageView imgNav;
     private TextView nav_user,nav_userTitle;
     public FragmentManager gestor;
-    public static final int RQ_EDITAR_USER=7;
     ImageView imgCarga;
 
 
@@ -189,11 +186,12 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaccion = gestor.beginTransaction();
         transaccion.replace(id, frag);
         transaccion.commit();
-
+        crearGlosario();
     }
 
     public void cargarFragmentoMisFavoritos(){
         mostrarCarga();
+        setTitle(Constantes.TITULO_FAVORITOS);
         Libreria.obtenerServicioApi().favoritosUser(idUsuario).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
@@ -220,6 +218,7 @@ public class MainActivity extends AppCompatActivity
 
     public void cargarFragmentoMisEventos(){
         mostrarCarga();
+        setTitle(Constantes.TITULO_HOME);
         Libreria.obtenerServicioApi().eventosUser(idUsuario).enqueue(new Callback<List<Evento>>() {
             @Override
             public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
@@ -298,9 +297,8 @@ public class MainActivity extends AppCompatActivity
        a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,EditarUsuarioActivity.class);
-                intent.putExtra(Constantes.EXTRA_USUARIO,user);
-                startActivityForResult(intent,RQ_EDITAR_USER);
+                Intent intent=new Intent(MainActivity.this,PerfilActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -324,13 +322,22 @@ public class MainActivity extends AppCompatActivity
         Picasso.with(this).load(user.getImagen()).fit().into(imgNav);
     }
 
+    private void crearGlosario(){
+        String[] lista =Constantes.GLOSARIO.split("=");
+
+        for(int i=0;i<lista.length;i++){
+            if(i%2==0||i==0)
+                System.out.println(lista[i]);
+        }
+    }
+
     //Muestra o no una imagen de carga
-    private void mostrarCarga(){
+    public void mostrarCarga(){
         findViewById(R.id.fragment).setVisibility(View.GONE);
         imgCarga.setVisibility(View.VISIBLE);
         Glide.with(this).load(R.drawable.loading).fitCenter().fitCenter().into(imgCarga);
     }
-    private void ocultarCarga(){
+    public void ocultarCarga(){
         findViewById(R.id.fragment).setVisibility(View.VISIBLE);
         imgCarga.setVisibility(View.GONE);
     }
@@ -352,25 +359,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode==RESULT_OK){
-            if(requestCode==RQ_EDITAR_USER){
-                CacheApp.user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
-                user= CacheApp.user;
-
-
-                //Si le ha dado de baja al usuario le hacemos salir
-                if(Integer.parseInt(user.getBaja())==1){
-                    Intent salir=new Intent(MainActivity.this,LogInActivity.class);
-                    startActivity(salir);
-                    finish();
-                }else{
-                    rellenarCabecera();
-                }
-            }
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

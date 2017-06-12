@@ -7,18 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.asahary.foodnet.Adaptadores.ComentariosAdapter;
-import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Comentario;
-import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.Utilidades.Libreria;
@@ -26,8 +19,6 @@ import com.asahary.foodnet.Utilidades.Libreria;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Saha on 12/06/2017.

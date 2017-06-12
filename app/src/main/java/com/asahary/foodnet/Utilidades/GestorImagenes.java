@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -12,7 +11,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.asahary.foodnet.Principal.Agregar.AgregarRecetaActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 

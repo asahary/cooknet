@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.asahary.foodnet.Principal.NavigatorActivity">
+    tools:context="com.asahary.foodnet.Actividades.NavigatorActivity">
     <FrameLayout
         android:id="@+id/fragment"
         android:layout_width="match_parent"

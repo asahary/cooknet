@@ -1,5 +1,6 @@
-package com.asahary.foodnet.Principal.Usuario;
+package com.asahary.foodnet.Actividades;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,12 +13,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Principal.Usuario.RecetaTab;
+import com.asahary.foodnet.Principal.Usuario.UsuariosTab;
 import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
-import com.asahary.foodnet.Principal.MainActivity;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +37,7 @@ public class UsuarioActivity extends FragmentActivity {
 
     ViewPager viewPager;
     CircleImageView img;
-    TextView lblNick,lblNombre,lblEmail;
+    TextView lblNick,lblNombre,lblApellidos,lblEmail;
     Button btnSigue;
     Usuario usuario;
     boolean sigue;
@@ -56,15 +58,16 @@ public class UsuarioActivity extends FragmentActivity {
         setContentView(R.layout.activity_usuario);
         usuario=  getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
         idUsuario= Integer.parseInt(usuario.getId());
-
-        if(idUsuario==MainActivity.idUsuario){
-            //CargarPropio Perfil(el cual hay que crear aun) and safi baraca
+        setTitle(usuario.getNick());
+        if(idUsuario==Integer.parseInt(CacheApp.user.getId())){
+            startActivity(new Intent(UsuarioActivity.this, PerfilActivity.class));
+            finish();
+        }else{
+            initVistas();
+            rellenarCampos();
+            comprobarSigue();
+            configViewPager();
         }
-
-        initVistas();
-        rellenarCampos();
-        comprobarSigue();
-        configViewPager();
     }
 
     private void comprobarSigue(){
@@ -95,6 +98,7 @@ public class UsuarioActivity extends FragmentActivity {
     private void rellenarCampos() {
         lblNick.setText(usuario.getNick());
         lblNombre.setText(usuario.getNombre());
+        lblApellidos.setText(usuario.getApellidos());
         lblEmail.setText(usuario.getEmail());
         Picasso.with(this).load(usuario.getImagen()).fit().into(img);
     }
@@ -103,6 +107,7 @@ public class UsuarioActivity extends FragmentActivity {
         img= (CircleImageView) findViewById(R.id.imgUsuario);
         lblNick= (TextView) findViewById(R.id.lblNick);
         lblNombre= (TextView) findViewById(R.id.lblNombre);
+        lblApellidos= (TextView) findViewById(R.id.lblApellidos);
         lblEmail= (TextView) findViewById(R.id.lblEmail);
         btnSigue= (Button) findViewById(R.id.btnfollow);
         btnSigue.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package com.asahary.foodnet.Principal;
+package com.asahary.foodnet.Actividades;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -84,6 +84,7 @@ public class NavigatorActivity extends AppCompatActivity {
 
     public void cargarFragmentoMisRecetas(){
         mostrarCarga();
+        setTitle(Constantes.TITULO_MIS_RECETAS);
         Libreria.obtenerServicioApi().recetasPropiasUser(MainActivity.idUsuario).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
@@ -111,6 +112,7 @@ public class NavigatorActivity extends AppCompatActivity {
 
     public void cargarFragmentoMisSeguidores(){
         mostrarCarga();
+        setTitle(Constantes.TITULO_SEGUIDORES);
         Libreria.obtenerServicioApi().seguidoresUser(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
@@ -138,6 +140,7 @@ public class NavigatorActivity extends AppCompatActivity {
 
     public void cargarFragmentoMisSeguidos(){
         mostrarCarga();
+        setTitle(Constantes.TITULO_SIGUIENDO);
         Libreria.obtenerServicioApi().seguidosUser(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
