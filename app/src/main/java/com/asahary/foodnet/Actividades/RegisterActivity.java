@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
         //Cuando pulse el boton se registrará el nuevo usuario
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
                 if(comprobarTodo()){
                 String nick, pass, email, nombre, apellidos, imagen;
@@ -119,6 +119,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                 nombre = txtNombre.getText().toString();
                 apellidos = txtApellidos.getText().toString();
 
+                view.setEnabled(false);
                 //Creamos el retrofit y la interfaz de servicio
                 Libreria.obtenerServicioApi().registrar(nick, Libreria.crearPass(pass), email, nombre, apellidos, imagen).enqueue(new Callback<Integer>() {
                     @Override
@@ -132,16 +133,18 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                             if(file!=null){
                                 subirFoto();
                             }
-
+                            finish();
+                            Libreria.mostrarMensjeCorto(RegisterActivity.this,"Se registro correctamente");
                         } else {
-                            Libreria.mostrarMensjeCorto(RegisterActivity.this, Constantes.RESPUESTA_NULA);
+                            Libreria.mostrarMensjeCorto(RegisterActivity.this,"No se pudo registrar");
                         }
-
+                        view.setEnabled(true);
                     }
 
                     @Override
                     public void onFailure(Call<Integer> call, Throwable t) {
                         Libreria.mostrarMensjeCorto(RegisterActivity.this, Constantes.RESPUESTA_FALLIDA);
+                        view.setEnabled(true);
                     }
                 });
 

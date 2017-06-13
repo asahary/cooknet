@@ -23,4 +23,13 @@ public class CacheApp {
     public static ArrayList<Tecnica> glosario=new ArrayList<>();
 
     public static Usuario user=null;
+
+    public static void limpiarListas(){
+        misRecetas=new ArrayList<>();
+        misFavoritos=new ArrayList<>();
+        misSeguidores=new ArrayList<>();
+        misSiguiendo=new ArrayList<>();
+        misEventos=new ArrayList<>();
+        user=null;
+    }
 }

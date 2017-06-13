@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +38,7 @@ import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
 import com.asahary.foodnet.Principal.Agregar.PreparacionDialog;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
@@ -72,6 +74,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     String sOriginal="";
     String nombreArchivo="";
     File file;
+    Menu mMenu;
 
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -87,18 +90,33 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
         setTitle(Constantes.TITULO_EDITAR_RECETA);
         setContentView(R.layout.activity_editar_receta);
 
-        initVistas();
+        if(getIntent().hasExtra(Constantes.EXTRA_RECETA)){
+            receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
+            initVistas();
+        }else{
+            finish();
+        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putParcelable(Constantes.EXTRA_RECETA,receta);
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        receta=savedInstanceState.getParcelable(Constantes.EXTRA_RECETA);
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.agregar_menu,menu);
+        mMenu=menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     private void initVistas() {
         sw= (Switch) findViewById(R.id.sw);
-        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
         txtNombre= (EditText) findViewById(R.id.txtNombre);
         txtDescripcion= (EditText) findViewById(R.id.txtDescripcion);
         txtPreparacion= (EditText) findViewById(R.id.txtPreparacion);
@@ -167,7 +185,8 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     }
 
     private void subirReceta(){
-
+        final MenuItem item=mMenu.findItem(R.id.action_done);
+        item.setEnabled(false);
         final String nombre=txtNombre.getText().toString();
         final String descripcion=txtDescripcion.getText().toString();
         final String preparacion=txtPreparacion.getText().toString();
@@ -180,13 +199,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
             receta.setImagen(rutaImagen);
         }
 
-        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-
-        CookNetService servicio=retrofit.create(CookNetService.class);
-
-        Call<String> llamada = servicio.actualizarReceta(receta.getIdReceta(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen,sw.isChecked()?0:1);
-
-        llamada.enqueue(new Callback<String>() {
+        Libreria.obtenerServicioApi().actualizarReceta(receta.getIdReceta(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen,sw.isChecked()?0:1).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 String respuesta=response.body();
@@ -205,12 +218,13 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
                 }else{
                     Toast.makeText(EditarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
                 }
-
+                item.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(EditarRecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
+                item.setEnabled(true);
             }
         });
 
@@ -440,20 +454,6 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
                 startActivityForResult(i, RQ_CAMARA);
             }
         }
-    }
-
-    private void agregarFotoAGaleria() {
-        // Se un intent implícito con la acción de
-        // escaneo de un fichero multimedia.
-        Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-
-        File f = new File(sOriginal);
-        Uri uri = Uri.fromFile(f);
-
-        // Se establece la uri con datos del intent.
-        i.setData(uri);
-        // Se envía un broadcast con el intent.
-        this.sendBroadcast(i);
     }
 
     @Override

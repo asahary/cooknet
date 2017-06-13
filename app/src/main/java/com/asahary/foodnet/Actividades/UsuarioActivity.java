@@ -1,6 +1,7 @@
 package com.asahary.foodnet.Actividades;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -51,6 +52,17 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
     ArrayList<Usuario> seguidores=new ArrayList<>();
     ArrayList<Usuario> seguidos=new ArrayList<>();
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putParcelable(Constantes.EXTRA_USUARIO,usuario);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        usuario=savedInstanceState.getParcelable(Constantes.EXTRA_USUARIO);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +70,12 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
         setContentView(R.layout.activity_usuario);
 
         usuario=  getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
+
+        if(getIntent().hasExtra(Constantes.EXTRA_USUARIO)){
+            usuario=getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
+        }else{
+            finish();
+        }
 
         idUsuario= usuario.getId();
         setTitle(usuario.getNick());
@@ -102,7 +120,7 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
         lblNombre.setText(usuario.getNombre());
         lblApellidos.setText(usuario.getApellidos());
         lblEmail.setText(usuario.getEmail());
-        Picasso.with(this).load(usuario.getImagen()).fit().into(img);
+        Picasso.with(this).load(usuario.getImagen()).fit().error(R.drawable.user_generic).placeholder(R.drawable.user_generic).into(img);
     }
 
     private void initVistas() {

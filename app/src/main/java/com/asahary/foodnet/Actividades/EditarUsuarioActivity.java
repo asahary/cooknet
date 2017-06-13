@@ -68,6 +68,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     String sOriginal="";
     String nombreArchivo="";
     File file;
+    Menu mMenu;
 
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -96,6 +97,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.agregar_menu,menu);
+        mMenu=menu;
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -166,6 +168,8 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     }
 
     private void actualizarUser(){
+        final MenuItem item=mMenu.findItem(R.id.action_done);
+        item.setEnabled(false);
         if(comprobarTodo()){
             String nick,email, nombre, apellidos, imagen;
 
@@ -189,14 +193,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             user.setBaja(baja?1:0);
             user.setImagen(imagen);
 
-            //Creamos el retrofit y la interfaz de servicio
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-            CookNetService service = retrofit.create(CookNetService.class);
-
-            //Creamos la llamada
-            Call<Boolean> llamada = service.actualizarUser(CacheApp.user.getId(),nick, email, nombre, apellidos, imagen,baja?1:0);
-
-            llamada.enqueue(new Callback<Boolean>() {
+            Libreria.obtenerServicioApi().actualizarUser(CacheApp.user.getId(),nick, email, nombre, apellidos, imagen,baja?1:0).enqueue(new Callback<Boolean>() {
                 @Override
                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                     //Obtenemos el cuerpo y comprobamos que no sea nullo
@@ -214,20 +211,20 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                     } else {
                         Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
                     }
-
+                    item.setEnabled(true);
                 }
 
                 @Override
                 public void onFailure(Call<Boolean> call, Throwable t) {
                     Toast.makeText(EditarUsuarioActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
+                    item.setEnabled(true);
                 }
             });
 
 
             //Si se quiere actualizar la contraseña
             if(swPassForm.isChecked()&&comprobarContraseña()){
-                Call<Boolean> call=service.actualizarUserPass(user.getId(),Libreria.crearPass(txtOldPass.getText().toString().trim()), Libreria.crearPass(txtNewPass1.getText().toString()));
-                call.enqueue(new Callback<Boolean>() {
+                Libreria.obtenerServicioApi().actualizarUserPass(user.getId(),Libreria.crearPass(txtOldPass.getText().toString().trim()), Libreria.crearPass(txtNewPass1.getText().toString())).enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         Boolean respuesta=response.body();
@@ -241,11 +238,13 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                         }else{
                             Toast.makeText(EditarUsuarioActivity.this,"Cuerpo nulo",Toast.LENGTH_SHORT).show();;
                         }
+                        item.setEnabled(true);
                     }
 
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
-                        Toast.makeText(EditarUsuarioActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();;
+                        Toast.makeText(EditarUsuarioActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
+                        item.setEnabled(true);
                     }
                 });
             }

@@ -1,6 +1,7 @@
 package com.asahary.foodnet.Actividades;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,14 +47,32 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
 
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putParcelable(Constantes.EXTRA_RECETA,receta);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        receta=savedInstanceState.getParcelable(Constantes.EXTRA_RECETA);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receta);
-        receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
-        setTitle(receta.getNombre());
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        initVistas();
+
+
+        if(getIntent().hasExtra(Constantes.EXTRA_RECETA)){
+            receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
+            setTitle(receta.getNombre());
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            initVistas();
+        }else{
+            finish();
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.asahary.foodnet.POJO.Comentario;
 import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
 import com.asahary.foodnet.Principal.Comentarios.EditarComentarioDialog;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.Utilidades.Libreria;
 import com.squareup.picasso.Picasso;
@@ -117,6 +118,10 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
             txtFecha.setText(comentario.getFecha());
             Picasso.with(imgUser.getContext()).load(comentario.getImagen()).fit().error(R.drawable.user_generic).placeholder(R.drawable.user_generic).into(imgUser);
 
+            if(idUser!= CacheApp.user.getId()){
+                btnEditar.setVisibility(View.GONE);
+                btnEliminar.setVisibility(View.GONE);
+            }
             btnEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
@@ -127,18 +132,18 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
                             if(cuerpo!=null){
                                 if(cuerpo){
                                     Libreria.mostrarMensjeCorto(itemView.getContext(),"Se borro el comentario correctamente");
-                                    ((Activity)itemView.getContext()).finish();
+                                    ((DialogFragment)listener).dismiss();
                                 }
                             }else{
                                 Libreria.mostrarMensjeCorto(itemView.getContext(),"No ha devuelto nada :'( ");
-                                ((Activity)itemView.getContext()).finish();
+                                ((DialogFragment)listener).dismiss();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Boolean> call, Throwable t) {
                             Libreria.mostrarMensjeCorto(itemView.getContext(), Constantes.RESPUESTA_FALLIDA);
-                            ((Activity)itemView.getContext()).finish();
+                            ((DialogFragment)listener).dismiss();
                         }
                     });
                 }

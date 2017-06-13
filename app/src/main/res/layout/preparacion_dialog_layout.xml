@@ -5,10 +5,13 @@
 
     <EditText
         android:id="@+id/txtPreparacion"
-        android:hint="Preparacion"
+        android:hint="Escribe la preparacion"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:textAlignment="gravity"
+        android:gravity="bottom"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

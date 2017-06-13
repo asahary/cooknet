@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -88,12 +89,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        super.onResume();
         if(bottomView.getSelectedItemId()==R.id.mnuFavoritos){
             cargarFragmentoMisFavoritos();
-        }else if(bottomView.getSelectedItemId()==R.id.mnuHome){
+        }else {
             cargarFragmentoMisEventos();
         }
-        super.onResume();
     }
 
     //Obtencion de listas por defecto
@@ -228,6 +229,7 @@ public class MainActivity extends AppCompatActivity
                 List<Evento> lista=response.body();
 
                 if(lista!=null){
+                    Collections.sort(lista,Evento.FechaComparator);
                     CacheApp.misEventos=new ArrayList<Evento>(lista);
                 }else{
                     Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
@@ -399,6 +401,7 @@ public class MainActivity extends AppCompatActivity
             intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_MIS_SEGUIDOS);
             startActivity(intentNavigation);
         } else if (id == R.id.nav_log_out) {
+            CacheApp.limpiarListas();
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
             finish();

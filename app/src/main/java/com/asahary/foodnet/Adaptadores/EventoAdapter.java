@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -19,20 +21,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Saha on 09/06/2017.
  */
 
-public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.Contenedor> implements View.OnClickListener{
-    ArrayList<Evento> lista =new ArrayList<>();
-
-    @Override
-    public void onClick(View view) {
-
-    }
+public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.Contenedor>{
+    public ArrayList<Evento> lista =new ArrayList<>();
+    EventoAdapter.OnReciclerItemClickListener listener;
 
     public interface OnReciclerItemClickListener{
         void itemClic(Evento evento);
     }
 
-
-    EventoAdapter.OnReciclerItemClickListener listener;
 
     public EventoAdapter(ArrayList<Evento> lista, EventoAdapter.OnReciclerItemClickListener listener){
         super();
@@ -48,6 +44,7 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.Contenedor
 
     public void swapDatos(ArrayList<Evento> lista){
         this.lista =lista;
+        ((EventoFragment)listener).checkVacio();
         this.notifyDataSetChanged();
     }
 

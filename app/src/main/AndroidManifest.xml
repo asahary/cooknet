@@ -123,7 +123,7 @@
         </activity>
         <activity android:name=".Actividades.TecnicaActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Actividades.MainActivity"/>
+                android:value=".Actividades.NavigatorActivity"/>
         </activity>
     </application>
 

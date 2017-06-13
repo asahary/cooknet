@@ -95,7 +95,7 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contened
             //Rellenamos los datos
             lblNombreReceta.setText(receta.getNombre());
             lblDescripcionReceta.setText(receta.getDescripcion());
-            Picasso.with(imgReceta.getContext()).load(receta.getImagen()).error(R.drawable.food_generic).placeholder(R.drawable.user_generic).fit().into(imgReceta);
+            Picasso.with(imgReceta.getContext()).load(receta.getImagen()).error(R.drawable.food_generic).placeholder(R.drawable.food_generic).fit().into(imgReceta);
         }
 
 

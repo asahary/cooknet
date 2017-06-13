@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_recetas"
-            android:title="Mis recetas" />
-        <item
-            android:id="@+id/nav_seguidores"
-            android:title="Seguidores" />
-        <item
-            android:id="@+id/nav_siguiendo"
-            android:title="Siguiendo" />
-        <item
-            android:id="@+id/nav_log_out"
-            android:title="Log out" />
-        <item
-            android:id="@+id/nav_glosario"
-            android:title="Glosario" />
-    </group>
+    <item android:title="Navegacion">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_recetas"
+                    android:title="Mis recetas" />
+                <item
+                    android:id="@+id/nav_seguidores"
+                    android:title="Seguidores" />
+                <item
+                    android:id="@+id/nav_siguiendo"
+                    android:title="Siguiendo" />
+            </group>
+        </menu>
+    </item>
 
+    <item android:title="Utilidades">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_glosario"
+                android:title="Glosario" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="Otros">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_about"
+                    android:title="Sobre..." />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/nav_log_out"
+        android:title="Log out" />
 </menu>

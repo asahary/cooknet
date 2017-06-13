@@ -39,15 +39,25 @@ public class NavigatorActivity extends AppCompatActivity implements RecetaTab.Ec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigator);
 
-        opcion=getIntent().getStringExtra(Constantes.EXTRA_OPCION_LISTA);
-
-        initVistas();
-
+        if(getIntent().hasExtra(Constantes.EXTRA_OPCION_LISTA)) {
+            opcion = getIntent().getStringExtra(Constantes.EXTRA_OPCION_LISTA);
+            initVistas();
+        }
+        else{
+            finish();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState,outPersistentState);
+        outState.putString(Constantes.EXTRA_OPCION_LISTA,opcion);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        opcion=savedInstanceState.getString(Constantes.EXTRA_OPCION_LISTA);
     }
 
     private void initVistas(){

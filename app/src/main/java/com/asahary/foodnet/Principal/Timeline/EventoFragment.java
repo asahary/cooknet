@@ -27,6 +27,7 @@ import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.Libreria;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -44,18 +45,21 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     ArrayList<Evento> eventos=new ArrayList<>();
     EventoAdapter adaptador;
     private Echador mEchador;
+    View emptyView;
 
     public interface Echador{
         void echar(Evento evento);
     }
-    public void initVistas(View vista){
 
+
+    public void initVistas(View vista){
+        emptyView=vista.findViewById(R.id.emptyView);
         lista= (RecyclerView) vista.findViewById(R.id.lista);
         adaptador=new EventoAdapter(eventos,this);
         lista.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         lista.setAdapter(adaptador);
+        adaptador.swapDatos(adaptador.lista);
     }
-
 
 
     @Override
@@ -75,7 +79,7 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
                     @Override
                     public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
                         List<Evento> cuerpo=response.body();
-
+                        Collections.sort(cuerpo,Evento.FechaComparator);
                         vista.setRefreshing(false);
                         if(cuerpo!=null){
                             CacheApp.misEventos=new ArrayList<Evento>(cuerpo);
@@ -108,6 +112,14 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         fragment.eventos=lista;
         return fragment;
     }
-
+    public void checkVacio(){
+        if (adaptador.getItemCount()==0){
+            lista.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }else{
+            lista.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+    }
 
 }

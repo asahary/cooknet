@@ -66,6 +66,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     ImageView img;
     String nombreArchivo="";
     File file;
+    Menu mMenu;
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
@@ -83,6 +84,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.agregar_menu,menu);
+        mMenu=menu;
         setTitle(Constantes.TITULO_AGREGAR_RECETA);
         return super.onCreateOptionsMenu(menu);
     }
@@ -161,6 +163,8 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
     //Hace la llamada post que sube la receta
     private void subirReceta(){
+        final MenuItem item=mMenu.getItem(R.id.action_done);
+        item.setEnabled(false);
 
         String nombre=txtNombre.getText().toString();
         String descripcion=txtDescripcion.getText().toString();
@@ -187,14 +191,15 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                     Toast.makeText(AgregarRecetaActivity.this,respuesta,Toast.LENGTH_SHORT).show();
                     finish();
                 }else{
-                    Toast.makeText(AgregarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AgregarRecetaActivity.this,"No se pudo subir la receta",Toast.LENGTH_SHORT).show();
                 }
-
+                item.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(AgregarRecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AgregarRecetaActivity.this,"No se pudo subir la receta",Toast.LENGTH_SHORT).show();
+                item.setEnabled(true);
             }
         });
 

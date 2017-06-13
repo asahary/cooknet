@@ -108,7 +108,7 @@ import com.asahary.foodnet.CookNetService;
             ":Dente (al)="+
             "Punto de cocción en el cual la pasta y el arroz empiezan a estar tiernos pero sin perder consistencia. La verdura conservan más nutrientes.\n"+
             ":Desalar="+
-            "Sacar la sal de un alimento para el que se ha utilizado el proceso de salazón para su conservación (ej: el bacalao).\n"+
+            "Sacar la sal de un alimento para el que se ha utilizado el proceso de salazón para su conservación (ej; el bacalao).\n"+
             ":Descamar="+
             "Limpiar de escamas un pescado="+
             ":Descorazonar="+
