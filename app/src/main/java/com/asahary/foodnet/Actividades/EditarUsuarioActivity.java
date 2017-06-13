@@ -150,7 +150,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         Glide.with(this).load(user.getImagen()).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().error(R.drawable.user_generic).into(img);
 
         String nombre,nick,apellidos,email;
-        boolean baja= Boolean.parseBoolean(user.getBaja());
+        boolean baja= user.getBaja()==1?true:false;
 
         nombre=user.getNombre();
         nick=user.getNick();
@@ -186,7 +186,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             user.setNombre(nombre);
             user.setApellidos(apellidos);
             user.setEmail(email);
-            user.setBaja(baja?"1":"0");
+            user.setBaja(baja?1:0);
             user.setImagen(imagen);
 
             //Creamos el retrofit y la interfaz de servicio
@@ -226,7 +226,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
 
             //Si se quiere actualizar la contraseña
             if(swPassForm.isChecked()&&comprobarContraseña()){
-                Call<Boolean> call=service.actualizarUserPass(Integer.parseInt(user.getId()),Libreria.crearPass(txtOldPass.getText().toString()), Libreria.crearPass(txtNewPass1.getText().toString()));
+                Call<Boolean> call=service.actualizarUserPass(user.getId(),Libreria.crearPass(txtOldPass.getText().toString().trim()), Libreria.crearPass(txtNewPass1.getText().toString()));
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -330,7 +330,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         CookNetService service=retrofit.create(CookNetService.class);
 
         //Creamos el objeto llamada
-        Call<Boolean> llamada = service.comprobarEmail(Integer.parseInt(user.getId()),txtEmail.getText().toString());
+        Call<Boolean> llamada = service.comprobarEmail(user.getId(),txtEmail.getText().toString());
 
 
 
@@ -356,7 +356,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         CookNetService service=retrofit.create(CookNetService.class);
 
         //Creamos el objeto llamada
-        Call<Boolean> llamada = service.comprobarNick(Integer.parseInt(user.getId()),txtNick.getText().toString());
+        Call<Boolean> llamada = service.comprobarNick(user.getId(),txtNick.getText().toString());
 
 
 

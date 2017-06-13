@@ -109,8 +109,8 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
             //Obtenemos la posicion del ingrediente en el array
             final int position=ComentariosAdapter.this.lista.indexOf(comentario);
 
-            final int idUser=Integer.parseInt(comentario.getIdUsuario());
-            final int idReceta= Integer.parseInt(comentario.getIdReceta());
+            final int idUser=comentario.getIdUsuario();
+            final int idReceta= comentario.getIdReceta();
 
             txtNombre.setText(comentario.getNombre());
             txtComentario.setText(comentario.getComentario());

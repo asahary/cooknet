@@ -73,15 +73,16 @@ public class TecnicasAdapter extends RecyclerView.Adapter<TecnicasAdapter.Conten
 
     public static class Contenedor extends RecyclerView.ViewHolder{
 
-        TextView lblNombreReceta,lblDescripcionReceta;
+        TextView lblNombreTecnica;
 
         public Contenedor(View itemView) {
             super(itemView);
-
+            lblNombreTecnica= (TextView) itemView.findViewById(R.id.lblNombreTecnica);
         }
 
         public void onBin(Tecnica tecnica){
             //Rellenamos los datos
+            lblNombreTecnica.setText(tecnica.nombre);
         }
 
     }

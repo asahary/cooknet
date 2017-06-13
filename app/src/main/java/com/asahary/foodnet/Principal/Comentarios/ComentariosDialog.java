@@ -47,7 +47,7 @@ public class ComentariosDialog extends DialogFragment implements ComentariosAdap
 
 
 public void iniciarLista(){
-    Libreria.obtenerServicioApi().comentariosReceta(Integer.parseInt(receta.getIdReceta())).enqueue(new Callback<List<Comentario>>() {
+    Libreria.obtenerServicioApi().comentariosReceta(receta.getIdReceta()).enqueue(new Callback<List<Comentario>>() {
         @Override
         public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
             List<Comentario> respuesta=response.body();
@@ -91,7 +91,7 @@ public void iniciarLista(){
             @Override
             public void onClick(View view) {
                  Libreria.obtenerServicioApi().
-                         subirComentario(txtComentario.getText().toString(),Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()), Integer.parseInt(CacheApp.user.getId()))
+                         subirComentario(txtComentario.getText().toString(),receta.getIdUsuario(),receta.getIdReceta(), CacheApp.user.getId())
                          .enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -121,7 +121,7 @@ public void iniciarLista(){
 
         @Override
         public void itemClic(Comentario comentario) {
-            Libreria.obtenerServicioApi().getUsuario(Integer.parseInt(comentario.getIdUsuario())).enqueue(new Callback<Usuario>() {
+            Libreria.obtenerServicioApi().getUsuario(comentario.getIdUsuario()).enqueue(new Callback<Usuario>() {
                 @Override
                 public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                     Usuario usuario=response.body();

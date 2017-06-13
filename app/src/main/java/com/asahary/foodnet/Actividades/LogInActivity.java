@@ -34,6 +34,7 @@ public class LogInActivity extends AppCompatActivity {
     Button btnAccess;
     TextView lblRegistrar;
     ImageView imgCarga;
+    Usuario user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,44 +91,14 @@ public class LogInActivity extends AppCompatActivity {
                 Libreria.obtenerServicioApi().login(txtNick.getText().toString(),Libreria.crearPass(txtPass.getText().toString())).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, final Response<Usuario> response) {
-                        final Usuario user=response.body();
+                        user=response.body();
                         if(user!=null){
-                            if(Integer.parseInt(user.getBaja())==1){
+                            if(user.getBaja()==1){
                                 //Si esta dado de baja mostrar un dialogo que le diga que debe darse de alta para acceder
-                                new AlertDialog.Builder(LogInActivity.this)
-                                        .setTitle("Activar usuario")
-                                        .setMessage("Este usuario esta desactivado. ¿Quieres reactivarlo?")
-                                        .setPositiveButton("Si ", new DialogInterface.OnClickListener() {
-
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                Libreria.obtenerServicioApi().activarUser(Integer.parseInt(user.getId())).enqueue(new Callback<Boolean>() {
-                                                    @Override
-                                                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                                        Boolean cuerpo=response.body();
-                                                        if(cuerpo!=null){
-                                                            user.setBaja("0");
-                                                            CacheApp.user=user;
-                                                            Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
-                                                            startActivity(intent);
-                                                            ocultarCarga();
-                                                            finish();
-                                                        }else{
-                                                            Libreria.mostrarMensjeCorto(LogInActivity.this,Constantes.RESPUESTA_NULA);
-                                                            ocultarCarga();
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<Boolean> call, Throwable t) {
-                                                        Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
-                                                        ocultarCarga();
-                                                    }
-                                                });
-                                            }})
-                                        .setNegativeButton("No",null).show();
+                                mostrarBajaUser();
                             }else{
                                 //Accedemos a la aplicacion
-                                CacheApp.user=response.body();
+                                CacheApp.user=user;
                                 Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -143,6 +114,7 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<Usuario> call, Throwable t) {
                         Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
+                        ocultarCarga();
                     }
                 });
 
@@ -155,6 +127,39 @@ public class LogInActivity extends AppCompatActivity {
         InputMethodManager imm =
                 (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    public void mostrarBajaUser(){
+        new AlertDialog.Builder(LogInActivity.this)
+                .setTitle("Activar usuario")
+                .setMessage("Este usuario esta desactivado. ¿Quieres reactivarlo?")
+                .setPositiveButton("Si ", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Libreria.obtenerServicioApi().activarUser(user.getId()).enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                Boolean cuerpo=response.body();
+                                if(cuerpo!=null){
+                                    user.setBaja(0);
+                                    CacheApp.user=user;
+                                    Intent intent =  new Intent(LogInActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    ocultarCarga();
+                                    finish();
+                                }else{
+                                    Libreria.mostrarMensjeCorto(LogInActivity.this,Constantes.RESPUESTA_NULA);
+                                    ocultarCarga();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+                                Libreria.mostrarMensjeCorto(LogInActivity.this, Constantes.RESPUESTA_FALLIDA);
+                                ocultarCarga();
+                            }
+                        });
+                    }})
+                .setNegativeButton("No",null).show();
     }
 
 }

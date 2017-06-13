@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Principal.Timeline;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,11 +43,11 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     RecyclerView lista;
     ArrayList<Evento> eventos=new ArrayList<>();
     EventoAdapter adaptador;
+    private Echador mEchador;
 
-
-    public EventoFragment(){
+    public interface Echador{
+        void echar(Evento evento);
     }
-
     public void initVistas(View vista){
 
         lista= (RecyclerView) vista.findViewById(R.id.lista);
@@ -56,77 +57,10 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     }
 
 
+
     @Override
     public void itemClic(Evento evento) {
-
-        Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
-        CookNetService service = retrofit.create(CookNetService.class);
-
-        switch (evento.getTipo()){
-            case Constantes.EVENTO_FAVORITO:
-                Call<Receta> call = service.getReceta(evento.getIdReceta());
-                call.enqueue(new Callback<Receta>() {
-                    @Override
-                    public void onResponse(Call<Receta> call, Response<Receta> response) {
-                        Receta cuerpo=response.body();
-
-                        if(cuerpo!=null){
-                            Intent intent=new Intent(EventoFragment.this.getActivity(), RecetaActivity.class);
-                            intent.putExtra(Constantes.EXTRA_RECETA,cuerpo);
-                            startActivity(intent);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Receta> call, Throwable t) {
-
-                    }
-                });
-                break;
-            case Constantes.EVENTO_SEGUIR:
-                Call<Usuario> call3 = service.getUsuario(evento.getIdUser());
-                call3.enqueue(new Callback<Usuario>() {
-                    @Override
-                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                        Usuario usuario=response.body();
-
-                        if(usuario!=null){
-                            Intent intentUser=new Intent(getActivity(),UsuarioActivity.class);
-                            intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
-                            startActivity(intentUser);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Usuario> call, Throwable t) {
-
-                    }
-                });
-
-                break;
-            case Constantes.EVENTO_COMENTAR:
-                Call<Receta> call2 = service.getReceta(evento.getIdReceta());
-                call2.enqueue(new Callback<Receta>() {
-                    @Override
-                    public void onResponse(Call<Receta> call, Response<Receta> response) {
-                        Receta cuerpo=response.body();
-
-                        if(cuerpo!=null){
-                            ComentariosDialog dialog=new ComentariosDialog();
-                            Bundle extra = new Bundle();
-                            extra.putParcelable(Constantes.EXTRA_RECETA,cuerpo);
-                            dialog.setArguments(extra);
-                            dialog.show(getFragmentManager(),"Comentarios");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Receta> call, Throwable t) {
-
-                    }
-                });
-                break;
-        }
+        mEchador.echar(evento);
     }
 
 
@@ -137,7 +71,7 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         vista.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Libreria.obtenerServicioApi().eventosUser(Integer.parseInt(CacheApp.user.getId())).enqueue(new Callback<List<Evento>>() {
+                Libreria.obtenerServicioApi().eventosUser(CacheApp.user.getId()).enqueue(new Callback<List<Evento>>() {
                     @Override
                     public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
                         List<Evento> cuerpo=response.body();
@@ -168,8 +102,9 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         setRetainInstance(true);
         return inflater.inflate(R.layout.timeline_fragment_layout, container, false);
     }
-    public static EventoFragment newInstance(ArrayList<Evento> lista){
+    public static EventoFragment newInstance(ArrayList<Evento> lista,Echador context){
         EventoFragment fragment=new EventoFragment();
+        fragment.mEchador=context;
         fragment.eventos=lista;
         return fragment;
     }

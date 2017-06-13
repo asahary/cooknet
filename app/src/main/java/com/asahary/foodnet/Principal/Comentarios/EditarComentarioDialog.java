@@ -39,8 +39,8 @@ public class EditarComentarioDialog extends DialogFragment {
 
         vista= LayoutInflater.from(getContext()).inflate(R.layout.preparacion_dialog_layout,null);
         comentario=getArguments().getParcelable(Constantes.EXTRA_COMENTARIO);
-        final int idUsuerio=Integer.parseInt(comentario.getIdUsuario());
-        final int idReceta=Integer.parseInt(comentario.getIdReceta());
+        final int idUsuerio=comentario.getIdUsuario();
+        final int idReceta=comentario.getIdReceta();
         final String cuerpoComentario=comentario.getComentario();
 
         txtComentario= (EditText) vista.findViewById(R.id.txtPreparacion);

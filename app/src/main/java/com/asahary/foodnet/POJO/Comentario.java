@@ -20,13 +20,13 @@ public class Comentario implements Parcelable{
     private String imagen;
     @SerializedName("idUsuario")
     @Expose
-    private String idUsuario;
+    private Integer idUsuario;
     @SerializedName("idCreador")
     @Expose
-    private String idCreador;
+    private Integer idCreador;
     @SerializedName("idReceta")
     @Expose
-    private String idReceta;
+    private Integer idReceta;
     @SerializedName("fecha")
     @Expose
     private String fecha;
@@ -52,27 +52,27 @@ public class Comentario implements Parcelable{
         this.imagen = imagen;
     }
 
-    public String getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(String idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
-    public String getIdCreador() {
+    public Integer getIdCreador() {
         return idCreador;
     }
 
-    public void setIdCreador(String idCreador) {
+    public void setIdCreador(Integer idCreador) {
         this.idCreador = idCreador;
     }
 
-    public String getIdReceta() {
+    public Integer getIdReceta() {
         return idReceta;
     }
 
-    public void setIdReceta(String idReceta) {
+    public void setIdReceta(Integer idReceta) {
         this.idReceta = idReceta;
     }
 
@@ -101,9 +101,9 @@ public class Comentario implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(nombre);
         parcel.writeString(imagen);
-        parcel.writeString(idUsuario);
-        parcel.writeString(idCreador);
-        parcel.writeString(idReceta);
+        parcel.writeInt(idUsuario);
+        parcel.writeInt(idCreador);
+        parcel.writeInt(idReceta);
         parcel.writeString(fecha);
         parcel.writeString(comentario);
     }
@@ -111,9 +111,9 @@ public class Comentario implements Parcelable{
     protected Comentario(Parcel in) {
         nombre = in.readString();
         imagen = in.readString();
-        idUsuario = in.readString();
-        idCreador = in.readString();
-        idReceta = in.readString();
+        idUsuario = in.readInt();
+        idCreador = in.readInt();
+        idReceta = in.readInt();
         fecha = in.readString();
         comentario = in.readString();
     }

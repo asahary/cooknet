@@ -56,10 +56,12 @@ public class UsuarioActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuario);
+
         usuario=  getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
-        idUsuario= Integer.parseInt(usuario.getId());
+
+        idUsuario= usuario.getId();
         setTitle(usuario.getNick());
-        if(idUsuario==Integer.parseInt(CacheApp.user.getId())){
+        if(idUsuario==CacheApp.user.getId()){
             startActivity(new Intent(UsuarioActivity.this, PerfilActivity.class));
             finish();
         }else{
@@ -127,7 +129,7 @@ public class UsuarioActivity extends FragmentActivity {
                                 seguidores.add(CacheApp.user);
                             }else{
                                 for(int i=0;i<seguidores.size();i++){
-                                    int id=Integer.parseInt(seguidores.get(i).getId());
+                                    int id=seguidores.get(i).getId();
                                     if(id==MainActivity.idUsuario){
                                         seguidores.remove(seguidores.get(i));
                                         break;

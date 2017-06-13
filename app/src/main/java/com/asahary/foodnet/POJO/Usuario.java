@@ -17,7 +17,7 @@ public class Usuario implements Parcelable{
 
         @SerializedName("id")
         @Expose
-        private String id;
+        private Integer id;
         @SerializedName("nombre")
         @Expose
         private String nombre;
@@ -32,10 +32,10 @@ public class Usuario implements Parcelable{
         private String email;
         @SerializedName("baja")
         @Expose
-        private String baja;
+        private Integer baja;
         @SerializedName("admin")
         @Expose
-        private String admin;
+        private Integer admin;
         @SerializedName("nick")
         @Expose
         private String nick;
@@ -55,11 +55,11 @@ public class Usuario implements Parcelable{
         }
     };
 
-    public String getId() {
+    public Integer getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(Integer id) {
             this.id = id;
         }
 
@@ -95,19 +95,19 @@ public class Usuario implements Parcelable{
             this.email = email;
         }
 
-        public String getBaja() {
+        public Integer getBaja() {
             return baja;
         }
 
-        public void setBaja(String baja) {
+        public void setBaja(Integer baja) {
             this.baja = baja;
         }
 
-        public String getAdmin() {
+        public Integer getAdmin() {
             return admin;
         }
 
-        public void setAdmin(String admin) {
+        public void setAdmin(Integer admin) {
             this.admin = admin;
         }
 
@@ -127,13 +127,13 @@ public class Usuario implements Parcelable{
             this.imagen = imagen;
         }
     public Usuario(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         nombre = in.readString();
         apellidos = in.readString();
         pass=in.readString();
         email = in.readString();
-        baja = in.readString();
-        admin=in.readString();
+        baja = in.readInt();
+        admin=in.readInt();
         nick = in.readString();
         imagen = in.readString();
 
@@ -146,13 +146,13 @@ public class Usuario implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
+        parcel.writeInt(id);
         parcel.writeString(nombre);
         parcel.writeString(apellidos);
         parcel.writeString(pass);
         parcel.writeString(email);
-        parcel.writeString(baja);
-        parcel.writeString(admin);
+        parcel.writeInt(baja);
+        parcel.writeInt(admin);
         parcel.writeString(nick);
         parcel.writeString(imagen);
     }

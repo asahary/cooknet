@@ -150,7 +150,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
         txtPreparacion.setText(receta.getPreparacion());
         Picasso.with(this).load(receta.getImagen()).error(R.drawable.food_generic).fit().into(imgReceta);
 
-        if(Boolean.valueOf(receta.getBajaReceta())){
+        if(receta.getBajaReceta()==1){
             sw.setChecked(false);
         }else{
             sw.setChecked(true);
@@ -183,7 +183,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
 
         CookNetService servicio=retrofit.create(CookNetService.class);
 
-        Call<String> llamada = servicio.actualizarReceta(Integer.parseInt(receta.getIdReceta()),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen,sw.isChecked()?0:1);
+        Call<String> llamada = servicio.actualizarReceta(receta.getIdReceta(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen,sw.isChecked()?0:1);
 
         llamada.enqueue(new Callback<String>() {
             @Override
@@ -195,7 +195,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
                     receta.setDescripcion(descripcion);
                     receta.setIngredientes(formatearIngredientes());
                     receta.setPreparacion(preparacion);
-                    receta.setBajaReceta(String.valueOf(sw.isChecked()));
+                    receta.setBajaReceta(sw.isChecked()?0:1);
 
                     Intent resultIntent =new  Intent();
                     resultIntent.putExtra(Constantes.EXTRA_RECETA,receta);
@@ -359,7 +359,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
             f = new File(sOriginal);
             file=f;
         }
-        Picasso.with(EditarRecetaActivity.this).load(f).fit().error(R.drawable.ic_check).into(imgReceta);
+        Picasso.with(EditarRecetaActivity.this).load(f).fit().error(R.drawable.food_generic).into(imgReceta);
     }
 
     private void procesarUri(){

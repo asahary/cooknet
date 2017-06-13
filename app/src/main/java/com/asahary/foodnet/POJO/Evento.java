@@ -14,7 +14,7 @@ public class Evento {
     private String tipo;
     @SerializedName("idUser")
     @Expose
-    private int idUser;
+    private Integer idUser;
     @SerializedName("nick")
     @Expose
     private String nick;
@@ -23,7 +23,7 @@ public class Evento {
     private String imagenUser;
     @SerializedName("idReceta")
     @Expose
-    private int idReceta;
+    private Integer idReceta;
     @SerializedName("nombreReceta")
     @Expose
     private String nombreReceta;

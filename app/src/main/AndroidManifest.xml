@@ -28,8 +28,8 @@
         </provider>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".Actividades.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/fullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,13 +38,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".Actividades.LogInActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".Actividades.RegisterActivity"
-            android:label="Registro">
+            android:label="Registro"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.LogInActivity" />
@@ -54,15 +54,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".Actividades.MainActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity android:screenOrientation="portrait" android:name=".Actividades.RecetaActivity" />
         <activity
-            android:screenOrientation="portrait"
+            android:name=".Actividades.RecetaActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Actividades.BusquedaActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan">
             <meta-data
@@ -74,8 +76,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
-            android:name=".Actividades.EditarRecetaActivity">
+            android:name=".Actividades.EditarRecetaActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.RecetaActivity" />
@@ -85,8 +87,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
-            android:name=".Actividades.AgregarRecetaActivity">
+            android:name=".Actividades.AgregarRecetaActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.MainActivity" />
@@ -95,22 +97,33 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="portrait" android:name=".Actividades.UsuarioActivity" />
-        <activity android:screenOrientation="portrait" android:name=".Actividades.EditarUsuarioActivity" >
+        <activity
+            android:name=".Actividades.UsuarioActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Actividades.EditarUsuarioActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Actividades.PerfilActivity"
-                />
+                android:value=".Actividades.PerfilActivity" />
         </activity>
-        <activity android:screenOrientation="portrait" android:name=".Actividades.NavigatorActivity">
+        <activity
+            android:name=".Actividades.NavigatorActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.MainActivity" />
         </activity>
-        <activity android:screenOrientation="portrait"  android:name=".Actividades.PerfilActivity">
+        <activity
+            android:name=".Actividades.PerfilActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Actividades.MainActivity" />
+        </activity>
+        <activity android:name=".Actividades.TecnicaActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Actividades.MainActivity"/>
         </activity>
     </application>
 

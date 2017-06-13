@@ -23,6 +23,9 @@ import android.widget.TextView;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Evento;
 import com.asahary.foodnet.POJO.Receta;
+import com.asahary.foodnet.POJO.Tecnica;
+import com.asahary.foodnet.Principal.Comentarios.ComentariosDialog;
+import com.asahary.foodnet.Principal.GlosarioFragment;
 import com.asahary.foodnet.Principal.Usuario.RecetaTab;
 import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
@@ -41,9 +44,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,EventoFragment.Echador{
 
     public static Usuario user;
     public static Integer idUsuario;
@@ -100,7 +105,6 @@ public class MainActivity extends AppCompatActivity
         Call<List<Usuario>> callSeguidos=service.seguidosUser(idUsuario);
         Call<List<Receta>> callFavoritos=service.favoritosUser(idUsuario);
         Call<List<Receta>> callRecetas=service.recetasUser(idUsuario);
-        Call<List<Evento>> callEventos=service.eventosUser(idUsuario);
 
         callSeguidores.enqueue(new Callback<List<Usuario>>() {
             @Override
@@ -230,18 +234,19 @@ public class MainActivity extends AppCompatActivity
                     Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misEventos=new ArrayList<Evento>();
                 }
-                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos));
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos,MainActivity.this));
                 ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Evento>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
-                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos));
+                cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos,MainActivity.this));
                 ocultarCarga();
             }
         });
     }
+
 
 
     @Override
@@ -249,12 +254,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        //Al poner esta actividad como padre a la vuelta se ejecuta onCreate again entonces no trae un intent
-        // nuevo asi que tenemos que controlar que no sea nulo
-
         user= CacheApp.user;
-        idUsuario=Integer.parseInt(user.getId());
+        idUsuario=user.getId();
 
 
 
@@ -323,12 +324,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void crearGlosario(){
-        String[] lista =Constantes.GLOSARIO.split("=");
+        String[] lista =Constantes.GLOSARIO.split(":");
+        ArrayList<Tecnica> tecnicas=new ArrayList<>();
+
 
         for(int i=0;i<lista.length;i++){
-            if(i%2==0||i==0)
-                System.out.println(lista[i]);
+            String[] item=lista[i].split("=");
+            String nombre=item[0];
+            String descripcion="";
+            if(item.length>1){
+                descripcion=item[1];
+            }
+            tecnicas.add(new Tecnica(nombre,descripcion));
         }
+        CacheApp.glosario=tecnicas;
     }
 
     //Muestra o no una imagen de carga
@@ -400,10 +409,89 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(intent);
             finish();
+        }else if(id==R.id.nav_glosario){
+            intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_GLOSARIO);
+            startActivity(intentNavigation);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void echar(Evento evento) {
+        Retrofit retrofit=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
+        CookNetService service = retrofit.create(CookNetService.class);
+
+        mostrarCarga();
+        switch (evento.getTipo()){
+            case Constantes.EVENTO_FAVORITO:
+                Call<Receta> call = service.getReceta(evento.getIdReceta());
+                call.enqueue(new Callback<Receta>() {
+                    @Override
+                    public void onResponse(Call<Receta> call, Response<Receta> response) {
+                        Receta cuerpo=response.body();
+
+                        if(cuerpo!=null){
+                            Intent intent=new Intent(MainActivity.this, RecetaActivity.class);
+                            intent.putExtra(Constantes.EXTRA_RECETA,cuerpo);
+                            ocultarCarga();
+                            startActivity(intent);
+
+                        }
+                        ocultarCarga();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receta> call, Throwable t) {
+ocultarCarga();
+                    }
+                });
+                break;
+            case Constantes.EVENTO_SEGUIR:
+                Call<Usuario> call3 = service.getUsuario(evento.getIdUser());
+                call3.enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        Usuario usuario=response.body();
+
+                        if(usuario!=null){
+                            Intent intentUser=new Intent(MainActivity.this,UsuarioActivity.class);
+                            intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+                            startActivity(intentUser);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+
+                    }
+                });
+                break;
+
+            case Constantes.EVENTO_COMENTAR:
+                Call<Receta> call2 = service.getReceta(evento.getIdReceta());
+                call2.enqueue(new Callback<Receta>() {
+                    @Override
+                    public void onResponse(Call<Receta> call, Response<Receta> response) {
+                        Receta cuerpo=response.body();
+
+                        if(cuerpo!=null){
+                            ComentariosDialog dialog=new ComentariosDialog();
+                            Bundle extra = new Bundle();
+                            extra.putParcelable(Constantes.EXTRA_RECETA,cuerpo);
+                            dialog.setArguments(extra);
+                            dialog.show(getSupportFragmentManager(),"Comentarios");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Receta> call, Throwable t) {
+
+                    }
+                });
+                break;
+        }
     }
 }

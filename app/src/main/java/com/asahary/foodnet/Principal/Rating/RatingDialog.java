@@ -51,7 +51,7 @@ public class RatingDialog extends DialogFragment {
                 Retrofit retrofit =new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                 CookNetService servicio = retrofit.create(CookNetService.class);
 
-                Call<String> call =servicio.valorarReceta(ratingBar.getRating(),Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()), MainActivity.idUsuario);
+                Call<String> call =servicio.valorarReceta(ratingBar.getRating(),receta.getIdUsuario(),receta.getIdReceta(), MainActivity.idUsuario);
 
                 call.enqueue(new Callback<String>() {
                     @Override

@@ -17,10 +17,10 @@ public class Receta implements Parcelable{
 
     @SerializedName("idReceta")
     @Expose
-    private String idReceta;
+    private Integer idReceta;
     @SerializedName("idUsuario")
     @Expose
-    private String idUsuario;
+    private Integer idUsuario;
     @SerializedName("nombre")
     @Expose
     private String nombre;
@@ -29,10 +29,10 @@ public class Receta implements Parcelable{
     private String fechaAlta;
     @SerializedName("bajaUsuario")
     @Expose
-    private String bajaUsuario;
+    private Integer bajaUsuario;
     @SerializedName("bajaReceta")
     @Expose
-    private String bajaReceta;
+    private Integer bajaReceta;
     @SerializedName("preparacion")
     @Expose
     private String preparacion;
@@ -47,21 +47,21 @@ public class Receta implements Parcelable{
     private String imagen;
     @SerializedName("categoria")
     @Expose
-    private String categoria;
+    private Integer categoria;
 
-    public String getIdReceta() {
+    public Integer getIdReceta() {
         return idReceta;
     }
 
-    public void setIdReceta(String idReceta) {
+    public void setIdReceta(Integer idReceta) {
         this.idReceta = idReceta;
     }
 
-    public String getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(String idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -81,19 +81,19 @@ public class Receta implements Parcelable{
         this.fechaAlta = fechaAlta;
     }
 
-    public String getBajaUsuario() {
+    public Integer getBajaUsuario() {
         return bajaUsuario;
     }
 
-    public void setBajaUsuario(String bajaUsuario) {
+    public void setBajaUsuario(Integer bajaUsuario) {
         this.bajaUsuario = bajaUsuario;
     }
 
-    public String getBajaReceta() {
+    public Integer getBajaReceta() {
         return bajaReceta;
     }
 
-    public void setBajaReceta(String bajaReceta) {
+    public void setBajaReceta(Integer bajaReceta) {
         this.bajaReceta = bajaReceta;
     }
 
@@ -129,25 +129,25 @@ public class Receta implements Parcelable{
         this.imagen = imagen;
     }
 
-    public String getCategoria() {
+    public Integer getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Integer categoria) {
         this.categoria = categoria;
     }
 
     public Receta(Parcel in) {
-        idUsuario=in.readString();
-        idReceta=in.readString();
+        idUsuario=in.readInt();
+        idReceta=in.readInt();
         nombre=in.readString();
         descripcion=in.readString();
         ingredientes=in.readString();
         preparacion=in.readString();
         imagen=in.readString();
         fechaAlta=in.readString();
-        bajaUsuario=in.readString();
-        bajaReceta=in.readString();
+        bajaUsuario=in.readInt();
+        bajaReceta=in.readInt();
     }
 
 
@@ -158,16 +158,16 @@ public class Receta implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(idUsuario);
-        parcel.writeString(idReceta);
+        parcel.writeInt(idUsuario);
+        parcel.writeInt(idReceta);
         parcel.writeString(nombre);
         parcel.writeString(descripcion);
         parcel.writeString(ingredientes);
         parcel.writeString(preparacion);
         parcel.writeString(imagen);
         parcel.writeString(fechaAlta);
-        parcel.writeString(bajaUsuario);
-        parcel.writeString(bajaReceta);
+        parcel.writeInt(bajaUsuario);
+        parcel.writeInt(bajaReceta);
     }
 
     public static final Creator<Receta> CREATOR = new Creator<Receta>() {

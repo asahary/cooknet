@@ -101,7 +101,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
 
         //Por algun motivo si pasamos un bool retrofit no hace bien la conversion
         //por eso le pasamos un int
-        Call<String> call = service.actulizarFavorito(favorito?1:0,Integer.parseInt(receta.getIdUsuario()),Integer.parseInt(receta.getIdReceta()),MainActivity.idUsuario);
+        Call<String> call = service.actulizarFavorito(favorito?1:0,receta.getIdUsuario(),receta.getIdReceta(),MainActivity.idUsuario);
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -137,7 +137,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call = service.comprobarFavorito(Integer.parseInt(receta.getIdReceta()),MainActivity.idUsuario);
+        Call<Boolean> call = service.comprobarFavorito(receta.getIdReceta(),MainActivity.idUsuario);
 
         try {
             Response<Boolean> response = call.execute();
@@ -184,7 +184,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         lblNombreUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Libreria.obtenerServicioApi().getUsuario(Integer.parseInt(receta.getIdUsuario())).enqueue(new Callback<Usuario>() {
+                Libreria.obtenerServicioApi().getUsuario(receta.getIdUsuario()).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                         Usuario cuerpo=response.body();
@@ -209,7 +209,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     }
 
     private void rellenarCampos(){
-        int idUsuario=Integer.parseInt(receta.getIdUsuario());
+        int idUsuario=receta.getIdUsuario();
         txtNombre.setText(receta.getNombre());
         txtDescripcion.setText(receta.getDescripcion());
         txtIngredientes.setText(leerIngredientes());
@@ -217,18 +217,15 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         Glide.with(this).load(receta.getImagen()).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().error(R.drawable.food_generic).into(imgReceta);
         rellanarPuntuacion();
 
-        Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
-        CookNetService service = retrofit.create(CookNetService.class);
-        Call<Usuario> call = service.getUsuario(idUsuario);
-        call.enqueue(new Callback<Usuario>() {
+        Libreria.obtenerServicioApi().getUsuario(idUsuario).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 Usuario user=response.body();
 
                 if(user!=null){
-                    lblNombreUsuario.setText(user.getNombre());
+                    lblNombreUsuario.setText(user.getNick());
                 }else{
-                    Toast.makeText(RecetaActivity.this,"Cuerpo nullo", Toast.LENGTH_SHORT).show();
+                    Libreria.mostrarMensjeCorto(RecetaActivity.this,"El nombre es nulo");
                 }
             }
 
@@ -241,7 +238,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     }
 
     public void rellanarPuntuacion() {
-        Libreria.obtenerServicioApi().obtenerPuntuacion(Integer.parseInt(receta.getIdReceta())).enqueue(new Callback<Float>() {
+        Libreria.obtenerServicioApi().obtenerPuntuacion(receta.getIdReceta()).enqueue(new Callback<Float>() {
             @Override
             public void onResponse(Call<Float> call, Response<Float> response) {
                 Float respuesta=response.body();

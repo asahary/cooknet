@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Actividades;
 
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
+import com.asahary.foodnet.Principal.GlosarioFragment;
 import com.asahary.foodnet.Principal.Usuario.RecetaTab;
 import com.asahary.foodnet.Principal.Usuario.UsuariosTab;
 import com.asahary.foodnet.R;
@@ -40,6 +42,10 @@ public class NavigatorActivity extends AppCompatActivity {
 
         initVistas();
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
 
     }
 
@@ -57,6 +63,10 @@ public class NavigatorActivity extends AppCompatActivity {
             case Constantes.EXTRA_LISTA_MIS_SEGUIDOS:
                 cargarFragmentoMisSeguidos();
                 break;
+            case Constantes.EXTRA_LISTA_GLOSARIO:
+                cargarFragmentoGlosario();
+                break;
+
         }
     }
 
@@ -164,6 +174,11 @@ public class NavigatorActivity extends AppCompatActivity {
                 ocultarCarga();
             }
         });
+    }
+
+    public void cargarFragmentoGlosario(){
+        setTitle(Constantes.TITULO_GLOSARIO);
+        cargarFragmento(R.id.fragment, GlosarioFragment.newInstance(CacheApp.glosario));
     }
 
 }

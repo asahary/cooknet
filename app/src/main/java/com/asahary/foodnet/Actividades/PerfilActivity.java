@@ -55,7 +55,7 @@ public class PerfilActivity extends AppCompatActivity {
             if(requestCode==RQ_EDITAR_USER){
                 CacheApp.user=data.getParcelableExtra(Constantes.EXTRA_USUARIO);
                 //Si le ha dado de baja al usuario le hacemos salir
-                if(Integer.parseInt(CacheApp.user.getBaja())==1){
+                if(CacheApp.user.getBaja()==1){
                     Intent salir=new Intent(PerfilActivity.this,LogInActivity.class);
                     startActivity(salir);
                     finish();
