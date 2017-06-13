@@ -170,7 +170,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             String nick,email, nombre, apellidos, imagen;
 
             if (file != null) {
-                imagen = CookNetService.URL_BASE + "users/" + MainActivity.idUsuario + "/imgProfile/" + file.getName();
+                imagen = CookNetService.URL_BASE + "users/" + CacheApp.user.getId() + "/imgProfile/" + file.getName();
             } else {
                 imagen = user.getImagen();
             }
@@ -194,7 +194,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
             CookNetService service = retrofit.create(CookNetService.class);
 
             //Creamos la llamada
-            Call<Boolean> llamada = service.actualizarUser(MainActivity.idUsuario,nick, email, nombre, apellidos, imagen,baja?1:0);
+            Call<Boolean> llamada = service.actualizarUser(CacheApp.user.getId(),nick, email, nombre, apellidos, imagen,baja?1:0);
 
             llamada.enqueue(new Callback<Boolean>() {
                 @Override
@@ -548,7 +548,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
 
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call =service.subirFotoUsuario(descripcion,archivo,MainActivity.idUsuario);
+        Call<Boolean> call =service.subirFotoUsuario(descripcion,archivo,CacheApp.user.getId());
 
         call.enqueue(new Callback<Boolean>() {
             @Override

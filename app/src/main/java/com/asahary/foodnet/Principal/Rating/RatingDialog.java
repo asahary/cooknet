@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RatingBar;
 
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
@@ -51,7 +52,7 @@ public class RatingDialog extends DialogFragment {
                 Retrofit retrofit =new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                 CookNetService servicio = retrofit.create(CookNetService.class);
 
-                Call<String> call =servicio.valorarReceta(ratingBar.getRating(),receta.getIdUsuario(),receta.getIdReceta(), MainActivity.idUsuario);
+                Call<String> call =servicio.valorarReceta(ratingBar.getRating(),receta.getIdUsuario(),receta.getIdReceta(), CacheApp.user.getId());
 
                 call.enqueue(new Callback<String>() {
                     @Override
@@ -78,6 +79,8 @@ public class RatingDialog extends DialogFragment {
 
 
         ratingBar= (RatingBar) vista.findViewById(R.id.rating);
+
+        ratingBar.setRating(getArguments().getFloat("puntuacion"));
 
 
         builder.setView(vista);

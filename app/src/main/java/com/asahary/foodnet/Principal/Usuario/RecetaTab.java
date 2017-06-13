@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.asahary.foodnet.Principal.Timeline.EventoFragment;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.Adaptadores.RecetasAdapter;
@@ -30,7 +31,11 @@ public class RecetaTab extends Fragment implements RecetasAdapter.OnReciclerItem
     ArrayList<Receta> listaRecetas=new ArrayList<Receta>();
     View emptyView;
     private ImageView imgCarga;
+    private Echador mEchador;
 
+    public interface Echador{
+        void echar(Receta receta);
+    }
 
     public void initVistas(View vista){
 
@@ -50,9 +55,7 @@ public class RecetaTab extends Fragment implements RecetasAdapter.OnReciclerItem
 
     @Override
     public void itemClic(Receta receta) {
-        Intent intent=new Intent(RecetaTab.this.getActivity(), RecetaActivity.class);
-        intent.putExtra(Constantes.EXTRA_RECETA,receta);
-        startActivity(intent);
+        mEchador.echar(receta);
     }
 
     @Nullable
@@ -70,8 +73,9 @@ public class RecetaTab extends Fragment implements RecetasAdapter.OnReciclerItem
         initVistas(vista);
     }
 
-    public static RecetaTab newInstance(ArrayList<Receta> lista){
+    public static RecetaTab newInstance(ArrayList<Receta> lista, Echador echador){
         RecetaTab fragment = new RecetaTab();
+        fragment.mEchador=echador;
         fragment.listaRecetas=lista;
         return fragment;
     }

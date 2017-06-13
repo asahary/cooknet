@@ -42,7 +42,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     boolean favorito=false;
 
     public static final int MODIFICAR_RECETA=9;
-
+    public Float puntuacion=0.0f;
 
 
     @Override
@@ -63,7 +63,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
 
         favorito=comprobarFav();
 
-        if(MainActivity.idUsuario!=Integer.valueOf(receta.getIdUsuario())){
+        if(CacheApp.user.getId()!=Integer.valueOf(receta.getIdUsuario())){
             menu.getItem(2).setVisible(false);
         }
         if(!comprobarFav()){
@@ -101,7 +101,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
 
         //Por algun motivo si pasamos un bool retrofit no hace bien la conversion
         //por eso le pasamos un int
-        Call<String> call = service.actulizarFavorito(favorito?1:0,receta.getIdUsuario(),receta.getIdReceta(),MainActivity.idUsuario);
+        Call<String> call = service.actulizarFavorito(favorito?1:0,receta.getIdUsuario(),receta.getIdReceta(),CacheApp.user.getId());
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -137,7 +137,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call = service.comprobarFavorito(receta.getIdReceta(),MainActivity.idUsuario);
+        Call<Boolean> call = service.comprobarFavorito(receta.getIdReceta(),CacheApp.user.getId());
 
         try {
             Response<Boolean> response = call.execute();
@@ -175,6 +175,7 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                     RatingDialog dialog=new RatingDialog();
                     Bundle extras=new Bundle();
                     extras.putParcelable(Constantes.EXTRA_RECETA,receta);
+                    extras.putDouble("puntuacion",puntuacion);
                     dialog.setArguments(extras);
                     dialog.show(getSupportFragmentManager(),"Rating");
                 }
@@ -236,15 +237,15 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
         });
 
     }
-
     public void rellanarPuntuacion() {
         Libreria.obtenerServicioApi().obtenerPuntuacion(receta.getIdReceta()).enqueue(new Callback<Float>() {
             @Override
             public void onResponse(Call<Float> call, Response<Float> response) {
-                Float respuesta=response.body();
+
 
                 if(response!=null){
-                    ratingBar.setRating(respuesta);
+                    puntuacion=response.body();
+                    ratingBar.setRating(puntuacion);
                 }else{
                     Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
                 }

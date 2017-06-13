@@ -33,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UsuarioActivity extends FragmentActivity {
+public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echador,UsuariosTab.Echador{
 
     ViewPager viewPager;
     CircleImageView img;
@@ -75,7 +75,7 @@ public class UsuarioActivity extends FragmentActivity {
     private void comprobarSigue(){
         Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
         final CookNetService service = retrofit.create(CookNetService.class);
-        Call<Boolean> call = service.comprobarSigue(MainActivity.idUsuario,idUsuario);
+        Call<Boolean> call = service.comprobarSigue(CacheApp.user.getId(),idUsuario);
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -117,7 +117,7 @@ public class UsuarioActivity extends FragmentActivity {
             public void onClick(View view) {
                 Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                 final CookNetService service= retrofit.create(CookNetService.class);
-                Call<Boolean> call=service.actualizarSigue(MainActivity.idUsuario,idUsuario,sigue?1:0);
+                Call<Boolean> call=service.actualizarSigue(CacheApp.user.getId(),idUsuario,sigue?1:0);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -130,7 +130,7 @@ public class UsuarioActivity extends FragmentActivity {
                             }else{
                                 for(int i=0;i<seguidores.size();i++){
                                     int id=seguidores.get(i).getId();
-                                    if(id==MainActivity.idUsuario){
+                                    if(id==CacheApp.user.getId()){
                                         seguidores.remove(seguidores.get(i));
                                         break;
                                     }
@@ -157,10 +157,10 @@ public class UsuarioActivity extends FragmentActivity {
         //Creamos el view pager y su adaptador
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasFavoritos), "Favoritos", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasPropias), "Recetas", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidos), "Siguiendo", R.drawable.ic_camera);
-        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidores), "Seguidores", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasFavoritos,this), "Favoritos", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(RecetaTab.newInstance(recetasPropias,this), "Recetas", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidos,this), "Siguiendo", R.drawable.ic_camera);
+        viewPagerAdapter.addFragment(UsuariosTab.newInstance(seguidores,this), "Seguidores", R.drawable.ic_camera);
 
         viewPager.setAdapter(viewPagerAdapter);
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
@@ -238,6 +238,20 @@ public class UsuarioActivity extends FragmentActivity {
             }
         });
 
+    }
+
+    @Override
+    public void echar(Receta receta) {
+        Intent intent=new Intent(UsuarioActivity.this, RecetaActivity.class);
+        intent.putExtra(Constantes.EXTRA_RECETA,receta);
+        startActivity(intent);
+    }
+
+    @Override
+    public void echar(Usuario usuario) {
+        Intent intentUser=new Intent(UsuarioActivity.this,UsuarioActivity.class);
+        intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
+        startActivity(intentUser);
     }
 
     static class ViewPagerAdapter extends FragmentPagerAdapter {

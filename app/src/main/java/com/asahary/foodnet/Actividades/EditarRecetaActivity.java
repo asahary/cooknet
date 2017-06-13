@@ -28,6 +28,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
@@ -175,7 +176,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
         if(file==null){
             rutaImagen=receta.getImagen();
         }else{
-            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
+            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(CacheApp.user.getId())+"/imgRecipes/"+file.getName();
             receta.setImagen(rutaImagen);
         }
 
@@ -482,7 +483,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
 
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call =service.subirFotoReceta(descripcion,archivo,MainActivity.idUsuario);
+        Call<Boolean> call =service.subirFotoReceta(descripcion,archivo,CacheApp.user.getId());
 
         call.enqueue(new Callback<Boolean>() {
             @Override

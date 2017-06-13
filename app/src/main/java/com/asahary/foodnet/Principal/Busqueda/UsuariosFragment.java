@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.asahary.foodnet.Actividades.BusquedaActivity;
 import com.asahary.foodnet.Adaptadores.UsuariosAdapter;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.Actividades.MainActivity;
@@ -69,7 +70,7 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
     }
 
     private void iniciarLista(){
-        Libreria.obtenerServicioApi().listUsers(MainActivity.idUsuario).enqueue(new Callback<List<Usuario>>() {
+        Libreria.obtenerServicioApi().listUsers(CacheApp.user.getId()).enqueue(new Callback<List<Usuario>>() {
             @Override
             public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
                 List<Usuario> respuesta=response.body();

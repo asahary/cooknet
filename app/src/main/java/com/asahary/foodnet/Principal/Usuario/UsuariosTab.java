@@ -30,8 +30,11 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
     RecyclerView lista;
     View emptyView;
     ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+    public Echador mEchador;
 
-
+    public interface Echador{
+        void echar(Usuario usuario);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,17 +76,16 @@ public class UsuariosTab extends Fragment implements UsuariosAdapter.OnReciclerI
     }
 
 
-    public static UsuariosTab newInstance(ArrayList<Usuario> usuarios) {
+    public static UsuariosTab newInstance(ArrayList<Usuario> usuarios,Echador echador) {
         UsuariosTab fragment =new UsuariosTab();
         fragment.listaUsuarios =usuarios;
+        fragment.mEchador=echador;
         return fragment;
     }
 
     @Override
     public void itemClic(Usuario usuario) {
-        Intent intentUser=new Intent(UsuariosTab.this.getContext(),UsuarioActivity.class);
-        intentUser.putExtra(Constantes.EXTRA_USUARIO,usuario);
-        startActivity(intentUser);
+        mEchador.echar(usuario);
     }
 
     public void checkVacio(){

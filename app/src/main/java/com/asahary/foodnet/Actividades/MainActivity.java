@@ -48,10 +48,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,EventoFragment.Echador{
-
-    public static Usuario user;
-    public static Integer idUsuario;
+        implements NavigationView.OnNavigationItemSelectedListener,EventoFragment.Echador,RecetaTab.Echador{
     public BottomNavigationView bottomView;
     private CircleImageView imgNav;
     private TextView nav_user,nav_userTitle;
@@ -93,6 +90,8 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         if(bottomView.getSelectedItemId()==R.id.mnuFavoritos){
             cargarFragmentoMisFavoritos();
+        }else if(bottomView.getSelectedItemId()==R.id.mnuHome){
+            cargarFragmentoMisEventos();
         }
         super.onResume();
     }
@@ -101,10 +100,10 @@ public class MainActivity extends AppCompatActivity
     public void obtenerListas(){
         CookNetService service= Libreria.obtenerServicioApi();
 
-        Call<List<Usuario>> callSeguidores=service.seguidoresUser(idUsuario);
-        Call<List<Usuario>> callSeguidos=service.seguidosUser(idUsuario);
-        Call<List<Receta>> callFavoritos=service.favoritosUser(idUsuario);
-        Call<List<Receta>> callRecetas=service.recetasUser(idUsuario);
+        Call<List<Usuario>> callSeguidores=service.seguidoresUser(CacheApp.user.getId());
+        Call<List<Usuario>> callSeguidos=service.seguidosUser(CacheApp.user.getId());
+        Call<List<Receta>> callFavoritos=service.favoritosUser(CacheApp.user.getId());
+        Call<List<Receta>> callRecetas=service.recetasUser(CacheApp.user.getId());
 
         callSeguidores.enqueue(new Callback<List<Usuario>>() {
             @Override
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity
     public void cargarFragmentoMisFavoritos(){
         mostrarCarga();
         setTitle(Constantes.TITULO_FAVORITOS);
-        Libreria.obtenerServicioApi().favoritosUser(idUsuario).enqueue(new Callback<List<Receta>>() {
+        Libreria.obtenerServicioApi().favoritosUser(CacheApp.user.getId()).enqueue(new Callback<List<Receta>>() {
             @Override
             public void onResponse(Call<List<Receta>> call, Response<List<Receta>> response) {
                 List<Receta> lista=response.body();
@@ -207,14 +206,14 @@ public class MainActivity extends AppCompatActivity
                     Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misFavoritos=new ArrayList<Receta>();
                 }
-                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos));
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos,MainActivity.this));
                 ocultarCarga();
             }
 
             @Override
             public void onFailure(Call<List<Receta>> call, Throwable t) {
                 Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_FALLIDA);
-                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos));
+                cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos,MainActivity.this));
                 ocultarCarga();
             }
         });
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity
     public void cargarFragmentoMisEventos(){
         mostrarCarga();
         setTitle(Constantes.TITULO_HOME);
-        Libreria.obtenerServicioApi().eventosUser(idUsuario).enqueue(new Callback<List<Evento>>() {
+        Libreria.obtenerServicioApi().eventosUser(CacheApp.user.getId()).enqueue(new Callback<List<Evento>>() {
             @Override
             public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
                 List<Evento> lista=response.body();
@@ -248,16 +247,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        user= CacheApp.user;
-        idUsuario=user.getId();
-
-
 
         //Para que no se habra el teclado por la cara al entrar
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -318,9 +311,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void rellenarCabecera() {
-        nav_userTitle.setText(user.getNick());
+        nav_userTitle.setText(CacheApp.user.getNick());
         nav_user.setText("Toca para ver tu perfil");
-        Picasso.with(this).load(user.getImagen()).fit().into(imgNav);
+        Picasso.with(this).load(CacheApp.user.getImagen()).fit().into(imgNav);
     }
 
     private void crearGlosario(){
@@ -493,5 +486,15 @@ ocultarCarga();
                 });
                 break;
         }
+    }
+
+    @Override
+    public void echar(Receta receta) {
+        mostrarCarga();
+        Intent intent=new Intent(MainActivity.this, RecetaActivity.class);
+        intent.putExtra(Constantes.EXTRA_RECETA,receta);
+        ocultarCarga();
+        startActivity(intent);
+
     }
 }

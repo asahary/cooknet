@@ -1,5 +1,6 @@
 package com.asahary.foodnet.Actividades;
 
+import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -141,8 +142,13 @@ public class  BusquedaActivity extends AppCompatActivity {
 
     }
 
+
     public interface OnTextToolbarTextChange{
         void onTextChanged(String Text);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+
+    }
 }

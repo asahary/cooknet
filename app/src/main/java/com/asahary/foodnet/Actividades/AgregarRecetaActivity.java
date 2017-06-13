@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.asahary.foodnet.Adaptadores.IngredienteAdapter;
 import com.asahary.foodnet.Principal.Agregar.ImagenOptionDialog;
 import com.asahary.foodnet.Principal.Agregar.PreparacionDialog;
+import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
@@ -169,14 +170,14 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         if(file==null){
             rutaImagen=Constantes.URL_COMIDA;
         }else{
-            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(MainActivity.idUsuario)+"/imgRecipes/"+file.getName();
+            rutaImagen=CookNetService.URL_BASE+"users/"+String.valueOf(CacheApp.user.getId())+"/imgRecipes/"+file.getName();
         }
 
         Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
 
         CookNetService servicio=retrofit.create(CookNetService.class);
 
-        Call<String> llamada = servicio.aregarReceta(MainActivity.idUsuario,nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
+        Call<String> llamada = servicio.aregarReceta(CacheApp.user.getId(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
 
         llamada.enqueue(new Callback<String>() {
             @Override
@@ -440,7 +441,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
         CookNetService service = retrofit.create(CookNetService.class);
 
-        Call<Boolean> call =service.subirFotoReceta(descripcion,archivo,MainActivity.idUsuario);
+        Call<Boolean> call =service.subirFotoReceta(descripcion,archivo,CacheApp.user.getId());
 
         call.enqueue(new Callback<Boolean>() {
             @Override
