@@ -2,10 +2,12 @@ package com.asahary.foodnet.Actividades;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -83,10 +85,10 @@ public class MainActivity extends AppCompatActivity
 
 
         //Los llamamos aqui en lugar de iniciar listas
+        crearGlosario();
         bottomView.setSelectedItemId(R.id.mnuHome);
         cargarFragmentoMisEventos();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -96,7 +98,6 @@ public class MainActivity extends AppCompatActivity
             cargarFragmentoMisEventos();
         }
     }
-
     //Obtencion de listas por defecto
     public void obtenerListas(){
         CookNetService service= Libreria.obtenerServicioApi();
@@ -184,15 +185,16 @@ public class MainActivity extends AppCompatActivity
 
     //Carga de fragmentos
     public void cargarFragmento(int id, Fragment frag) {
-        if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
-            getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
+        if(!isFinishing()){
+            if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
+            }
+            FragmentTransaction transaccion = gestor.beginTransaction();
+            transaccion.replace(id, frag);
+            transaccion.commitAllowingStateLoss();
         }
-        FragmentTransaction transaccion = gestor.beginTransaction();
-        transaccion.replace(id, frag);
-        transaccion.commit();
-        crearGlosario();
-    }
 
+    }
     public void cargarFragmentoMisFavoritos(){
         mostrarCarga();
         setTitle(Constantes.TITULO_FAVORITOS);
@@ -204,7 +206,6 @@ public class MainActivity extends AppCompatActivity
                 if(lista!=null){
                     CacheApp.misFavoritos=new ArrayList<Receta>(lista);
                 }else{
-                    Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misFavoritos=new ArrayList<Receta>();
                 }
                 cargarFragmento(R.id.fragment, RecetaTab.newInstance(CacheApp.misFavoritos,MainActivity.this));
@@ -219,7 +220,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
     public void cargarFragmentoMisEventos(){
         mostrarCarga();
         setTitle(Constantes.TITULO_HOME);
@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity
                     Collections.sort(lista,Evento.FechaComparator);
                     CacheApp.misEventos=new ArrayList<Evento>(lista);
                 }else{
-                    Libreria.mostrarMensjeCorto(MainActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misEventos=new ArrayList<Evento>();
                 }
                 cargarFragmento(R.id.fragment, EventoFragment.newInstance(CacheApp.misEventos,MainActivity.this));
@@ -311,13 +310,11 @@ public class MainActivity extends AppCompatActivity
         //Obtenemos las listas por defecto
         obtenerListas();
     }
-
     private void rellenarCabecera() {
         nav_userTitle.setText(CacheApp.user.getNick());
         nav_user.setText("Toca para ver tu perfil");
-        Picasso.with(this).load(CacheApp.user.getImagen()).fit().into(imgNav);
+        Picasso.with(this).load(CacheApp.user.getImagen()).placeholder(R.drawable.user_generic).error(R.drawable.user_generic).fit().into(imgNav);
     }
-
     private void crearGlosario(){
         String[] lista =Constantes.GLOSARIO.split(":");
         ArrayList<Tecnica> tecnicas=new ArrayList<>();
@@ -355,15 +352,12 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -408,6 +402,8 @@ public class MainActivity extends AppCompatActivity
         }else if(id==R.id.nav_glosario){
             intentNavigation.putExtra(Constantes.EXTRA_OPCION_LISTA,Constantes.EXTRA_LISTA_GLOSARIO);
             startActivity(intentNavigation);
+        }else if(id==R.id.nav_about){
+            new AlertDialog.Builder(MainActivity.this).setTitle("Sobre...").setMessage("CookNet \nCreado por Omar A.Ayala 2017").setPositiveButton("Ok",null).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -499,5 +495,9 @@ ocultarCarga();
         ocultarCarga();
         startActivity(intent);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
     }
 }

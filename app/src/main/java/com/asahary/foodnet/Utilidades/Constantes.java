@@ -7,20 +7,15 @@ import com.asahary.foodnet.CookNetService;
  */
 
  public class Constantes {
-    public final static String ID_USUARIO="idUsuario";
     public static final String EXTRA_RECETA ="extraAlimno";
     public static final String EXTRA_USUARIO ="extraUser";
-    public static final String EXTRA_PREPARACION ="extraPreparacion";
-    public static final String EXTRA_ID_USUARIO ="extraIdUsuario";
-    public static final String EXTRA_ID_RECETA ="extraIdReceta";
     public static final String EXTRA_COMENTARIO="extraComentario";
     public static final String EXTRA_TECNICA="extraTecnica";
 
     public static final String EXTRA_OPCION_LISTA="tipoDeLista";
-   public static final String EXTRA_LISTA_MIS_RECETA="listaMisRecetas";
-   public static final String EXTRA_LISTA_MIS_SEGUIDORES="listaMisSeguidores";
-   public static final String EXTRA_LISTA_MIS_SEGUIDOS="listaMisSeguidos";
-   public static final String EXTRA_LISTA_MIS_FAVORITOS="listaMisFavoritos";
+    public static final String EXTRA_LISTA_MIS_RECETA="listaMisRecetas";
+    public static final String EXTRA_LISTA_MIS_SEGUIDORES="listaMisSeguidores";
+    public static final String EXTRA_LISTA_MIS_SEGUIDOS="listaMisSeguidos";
     public static final String EXTRA_LISTA_GLOSARIO="glosario";
 
     public static  final String URL_COMIDA= CookNetService.URL_BASE+"users/foodGeneric.png";

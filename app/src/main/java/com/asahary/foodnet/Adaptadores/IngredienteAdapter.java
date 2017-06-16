@@ -21,29 +21,10 @@ import java.util.ArrayList;
  * Created by Saha on 23/05/2017.
  */
 
-public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.Contenedor> implements View.OnClickListener{
+public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.Contenedor> {
     ArrayList<Ingrediente> ingredientes =new ArrayList<>();
-    ArrayList<Integer> posiciones=new ArrayList<>();
 
 
-    @Override
-    public void onClick(View view) {
-
-    }
-
-    public interface OnReciclerItemClickListener{
-        void itemClic(Ingrediente receta);
-    }
-
-
-    IngredienteAdapter.OnReciclerItemClickListener listener;
-
-    public IngredienteAdapter(ArrayList<Ingrediente> ingredientes, IngredienteAdapter.OnReciclerItemClickListener listener){
-        super();
-        this.listener=listener;
-        this.ingredientes =ingredientes;
-
-    }
     public IngredienteAdapter(ArrayList<Ingrediente> ingredientes){
         super();
         this.ingredientes =ingredientes;
@@ -52,26 +33,13 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
     public void swapDatos(ArrayList<Ingrediente> recetas){
         this.ingredientes =recetas;
-        posiciones.clear();
-        for(int i=0;i<ingredientes.size();i++){
-            posiciones.add(i);
-        }
         this.notifyDataSetChanged();
     }
 
     @Override
     public IngredienteAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ingrediente,parent,false);
-
-
         final IngredienteAdapter.Contenedor tvh = new IngredienteAdapter.Contenedor(itemView);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //listener.itemClic(ingredientes.get(tvh.getAdapterPosition()));
-            }
-        });
-
         return tvh;
     }
 
@@ -103,9 +71,6 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
 
         public void onBin(final Ingrediente ingrediente){
             //Obtenemos la posicion del ingrediente en el array
-
-
-
             txtNombre.setText(ingrediente.nombre);
             txtCant.setText(String.valueOf(ingrediente.cantidad));
             sp.setSelection(ingrediente.medida);

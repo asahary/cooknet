@@ -14,6 +14,9 @@
         <item>libras</item>
         <item>Cucharadas</item>
         <item>Cucharaditas</item>
+        <item>Unidades</item>
+        <item>Kilo</item>
+        <item>Litro</item>
     </string-array>
     <string-array name="categorias">
         <item>carne</item>

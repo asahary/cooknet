@@ -36,12 +36,6 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.Contenedor
         this.lista =lista;
 
     }
-    public EventoAdapter(ArrayList<Evento> ingredientes){
-        super();
-        this.lista=ingredientes;
-
-    }
-
     public void swapDatos(ArrayList<Evento> lista){
         this.lista =lista;
         ((EventoFragment)listener).checkVacio();

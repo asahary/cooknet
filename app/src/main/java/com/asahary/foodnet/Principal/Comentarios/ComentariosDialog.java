@@ -46,7 +46,7 @@ public class ComentariosDialog extends DialogFragment implements ComentariosAdap
     ArrayList<Comentario> comentarios=new ArrayList<>();
 
 
-public void iniciarLista(){
+    public void iniciarLista(){
     Libreria.obtenerServicioApi().comentariosReceta(receta.getIdReceta()).enqueue(new Callback<List<Comentario>>() {
         @Override
         public void onResponse(Call<List<Comentario>> call, Response<List<Comentario>> response) {
@@ -117,10 +117,8 @@ public void iniciarLista(){
         return builder.create();
     }
 
-
-
-        @Override
-        public void itemClic(Comentario comentario) {
+    @Override
+    public void itemClic(Comentario comentario) {
             Libreria.obtenerServicioApi().getUsuario(comentario.getIdUsuario()).enqueue(new Callback<Usuario>() {
                 @Override
                 public void onResponse(Call<Usuario> call, Response<Usuario> response) {

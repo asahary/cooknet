@@ -44,11 +44,16 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     RecyclerView lista;
     ArrayList<Evento> eventos=new ArrayList<>();
     EventoAdapter adaptador;
-    private Echador mEchador;
+    Echador mEchador;
     View emptyView;
 
     public interface Echador{
         void echar(Evento evento);
+    }
+
+    @Override
+    public void itemClic(Evento evento) {
+        mEchador.echar(evento);
     }
 
 
@@ -60,13 +65,6 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
         lista.setAdapter(adaptador);
         adaptador.swapDatos(adaptador.lista);
     }
-
-
-    @Override
-    public void itemClic(Evento evento) {
-        mEchador.echar(evento);
-    }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

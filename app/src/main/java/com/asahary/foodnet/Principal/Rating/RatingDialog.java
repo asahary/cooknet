@@ -39,6 +39,7 @@ public class RatingDialog extends DialogFragment {
     public interface OnDismissListener{
          void onDismiss();
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

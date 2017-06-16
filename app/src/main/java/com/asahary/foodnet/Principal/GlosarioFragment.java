@@ -54,6 +54,7 @@ public class GlosarioFragment extends Fragment implements TecnicasAdapter.OnReci
         lista.setAdapter(adapter);
     }
 
+
     public static GlosarioFragment newInstance(ArrayList<Tecnica> tecnicas){
         GlosarioFragment fragment=new GlosarioFragment();
         fragment.tecnicas=tecnicas;

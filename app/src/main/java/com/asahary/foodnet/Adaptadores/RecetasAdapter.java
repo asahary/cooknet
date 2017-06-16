@@ -24,7 +24,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.Contenedor>{
     ArrayList<Receta> recetas=new ArrayList<>();
-    private View emptyView;
 
     public interface OnReciclerItemClickListener{
         void itemClic(Receta receta);

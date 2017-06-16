@@ -12,6 +12,7 @@ import com.asahary.foodnet.R;
 import com.asahary.foodnet.Utilidades.CacheApp;
 import com.asahary.foodnet.Utilidades.Constantes;
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -21,6 +22,7 @@ public class PerfilActivity extends AppCompatActivity {
     CircleImageView imgPerfil;
 
     public static final int RQ_EDITAR_USER=7;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
     private void rellenarDatos(){
         Usuario user= CacheApp.user;
-        Glide.with(this).load(user.getImagen()).fitCenter().error(R.drawable.user_generic).into(imgPerfil);
+        Picasso.with(this).load(user.getImagen()).placeholder(R.drawable.user_generic).fit().error(R.drawable.user_generic).into(imgPerfil);
         txtNick.setText(user.getNick());
         txtNombre.setText(user.getNombre());
         txtEmail.setText(user.getEmail());

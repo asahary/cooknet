@@ -126,6 +126,8 @@ public class Usuario implements Parcelable{
         public void setImagen(String imagen) {
             this.imagen = imagen;
         }
+
+
     public Usuario(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
@@ -136,7 +138,6 @@ public class Usuario implements Parcelable{
         admin=in.readInt();
         nick = in.readString();
         imagen = in.readString();
-
     }
 
     @Override

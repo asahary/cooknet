@@ -215,7 +215,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
 
     //Llaman a la api para comprobar si existen
     private boolean comprobarEmail(){
-        Boolean existe=null;
+        Boolean existe=true;
 
         //Creamos el objeto retrofit
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
@@ -232,16 +232,21 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
         try {
             Response<Boolean> respuesta=llamada.execute();
             if(respuesta.isSuccessful()){
-                existe=respuesta.body();
+
+                if(respuesta!=null)
+                    existe=respuesta.body();
+                else
+                    Libreria.mostrarMensjeCorto(RegisterActivity.this,"No se ha podido comprobar el email ");
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Libreria.mostrarMensjeCorto(RegisterActivity.this,"No se ha podido comprobar el email");
         }
         return existe;
     }
     private boolean comprobarNick(){
 
-        Boolean existe=null;
+        Boolean existe=true;
 
         //Creamos el objeto retrofit
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
@@ -258,10 +263,15 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
         try {
             Response<Boolean> respuesta=llamada.execute();
             if(respuesta.isSuccessful()){
-                existe=respuesta.body();
+
+                if(respuesta!=null)
+                    existe=respuesta.body();
+                else
+                    Libreria.mostrarMensjeCorto(RegisterActivity.this,"No se ha podido comprobar el nick");
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Libreria.mostrarMensjeCorto(RegisterActivity.this,"No se ha podido comprobar el nick");
         }
         return existe;
     }
@@ -347,7 +357,7 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
             f = new File(sOriginal);
             file=f;
         }
-        Picasso.with(RegisterActivity.this).load(f).fit().error(R.drawable.ic_check).into(img);
+        Picasso.with(RegisterActivity.this).load(f).fit().error(R.drawable.user_generic).into(img);
     }
 
     private void procesarUri(){
@@ -394,7 +404,6 @@ public class RegisterActivity extends AppCompatActivity implements ImagenOptionD
                     nombre);
             Log.d(getString(R.string.app_name), archivo.getAbsolutePath());
         }
-        Toast.makeText(RegisterActivity.this,archivo.getAbsolutePath(),Toast.LENGTH_LONG).show();
         this.file=archivo;
 
         // Se retorna el archivo creado.

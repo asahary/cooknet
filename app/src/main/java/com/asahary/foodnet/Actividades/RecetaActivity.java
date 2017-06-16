@@ -41,9 +41,11 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     Menu menu;
     RatingBar ratingBar;
     boolean favorito=false;
+    public Float puntuacion=0.0f;
 
     public static final int MODIFICAR_RECETA=9;
-    public Float puntuacion=0.0f;
+
+
 
 
     @Override
@@ -62,16 +64,16 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receta);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
-
-        if(getIntent().hasExtra(Constantes.EXTRA_RECETA)){
+        if(savedInstanceState==null&&getIntent().hasExtra(Constantes.EXTRA_RECETA)){
             receta=getIntent().getParcelableExtra(Constantes.EXTRA_RECETA);
             setTitle(receta.getNombre());
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+
             initVistas();
         }else{
-            finish();
+            receta=savedInstanceState.getParcelable(Constantes.EXTRA_RECETA);
         }
     }
 
@@ -165,10 +167,9 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                 if(response.body()!=null){
                     fav=response.body();
                 }else{
-                    Toast.makeText(this,"Cuerpo nullo",Toast.LENGTH_SHORT).show();;
                 }
             }else {
-                Toast.makeText(this,"Respuesta fallida",Toast.LENGTH_SHORT).show();;
+                Toast.makeText(this,"No se pudo obtener si es favorito",Toast.LENGTH_SHORT).show();;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -266,13 +267,13 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                     puntuacion=response.body();
                     ratingBar.setRating(puntuacion);
                 }else{
-                    Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
+                    Libreria.mostrarMensjeCorto(RecetaActivity.this,"No hay informacion sobre puntuacion");
                 }
             }
 
             @Override
             public void onFailure(Call<Float> call, Throwable t) {
-                Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_FALLIDA);
+                Libreria.mostrarMensjeCorto(RecetaActivity.this,"No se puede obtener la puntuacion");
             }
         });
     }

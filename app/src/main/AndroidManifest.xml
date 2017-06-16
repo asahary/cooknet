@@ -43,6 +43,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Actividades.RegisterActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:label="Registro"
             android:screenOrientation="portrait">
             <meta-data
@@ -77,6 +78,7 @@
         </activity>
         <activity
             android:name=".Actividades.EditarRecetaActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -88,6 +90,7 @@
         </activity>
         <activity
             android:name=".Actividades.AgregarRecetaActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -102,6 +105,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Actividades.EditarUsuarioActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

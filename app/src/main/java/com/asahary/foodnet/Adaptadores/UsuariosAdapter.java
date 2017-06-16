@@ -23,14 +23,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Contenedor> {
     ArrayList<Usuario> usuarios =new ArrayList<>();
-
+    UsuariosAdapter.OnReciclerItemClickListener listener;
 
     public interface OnReciclerItemClickListener{
         void itemClic(Usuario usuario);
     }
 
 
-    UsuariosAdapter.OnReciclerItemClickListener listener;
+
 
     public UsuariosAdapter(ArrayList<Usuario> usuarios, UsuariosAdapter.OnReciclerItemClickListener listener){
         super();

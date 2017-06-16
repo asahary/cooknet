@@ -108,9 +108,8 @@ public interface CookNetService {
 
     @FormUrlEncoded
     @POST("receta/index")
-    Call<String> aregarReceta(@Field("idUsuario")int idUsuario,@Field("nombre")String nombre,
-        @Field("descripcion")String descripcion,@Field("preparacion")String preparacion,
-        @Field("ingredientes")String ingredientes,@Field("categoria")int categoria,@Field("imagen")String imagen);
+    Call<String> agregarReceta(@Field("idUsuario")int idUsuario, @Field("nombre")String nombre, @Field("descripcion")String descripcion, @Field("preparacion")String preparacion,
+                               @Field("ingredientes")String ingredientes, @Field("categoria")int categoria, @Field("imagen")String imagen);
 
     @FormUrlEncoded
     @POST("comprobaciones/favorito")

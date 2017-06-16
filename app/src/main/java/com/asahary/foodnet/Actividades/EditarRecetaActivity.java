@@ -63,12 +63,10 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     Switch sw;
     RecyclerView lista;
     IngredienteAdapter adaptador;
-    TextView lblMostrar;
     ArrayList<Ingrediente> ingredientes=new ArrayList<>();
     EditText txtNombre,txtDescripcion,txtPreparacion;
     ImageView btnAgregar;
     ImageView imgReceta;
-    ImageView img;
     FloatingActionButton fab;
     Intent intent;
     String sOriginal="";
@@ -185,8 +183,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
     }
 
     private void subirReceta(){
-        final MenuItem item=mMenu.findItem(R.id.action_done);
-        item.setEnabled(false);
+
         final String nombre=txtNombre.getText().toString();
         final String descripcion=txtDescripcion.getText().toString();
         final String preparacion=txtPreparacion.getText().toString();
@@ -216,15 +213,14 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
                     setResult(RESULT_OK,resultIntent);
                     finish();
                 }else{
-                    Toast.makeText(EditarRecetaActivity.this,"cuerpo nulo",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditarRecetaActivity.this,"No se ha cambiado nada de la receta, no se ha actualizado",Toast.LENGTH_SHORT).show();
                 }
-                item.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(EditarRecetaActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
-                item.setEnabled(true);
+                Toast.makeText(EditarRecetaActivity.this,"No se pudo establecer datos con el servidor",Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -281,7 +277,7 @@ public class EditarRecetaActivity extends AppCompatActivity implements ImagenOpt
         Double cantidad=0.0;
         for(int i=0;i<ingredientes.size();i++){
             Ingrediente ingrediente =ingredientes.get(i);
-            nombre=ingrediente.nombre;
+            nombre=ingrediente.nombre.isEmpty()?"Ingrediente":ingrediente.nombre;
             medida=ingrediente.medida;
             cantidad=ingrediente.cantidad;
 

@@ -23,13 +23,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TecnicasAdapter extends RecyclerView.Adapter<TecnicasAdapter.Contenedor>{
     ArrayList<Tecnica> lista=new ArrayList<>();
+    TecnicasAdapter.OnReciclerItemClickListener listener;
+
 
     public interface OnReciclerItemClickListener{
         void itemClic(Tecnica tecnica);
     }
 
 
-    TecnicasAdapter.OnReciclerItemClickListener listener;
+
 
     public TecnicasAdapter(ArrayList<Tecnica> lista, TecnicasAdapter.OnReciclerItemClickListener listener){
         super();

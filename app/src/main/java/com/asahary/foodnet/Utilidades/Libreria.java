@@ -31,6 +31,7 @@ public class Libreria {
 
     public static String crearPass(String passwordToHash){
         String generatedPassword = null;
+        passwordToHash.trim();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update("aSAhaharidi".getBytes("UTF-8"));

@@ -18,15 +18,12 @@ import com.asahary.foodnet.R;
 
 public class ImagenOptionDialog extends DialogFragment {
     View vista;
-
     ImageButton btnFotos,btnCamara;
-
+    OnOptionClick listener;
 
     public interface OnOptionClick{
         void onClick(int option);
     }
-
-    OnOptionClick listener;
 
     @Override
     public void onAttach(Context context) {

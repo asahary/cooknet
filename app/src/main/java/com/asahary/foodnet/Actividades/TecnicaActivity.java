@@ -2,6 +2,7 @@ package com.asahary.foodnet.Actividades;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 import com.asahary.foodnet.POJO.Tecnica;
@@ -29,11 +30,5 @@ public class TecnicaActivity extends AppCompatActivity {
 
         lblNombreTecnica.setText(tecnica.nombre);
         lblDescripciontecnica.setText(tecnica.descripcion);
-    }
-
-    @Override
-    public void onBackPressed() {
-        ((NavigatorActivity)getParent()).cargarFragmentoGlosario();
-        super.onBackPressed();
     }
 }

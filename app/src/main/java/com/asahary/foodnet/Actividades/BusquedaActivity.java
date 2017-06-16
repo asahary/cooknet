@@ -29,6 +29,17 @@ public class  BusquedaActivity extends AppCompatActivity {
     EditText txtText;
     OnTextToolbarTextChange listener;
 
+    public interface OnTextToolbarTextChange{
+        void onTextChanged(String Text);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +108,8 @@ public class  BusquedaActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);
         listener= (OnTextToolbarTextChange) viewPagerAdapter.getItem(0);
     }
+
+
     static class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> mFragments = new ArrayList<>();
@@ -133,22 +146,11 @@ public class  BusquedaActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return " " + mFragmentTitles.get(position);
         }
-
         // Retorna el resId del icono asociado a una determinada página.
-
         public int getPageIcon(int position) {
             return mFragmentIcons.get(position);
         }
 
     }
 
-
-    public interface OnTextToolbarTextChange{
-        void onTextChanged(String Text);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-
-    }
 }

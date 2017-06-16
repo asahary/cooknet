@@ -29,7 +29,6 @@ public class LogInActivity extends AppCompatActivity {
 
 
 
-
     EditText txtNick,txtPass;
     Button btnAccess;
     TextView lblRegistrar;
@@ -42,7 +41,6 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         initVistas();
     }
-
     private void mostrarCarga(){
         txtPass.setEnabled(false);
         txtNick.setEnabled(false);
@@ -161,5 +159,4 @@ public class LogInActivity extends AppCompatActivity {
                     }})
                 .setNegativeButton("No",null).show();
     }
-
 }

@@ -58,13 +58,14 @@
         android:text="Follow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/datos"
+        android:layout_below="@+id/datos"
+    android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"/>
 <android.support.v4.view.ViewPager
     android:id="@+id/pager"
     android:layout_marginTop="20dp"
-    android:layout_below="@+id/imgUsuario"
+    android:layout_below="@+id/btnfollow"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.design.widget.TabLayout

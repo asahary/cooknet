@@ -35,7 +35,6 @@ import com.asahary.foodnet.Utilidades.Constantes;
 import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Ingrediente;
 import com.asahary.foodnet.R;
-import com.asahary.foodnet.Utilidades.GestorImagenes;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -53,7 +52,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,GestorImagenes.ImageRequester,PreparacionDialog.OnPrepDone {
+public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOptionDialog.OnOptionClick,PreparacionDialog.OnPrepDone {
     RecyclerView lista;
     IngredienteAdapter adaptador;
     ImageView btnAgregar;
@@ -67,6 +66,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
     String nombreArchivo="";
     File file;
     Menu mMenu;
+
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
@@ -91,6 +91,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()){
             case R.id.action_done:
                 if(!comprobarCampos()){
@@ -163,9 +164,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
     //Hace la llamada post que sube la receta
     private void subirReceta(){
-        final MenuItem item=mMenu.getItem(R.id.action_done);
-        item.setEnabled(false);
-
         String nombre=txtNombre.getText().toString();
         String descripcion=txtDescripcion.getText().toString();
         String preparacion=txtPreparacion.getText().toString();
@@ -181,25 +179,23 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
 
         CookNetService servicio=retrofit.create(CookNetService.class);
 
-        Call<String> llamada = servicio.aregarReceta(CacheApp.user.getId(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
+        Call<String> llamada = servicio.agregarReceta(CacheApp.user.getId(),nombre,descripcion,preparacion,formatearIngredientes(),0,rutaImagen);
 
         llamada.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 String respuesta=response.body();
                 if(respuesta!=null){
-                    Toast.makeText(AgregarRecetaActivity.this,respuesta,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AgregarRecetaActivity.this,"Se subio la receta correctamente",Toast.LENGTH_SHORT).show();
                     finish();
                 }else{
                     Toast.makeText(AgregarRecetaActivity.this,"No se pudo subir la receta",Toast.LENGTH_SHORT).show();
                 }
-                item.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(AgregarRecetaActivity.this,"No se pudo subir la receta",Toast.LENGTH_SHORT).show();
-                item.setEnabled(true);
             }
         });
 
@@ -224,7 +220,7 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
         Double cantidad=0.0;
         for(int i=0;i<ingredientes.size();i++){
             Ingrediente ingrediente =ingredientes.get(i);
-            nombre=ingrediente.nombre;
+            nombre=ingrediente.nombre.isEmpty()?"Ingrediente":ingrediente.nombre;
             medida=ingrediente.medida;
             cantidad=ingrediente.cantidad;
 
@@ -427,11 +423,6 @@ public class AgregarRecetaActivity extends AppCompatActivity implements ImagenOp
                 capturarFoto("pa");
                 break;
         }
-    }
-
-    @Override
-    public ImageView getImage() {
-        return img;
     }
 
     public void subirFoto(){

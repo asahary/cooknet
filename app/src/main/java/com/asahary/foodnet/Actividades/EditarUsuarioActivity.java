@@ -73,6 +73,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     private static final String[] PERMISOS = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
+
     private static final int RQ_PERMISOS = 1;
     private static final int RQ_GALERIA =2;
     private static final int RQ_CAMARA=3;
@@ -149,7 +150,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     }
 
     private void rellenarCampos(){
-        Glide.with(this).load(user.getImagen()).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().error(R.drawable.user_generic).into(img);
+        Picasso.with(this).load(user.getImagen()).placeholder(R.drawable.user_generic).fit().error(R.drawable.user_generic).into(img);
 
         String nombre,nick,apellidos,email;
         boolean baja= user.getBaja()==1?true:false;
@@ -168,8 +169,6 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
     }
 
     private void actualizarUser(){
-        final MenuItem item=mMenu.findItem(R.id.action_done);
-        item.setEnabled(false);
         if(comprobarTodo()){
             String nick,email, nombre, apellidos, imagen;
 
@@ -211,13 +210,11 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                     } else {
                         Toast.makeText(EditarUsuarioActivity.this, "El cuerpo es nullo", Toast.LENGTH_SHORT).show();
                     }
-                    item.setEnabled(true);
                 }
 
                 @Override
                 public void onFailure(Call<Boolean> call, Throwable t) {
                     Toast.makeText(EditarUsuarioActivity.this, "No ha habido respuesta", Toast.LENGTH_SHORT).show();
-                    item.setEnabled(true);
                 }
             });
 
@@ -238,13 +235,11 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
                         }else{
                             Toast.makeText(EditarUsuarioActivity.this,"Cuerpo nulo",Toast.LENGTH_SHORT).show();;
                         }
-                        item.setEnabled(true);
                     }
 
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
                         Toast.makeText(EditarUsuarioActivity.this,"Respuesta fallida",Toast.LENGTH_SHORT).show();
-                        item.setEnabled(true);
                     }
                 });
             }
@@ -320,7 +315,7 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
 
     //Llaman a la api para comprobar si existen
     private boolean comprobarEmail(){
-        Boolean existe=null;
+        Boolean existe=true;
 
         //Creamos el objeto retrofit
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
@@ -337,16 +332,21 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         try {
             Response<Boolean> respuesta=llamada.execute();
             if(respuesta.isSuccessful()){
-                existe=respuesta.body();
+
+                if(respuesta!=null)
+                    existe=respuesta.body();
+                else
+                    Libreria.mostrarMensjeCorto(EditarUsuarioActivity.this,"No se ha podido comprobar el email ");
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Libreria.mostrarMensjeCorto(EditarUsuarioActivity.this,"No se ha podido comprobar el email");
         }
         return existe;
     }
     private boolean comprobarNick(){
 
-        Boolean existe=null;
+        Boolean existe=true;
 
         //Creamos el objeto retrofit
         Retrofit retrofit = new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
@@ -363,10 +363,15 @@ public class EditarUsuarioActivity extends AppCompatActivity implements ImagenOp
         try {
             Response<Boolean> respuesta=llamada.execute();
             if(respuesta.isSuccessful()){
+
+                if(respuesta!=null)
                 existe=respuesta.body();
+                else
+                    Libreria.mostrarMensjeCorto(EditarUsuarioActivity.this,"No se ha podido comprobar el nick");
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Libreria.mostrarMensjeCorto(EditarUsuarioActivity.this,"No se ha podido comprobar el nick");
         }
         return existe;
     }

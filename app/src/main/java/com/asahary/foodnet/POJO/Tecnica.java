@@ -10,17 +10,6 @@ import android.os.Parcelable;
 public class Tecnica implements Parcelable{
     public String nombre;
     public String descripcion;
-
-    public Tecnica(String nombre,String descripcion){
-        this.nombre=nombre;
-        this.descripcion=descripcion;
-    }
-
-    protected Tecnica(Parcel in) {
-        nombre = in.readString();
-        descripcion = in.readString();
-    }
-
     public static final Creator<Tecnica> CREATOR = new Creator<Tecnica>() {
         @Override
         public Tecnica createFromParcel(Parcel in) {
@@ -32,6 +21,17 @@ public class Tecnica implements Parcelable{
             return new Tecnica[size];
         }
     };
+
+    public Tecnica(String nombre,String descripcion){
+        this.nombre=nombre;
+        this.descripcion=descripcion;
+    }
+    protected Tecnica(Parcel in) {
+        nombre = in.readString();
+        descripcion = in.readString();
+    }
+
+
 
     @Override
     public int describeContents() {

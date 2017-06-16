@@ -126,10 +126,10 @@ public class Evento{
     }
 
     //Retorna true si la hora pasada por parametro es mayor a la hora actual
-    public static boolean esProximaHora(String fecha,String fecha2) {
+    public static boolean esProximaHora(String hora,String hora2) {
         String fechaArray[], fecha2Array[];
-        fechaArray = fecha2.split(":");
-        fecha2Array = fecha.split(":");
+        fechaArray = hora2.split(":");
+        fecha2Array = hora.split(":");
         if (Integer.parseInt(fecha2Array[0].substring(3)) > Integer.parseInt(fechaArray[0].substring(3))) {
             return true;
         } else if (Integer.parseInt(fecha2Array[0].substring(3)) == Integer.parseInt(fechaArray[0].substring(3))) {

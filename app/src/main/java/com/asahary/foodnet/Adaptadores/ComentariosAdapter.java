@@ -32,20 +32,15 @@ import retrofit2.Response;
  * Created by Saha on 23/05/2017.
  */
 
-public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.Contenedor> implements View.OnClickListener{
+public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.Contenedor>{
     ArrayList<Comentario> lista =new ArrayList<>();
+    ComentariosAdapter.OnReciclerItemClickListener listener;
 
-    @Override
-    public void onClick(View view) {
-
-    }
 
     public interface OnReciclerItemClickListener{
         void itemClic(Comentario comentario);
     }
 
-
-    ComentariosAdapter.OnReciclerItemClickListener listener;
 
     public ComentariosAdapter(ArrayList<Comentario> lista, ComentariosAdapter.OnReciclerItemClickListener listener){
         super();
@@ -53,16 +48,12 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         this.lista =lista;
 
     }
-    public ComentariosAdapter(ArrayList<Comentario> ingredientes){
-        super();
-        this.lista=ingredientes;
-
-    }
 
     public void swapDatos(ArrayList<Comentario> lista){
         this.lista =lista;
         this.notifyDataSetChanged();
     }
+
 
     @Override
     public ComentariosAdapter.Contenedor onCreateViewHolder(ViewGroup parent, int viewType) {//Poner el layout del item

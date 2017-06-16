@@ -137,6 +137,8 @@ public class Receta implements Parcelable{
         this.categoria = categoria;
     }
 
+
+
     public Receta(Parcel in) {
         idUsuario=in.readInt();
         idReceta=in.readInt();
@@ -149,7 +151,6 @@ public class Receta implements Parcelable{
         bajaUsuario=in.readInt();
         bajaReceta=in.readInt();
     }
-
 
     @Override
     public int describeContents() {

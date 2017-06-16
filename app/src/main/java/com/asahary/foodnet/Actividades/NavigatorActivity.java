@@ -92,15 +92,17 @@ public class NavigatorActivity extends AppCompatActivity implements RecetaTab.Ec
     }
 
 
+
     //Carga de fragmentos
     public void cargarFragmento(int id, Fragment frag) {
-        if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
-            getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
+        if(!isFinishing()) {
+            if (getFragmentManager().findFragmentById(R.id.fragment) != null) {
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.fragment)).commit();
+            }
+            FragmentTransaction transaccion = gestor.beginTransaction();
+            transaccion.replace(id, frag);
+            transaccion.commitAllowingStateLoss();
         }
-        FragmentTransaction transaccion = gestor.beginTransaction();
-        transaccion.replace(id, frag);
-        transaccion.commit();
-
     }
 
     public void cargarFragmentoMisRecetas(){
@@ -114,7 +116,6 @@ public class NavigatorActivity extends AppCompatActivity implements RecetaTab.Ec
                 if(lista!=null){
                     CacheApp.misRecetas=new ArrayList<Receta>(lista);
                 }else{
-                    Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misRecetas=new ArrayList<Receta>();
                 }
 
@@ -142,7 +143,6 @@ public class NavigatorActivity extends AppCompatActivity implements RecetaTab.Ec
                 if(lista!=null){
                     CacheApp.misSeguidores=new ArrayList<Usuario>(lista);
                 }else{
-                    Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misSeguidores=new ArrayList<Usuario>();
                 }
 
@@ -170,7 +170,6 @@ public class NavigatorActivity extends AppCompatActivity implements RecetaTab.Ec
                 if(lista!=null){
                     CacheApp.misSiguiendo=new ArrayList<Usuario>(lista);
                 }else{
-                    Libreria.mostrarMensjeCorto(NavigatorActivity.this,Constantes.RESPUESTA_NULA);
                     CacheApp.misSiguiendo=new ArrayList<Usuario>();
                 }
 

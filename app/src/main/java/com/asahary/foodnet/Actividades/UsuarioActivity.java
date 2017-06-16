@@ -42,7 +42,6 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
     Button btnSigue;
     Usuario usuario;
     boolean sigue;
-    int idUsuario;
     private ViewPagerAdapter viewPagerAdapter;
 
 
@@ -69,17 +68,15 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuario);
 
-        usuario=  getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
-
-        if(getIntent().hasExtra(Constantes.EXTRA_USUARIO)){
+        if(!isFinishing()){
+        if(savedInstanceState==null&&getIntent().hasExtra(Constantes.EXTRA_USUARIO)){
             usuario=getIntent().getParcelableExtra(Constantes.EXTRA_USUARIO);
         }else{
-            finish();
+            usuario=savedInstanceState.getParcelable(Constantes.EXTRA_USUARIO);
         }
 
-        idUsuario= usuario.getId();
         setTitle(usuario.getNick());
-        if(idUsuario==CacheApp.user.getId()){
+        if(usuario.getId()==CacheApp.user.getId()){
             startActivity(new Intent(UsuarioActivity.this, PerfilActivity.class));
             finish();
         }else{
@@ -88,12 +85,13 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
             comprobarSigue();
             configViewPager();
         }
+        }
     }
 
     private void comprobarSigue(){
         Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(CookNetService.URL_BASE).build();
         final CookNetService service = retrofit.create(CookNetService.class);
-        Call<Boolean> call = service.comprobarSigue(CacheApp.user.getId(),idUsuario);
+        Call<Boolean> call = service.comprobarSigue(CacheApp.user.getId(),usuario.getId());
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -120,7 +118,7 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
         lblNombre.setText(usuario.getNombre());
         lblApellidos.setText(usuario.getApellidos());
         lblEmail.setText(usuario.getEmail());
-        Picasso.with(this).load(usuario.getImagen()).fit().error(R.drawable.user_generic).placeholder(R.drawable.user_generic).into(img);
+        Picasso.with(this).load(usuario.getImagen()).error(R.drawable.user_generic).placeholder(R.drawable.user_generic).fit().into(img);
     }
 
     private void initVistas() {
@@ -135,7 +133,7 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
             public void onClick(View view) {
                 Retrofit retrofit=new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
                 final CookNetService service= retrofit.create(CookNetService.class);
-                Call<Boolean> call=service.actualizarSigue(CacheApp.user.getId(),idUsuario,sigue?1:0);
+                Call<Boolean> call=service.actualizarSigue(CacheApp.user.getId(),usuario.getId(),sigue?1:0);
                 call.enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -195,10 +193,10 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
         Retrofit retrofit= new Retrofit.Builder().baseUrl(CookNetService.URL_BASE).addConverterFactory(GsonConverterFactory.create()).build();
         CookNetService service= retrofit.create(CookNetService.class);
 
-        Call<List<Receta>> callFavoritos=service.favoritosUser(idUsuario);
-        Call<List<Receta>> callPropias=service.recetasUser(idUsuario);
-        Call<List<Usuario>> callSiguiendo=service.seguidosUser(idUsuario);
-        Call<List<Usuario>> callSeguidores=service.seguidoresUser(idUsuario);
+        Call<List<Receta>> callFavoritos=service.favoritosUser(usuario.getId());
+        Call<List<Receta>> callPropias=service.recetasUser(usuario.getId());
+        Call<List<Usuario>> callSiguiendo=service.seguidosUser(usuario.getId());
+        Call<List<Usuario>> callSeguidores=service.seguidoresUser(usuario.getId());
 
         callFavoritos.enqueue(new Callback<List<Receta>>() {
             @Override

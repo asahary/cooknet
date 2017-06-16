@@ -30,8 +30,8 @@ public class RecetaTab extends Fragment implements RecetasAdapter.OnReciclerItem
     public RecetasAdapter adaptador;
     ArrayList<Receta> listaRecetas=new ArrayList<Receta>();
     View emptyView;
-    private ImageView imgCarga;
-    private Echador mEchador;
+    ImageView imgCarga;
+    Echador mEchador;
 
     public interface Echador{
         void echar(Receta receta);
