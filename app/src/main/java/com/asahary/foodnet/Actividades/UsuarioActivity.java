@@ -99,6 +99,7 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
                 sigue=response.body();
                 if(sigue!=null){
                     configurarBotonFollow(sigue);
+
                 }else{
                     Libreria.mostrarMensjeCorto(UsuarioActivity.this,"No se pudo comprobar si se sigue");
                 }
