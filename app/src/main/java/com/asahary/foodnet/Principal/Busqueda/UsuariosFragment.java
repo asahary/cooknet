@@ -78,14 +78,12 @@ public class UsuariosFragment extends Fragment implements UsuariosAdapter.OnReci
                 if(respuesta!=null){
                     usuarios=new ArrayList<Usuario>(respuesta);
                     adaptador.swapDatos(usuarios);
-                }else{
-                    Toast.makeText(getContext(),"cuerpo nullo",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Usuario>> call, Throwable t) {
-                Toast.makeText(getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"No se pudo establecer datos con el servidor",Toast.LENGTH_SHORT).show();
             }
         });
     }

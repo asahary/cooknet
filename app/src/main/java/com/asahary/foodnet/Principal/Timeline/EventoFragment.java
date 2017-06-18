@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.asahary.foodnet.Actividades.MainActivity;
 import com.asahary.foodnet.Adaptadores.EventoAdapter;
@@ -69,32 +70,7 @@ public class EventoFragment extends Fragment implements EventoAdapter.OnRecicler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final SwipeRefreshLayout vista= (SwipeRefreshLayout) getView();
-        vista.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Libreria.obtenerServicioApi().eventosUser(CacheApp.user.getId()).enqueue(new Callback<List<Evento>>() {
-                    @Override
-                    public void onResponse(Call<List<Evento>> call, Response<List<Evento>> response) {
-                        List<Evento> cuerpo=response.body();
-                        Collections.sort(cuerpo,Evento.FechaComparator);
-                        vista.setRefreshing(false);
-                        if(cuerpo!=null){
-                            CacheApp.misEventos=new ArrayList<Evento>(cuerpo);
-                            adaptador.swapDatos(CacheApp.misEventos);
-                        }else{
-                            Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_NULA);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<Evento>> call, Throwable t) {
-                        vista.setRefreshing(false);
-                        Libreria.mostrarMensjeCorto(getContext(),Constantes.RESPUESTA_FALLIDA);
-                    }
-                });
-            }
-        });
+        final RelativeLayout vista= (RelativeLayout) getView();
         initVistas(vista);
     }
     @Nullable

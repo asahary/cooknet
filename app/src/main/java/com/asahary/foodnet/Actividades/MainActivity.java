@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         if(bottomView.getSelectedItemId()==R.id.mnuFavoritos){
             cargarFragmentoMisFavoritos();
         }else {
+            bottomView.setSelectedItemId(R.id.mnuHome);
             cargarFragmentoMisEventos();
         }
     }

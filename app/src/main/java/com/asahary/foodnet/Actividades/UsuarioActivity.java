@@ -22,6 +22,7 @@ import com.asahary.foodnet.CookNetService;
 import com.asahary.foodnet.POJO.Receta;
 import com.asahary.foodnet.POJO.Usuario;
 import com.asahary.foodnet.R;
+import com.asahary.foodnet.Utilidades.Libreria;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
     TextView lblNick,lblNombre,lblApellidos,lblEmail;
     Button btnSigue;
     Usuario usuario;
-    boolean sigue;
+    Boolean sigue;
     private ViewPagerAdapter viewPagerAdapter;
 
 
@@ -96,11 +97,15 @@ public class UsuarioActivity extends FragmentActivity implements RecetaTab.Echad
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 sigue=response.body();
-                configurarBotonFollow(sigue);
+                if(sigue!=null){
+                    configurarBotonFollow(sigue);
+                }else{
+                    Libreria.mostrarMensjeCorto(UsuarioActivity.this,"No se pudo comprobar si se sigue");
+                }
             }
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-
+                Libreria.mostrarMensjeCorto(UsuarioActivity.this,"No se pudo comprobar si se sigue");
             }
         });
     }

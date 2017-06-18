@@ -75,14 +75,12 @@ public class RecetasFragment extends Fragment implements RecetasAdapter.OnRecicl
                 if(respuesta!=null){
                     recetas=new ArrayList<Receta>(respuesta);
                     adaptador.swapDatos(recetas);
-                }else{
-                    Toast.makeText(getContext(),"cuerpo nullo",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Receta>> call, Throwable t) {
-               // Toast.makeText(getContext(),"respuesta fallida",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"No se pudo establecer conexion con el servidor",Toast.LENGTH_SHORT).show();
             }
         });
 

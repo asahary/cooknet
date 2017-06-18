@@ -139,7 +139,6 @@ public class RecetaActivity extends AppCompatActivity implements RatingDialog.On
                         CacheApp.misFavoritos.add(receta);
                         menu.getItem(0).setIcon(R.drawable.ic_fav_black);
                     }
-                    Libreria.mostrarMensjeCorto(RecetaActivity.this,mensaje);
                 }else{
                     Libreria.mostrarMensjeCorto(RecetaActivity.this,Constantes.RESPUESTA_NULA);
                 }
